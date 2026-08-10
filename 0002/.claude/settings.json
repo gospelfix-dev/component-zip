@@ -1,0 +1,25 @@
+{
+  "model": "sonnet",
+  "plansDirectory": ".claude/plans/",
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "outputStyle": "Explanatory",
+  "permissions": {
+    "allow": ["Bash"],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./build/**)",
+      "Write(./.env)",
+      "Write(./.env.*)"
+    ],
+    "ask": [],
+    "defaultMode": "plan",
+    "additionalDirectories": ["/"],
+    "teammateMode": "tmux"
+  }
+}

@@ -103,8 +103,11 @@
 .history_pc .swiper-slide {width: 62%; color: #fff;text-align: left;justify-content: flex-start; margin: 0 !important; cursor: pointer}
 .history_pc .swiper-slide.swiper-slide-active p {color: #fff;-webkit-text-stroke: 1px #fff;}
 .history_pc .swiper-slide.swiper-slide-active p span{color: #fff;-webkit-text-stroke: 1px #fff;}
-.history_pc .swiper-slide p{font-size:61px;font-weight:700;color:transparent;-webkit-text-stroke:1px #666;}
-.history_pc .swiper-slide p span{font-size:28px;font-weight:700;color:transparent;-webkit-text-stroke:1px #666;}
+/* 슬라이드 1칸 높이(컨테이너 70vh / slidesPerView 7 = 10vh)와 슬라이드 폭(40vw의 62% = 24.8vw)을
+   넘지 않도록 상한을 둔다. 상한이 없으면 화면이 작을 때 DECEMBER/FEBRUARY 같은 긴 월이
+   줄바꿈되어 위아래 슬라이드와 겹친다. */
+.history_pc .swiper-slide p{font-size:min(61px, 7vh, 3.3vw);line-height:1.1;white-space:nowrap;font-weight:700;color:transparent;-webkit-text-stroke:1px #666;-webkit-font-smoothing:antialiased;}
+.history_pc .swiper-slide p span{font-size:0.46em;font-weight:700;color:transparent;-webkit-text-stroke:1px #666;}
 .history_pc .activetxt{position: absolute; top: -29%;font-size: 34px;font-weight: 700;text-align: left;color: #fff;display: inline-block;white-space: nowrap;display: none;}
 .history_pc .activetxt .month {font-size:74px;font-weight:700;}
 .history_pc .activetxt .year {font-size:28px;font-weight:600;}

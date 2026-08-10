@@ -1,9 +1,18 @@
 
+/* =========== // WEBFONT =========== */
+/* Montserrat(SIL OFL 1.1, fonts/OFL.txt)에서 라틴 문자만 서브셋하고 글리프의 겹친 컨투어를 병합한 파일.
+   배포본 그대로 쓰면 -webkit-text-stroke 아웃라인에서 획이 만나는 자리에 경계선이 드러난다. */
+@font-face{font-family:'Montserrat';src:url('../fonts/montserrat-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Montserrat';src:url('../fonts/montserrat-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Montserrat';src:url('../fonts/montserrat-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap;}
+@font-face{font-family:'Montserrat';src:url('../fonts/montserrat-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;}
+/* =========== WEBFONT // =========== */
+
 /* =========== // CSS RESET =========== */
 html,body { height:100%;}
 body { -webkit-text-size-adjust:none;}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button { margin:0; padding:0; font-size: 100%; box-sizing:border-box;vertical-align:baseline;}
-body,input,select,textarea,button,table { font-family: 'Noto Sans KR', sans-serif; font-size: 100%; color: #222; font-weight:400; word-break:keep-all; word-wrap:break-word;letter-spacing: -0.01em;vertical-align:baseline;}
+body,input,select,textarea,button,table { font-family: 'Montserrat', 'Noto Sans KR', sans-serif; font-size: 100%; color: #222; font-weight:400; word-break:keep-all; word-wrap:break-word;letter-spacing: -0.01em;vertical-align:baseline;}
 h1,h2,h3,h4,h5,h6 { font-weight:inherit; font-size:inherit; }
 iframe, fieldset { border:0; }
 img { width: 100%; border:0; vertical-align:middle; }
