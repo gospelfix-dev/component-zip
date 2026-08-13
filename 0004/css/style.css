@@ -1,0 +1,755 @@
+/* ============================================================
+   Digital Name Card — 모바일 명함
+   Tokens → Reset → Decor → Page → Gallery → Card → Blocks
+   → Theme → State → Responsive
+   ============================================================ */
+
+/* ---------- 1. 전역 토큰 ---------- */
+:root {
+  /* Color — 페이지 */
+  --c-page-top: #fbfcfe;
+  --c-page-bottom: #e9eff8;
+  --c-blob: #d7e4f7;
+  --c-ink: #14161b;
+  --c-ink-soft: #656c78;
+
+  /* Type */
+  --font-body: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+
+  /* Space & shape */
+  --page-max: 1320px;
+  --card-w: 390px;
+  --card-h: clamp(600px, 84vh, 860px);
+  --radius-card: 30px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-card: 0 26px 60px -28px rgba(20, 30, 60, 0.45), 0 2px 8px -2px rgba(20, 30, 60, 0.12);
+}
+
+/* ---------- 2. 리셋 ---------- */
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--c-ink);
+  background: linear-gradient(180deg, var(--c-page-top) 0%, var(--c-page-bottom) 100%);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+ul, ol, dl, dd { margin: 0; padding: 0; }
+li { list-style: none; }
+
+/* ---------- 3. 배경 장식 ---------- */
+.bg-decor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-decor__blob {
+  position: absolute;
+  display: block;
+  background: var(--c-blob);
+  opacity: 0.55;
+  filter: blur(2px);
+}
+
+.bg-decor__blob--a {
+  width: 520px;
+  height: 520px;
+  left: -180px;
+  top: -160px;
+  border-radius: 46% 54% 60% 40% / 52% 44% 56% 48%;
+}
+
+.bg-decor__blob--b {
+  width: 620px;
+  height: 620px;
+  right: -240px;
+  bottom: -260px;
+  border-radius: 58% 42% 40% 60% / 46% 58% 42% 54%;
+}
+
+/* ---------- 4. 페이지 레이아웃 ---------- */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(36px, 6vw, 72px) 0 clamp(24px, 4vw, 48px);
+}
+
+.page__head {
+  text-align: center;
+  padding: 0 clamp(16px, 4vw, 40px);
+  margin-bottom: clamp(24px, 4vw, 44px);
+}
+
+.page__eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-ink-soft);
+}
+
+.page__title {
+  margin: 0;
+  font-size: clamp(28px, 4.4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+}
+
+.page__subtitle {
+  margin: 10px 0 0;
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: var(--c-ink-soft);
+}
+
+/* ---------- 5. 갤러리 (Swiper) ---------- */
+.gallery-shell { position: relative; }
+
+/* .swiper 기본 스타일은 css/swiper.css 가 담당한다. 여기서는 여백만 준다. */
+.gallery {
+  padding: 6px clamp(16px, 4vw, 40px) 8px;
+}
+
+.gallery .swiper-wrapper { align-items: flex-start; }
+
+.gallery .swiper-slide {
+  width: var(--card-w);
+  height: auto;
+}
+
+/* 컨트롤 — 이전/다음 + 페이지네이션 */
+.gallery__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px clamp(16px, 4vw, 40px) 4px;
+}
+
+.gallery__nav {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(20, 30, 60, 0.12);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--c-ink);
+  cursor: pointer;
+  box-shadow: 0 6px 16px -10px rgba(20, 30, 60, 0.5);
+  transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+
+.gallery__nav:hover:not(:disabled) { transform: translateY(-2px); }
+
+/* Swiper 는 클래스만 붙이고, js/app.js 가 disabled 속성까지 건다. 둘 다 받는다. */
+.gallery__nav:disabled,
+.gallery__nav.swiper-button-disabled {
+  opacity: 0.32;
+  cursor: default;
+  transform: none;
+}
+
+.gallery__nav-icon { width: 18px; height: 18px; }
+.gallery__nav--prev .gallery__nav-icon { transform: rotate(180deg); }
+
+/* swiper.css 의 .swiper-pagination-bullets.swiper-pagination-horizontal 이
+   width:100% 로 잡으므로(특정성 0-2-0) 같은 무게로 되돌린다 */
+.gallery__controls .gallery__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: none;
+  width: auto;
+}
+
+.gallery__pagination .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  margin: 0;
+  opacity: 1;
+  background: rgba(20, 30, 60, 0.2);
+  transition: width 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+
+.gallery__pagination .swiper-pagination-bullet-active {
+  width: 24px;
+  border-radius: 99px;
+  background: var(--c-ink);
+}
+
+.gallery__message {
+  margin: 0;
+  padding: 32px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--c-ink-soft);
+}
+
+.gallery__message:empty { display: none; }
+
+/* ---------- 6. 카드 셸 ---------- */
+.namecard {
+  /* 카드 스코프 토큰 — 테마에서 재정의한다 */
+  --card-accent: #1f3a68;
+  --card-surface: #ffffff;
+  --card-ink: #16181d;
+  --card-ink-soft: #6b7078;
+  --card-line: rgba(0, 0, 0, 0.08);
+  --card-chip-bg: #e3e5e9;
+  --card-chip-ink: #3a3f47;
+  --card-action-bg: #f2f3f5;
+  --card-action-ink: #23262b;
+  --card-frame-bg: transparent;
+  --card-frame-pad: 0px;
+  --card-hero-radius: 0px;
+  --logo-mark-bg: rgba(255, 255, 255, 0.22);
+  --logo-mark-ink: #ffffff;
+
+  /* 글래스 오버레이 토큰 */
+  --glass-bg: var(--card-accent);
+  --glass-alpha: 0.84;
+  --glass-ink: #ffffff;
+  --glass-ink-soft: rgba(255, 255, 255, 0.84);
+  --glass-chip-bg: rgba(255, 255, 255, 0.2);
+  --glass-chip-ink: #ffffff;
+
+  width: 100%; /* 폭은 .swiper-slide 가 --card-w 로 정한다 */
+  height: var(--card-h);
+  display: flex;
+  flex-direction: column;
+  background: var(--card-surface);
+  color: var(--card-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.namecard:hover { transform: translateY(-6px); }
+
+.namecard__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+.namecard__scroll::-webkit-scrollbar { width: 0; }
+
+.namecard__frame {
+  background: var(--card-frame-bg);
+  padding: var(--card-frame-pad);
+}
+
+.namecard__body { background: var(--card-surface); }
+
+/* ---------- 7. 히어로 / 아바타 ---------- */
+.namecard__hero {
+  position: relative;
+  aspect-ratio: 39 / 48;
+  overflow: hidden;
+  border-radius: var(--card-hero-radius);
+  background: var(--card-accent);
+}
+
+.namecard__photo { position: absolute; inset: 0; }
+
+/* 사진 하단을 본문 배경으로 흘려보내 연락처 영역과 이어지게 한다.
+   overlay 테마에서만 --hero-fade 를 켠다 (navy 는 사진이 라운드 인셋이라 불필요). */
+.namecard__hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 34%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--hero-fade, transparent) 74%,
+    var(--hero-fade, transparent) 100%
+  );
+}
+
+.namecard__glass {
+  position: absolute;
+  z-index: 2; /* 히어로 하단 페이드(::after) 위에 놓는다 */
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+}
+
+.avatar-img,
+.avatar-fallback,
+.avatar-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 크롭 기준점. 원형 아바타처럼 얼굴만 담아야 하는 곳에서 재정의한다 */
+  object-position: var(--photo-pos, 50% 50%);
+}
+
+/* ---------- 8. 아이덴티티 ---------- */
+.identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0 12px;
+}
+
+.identity__text { min-width: 0; }
+
+.identity__name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.identity__role,
+.identity__company {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--identity-soft, var(--card-ink-soft));
+}
+
+.identity__company { margin-top: 2px; }
+
+.identity__logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.identity__logo-mark {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: var(--logo-mark-bg);
+  color: var(--logo-mark-ink);
+}
+
+.identity__logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.identity__logo-name { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; }
+.identity__logo-sub { font-size: 8.5px; font-style: normal; opacity: 0.75; }
+
+/* 태그 칩 */
+.chips {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.chip {
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--chip-bg, var(--card-chip-bg));
+  color: var(--chip-ink, var(--card-chip-ink));
+}
+
+/* 부서/직책 메타 */
+.meta {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--meta-line, var(--card-line));
+}
+
+.meta__cell + .meta__cell {
+  padding-left: 16px;
+  border-left: 1px solid var(--meta-line, var(--card-line));
+}
+
+.meta__label { margin: 0; font-size: 12px; opacity: 0.72; }
+.meta__value { margin: 5px 0 0; font-size: 14.5px; font-weight: 700; }
+
+/* 아이덴티티 배치 — overlay (사진 위 글래스 박스) */
+.identity--overlay {
+  position: relative;
+  isolation: isolate;
+  padding: 18px;
+  border-radius: 14px;
+  color: var(--glass-ink);
+  --identity-soft: var(--glass-ink-soft);
+  --chip-bg: var(--glass-chip-bg);
+  --chip-ink: var(--glass-chip-ink);
+}
+
+.identity--overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--glass-bg);
+  opacity: var(--glass-alpha);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* 아이덴티티 배치 — header (회색 헤더 + 원형 프로필) */
+.identity--header {
+  padding: 20px 20px 18px;
+  background: var(--header-bg, #e9eaec);
+  align-items: center;
+}
+
+.identity--header .identity__name { font-size: 21px; }
+.identity--header .identity__text { align-self: center; }
+
+.identity__avatar--circle {
+  --photo-pos: 50% 12%; /* 원형은 지름이 작아 얼굴만 담는다 */
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--card-accent);
+}
+
+/* 아이덴티티 배치 — banner (솔리드 컬러 배너) */
+.identity--banner {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 22px 20px;
+  background: var(--card-accent);
+  color: #fff;
+  --identity-soft: rgba(255, 255, 255, 0.86);
+  --chip-bg: rgba(255, 255, 255, 0.18);
+  --chip-ink: #ffffff;
+  --meta-line: rgba(255, 255, 255, 0.26);
+}
+
+.identity--banner .identity__logo { order: 1; align-self: flex-start; gap: 10px; }
+.identity--banner .identity__logo-mark {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 16px;
+}
+.identity--banner .identity__logo-name { font-size: 17px; letter-spacing: -0.01em; }
+.identity--banner .identity__logo-sub { font-size: 10px; letter-spacing: 0.04em; }
+
+.identity--banner .identity__text { order: 2; margin-top: 22px; }
+.identity--banner .identity__name { font-size: 27px; }
+
+.identity--banner .identity__avatar { order: 3; align-self: flex-end; margin-top: 18px; }
+.identity__avatar--portrait {
+  width: 134px;
+  height: 168px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.identity--banner .meta { order: 4; }
+.identity--banner .chips { order: 5; }
+
+/* 아이덴티티 배치 — stacked (사진 아래 흰 블록) */
+.identity--stacked {
+  padding: 20px 18px 18px;
+  background: var(--card-surface);
+}
+
+.identity--stacked .identity__name { font-size: 23px; }
+
+/* ---------- 9. 연락처 ---------- */
+.contact { position: relative; }
+
+.namecard__contacts .contact + .contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--card-line);
+}
+
+/* row 형 — 레이블 ─ 값 › */
+.contact--row .contact__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact--row .contact__label {
+  flex: none;
+  font-size: 13px;
+  color: var(--card-ink-soft);
+}
+
+.contact--row .contact__value {
+  margin-left: auto;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-all;
+}
+
+.contact__chevron {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  opacity: 0.5;
+}
+
+/* stack 형 — 레이블/값 + 액션 버튼 */
+.contact--stack {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px;
+}
+
+.contact__text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.contact--stack .contact__label {
+  font-size: 12px;
+  color: var(--card-ink-soft);
+}
+
+.contact__value--copy {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  word-break: break-all;
+}
+
+.contact__actions { display: flex; flex: none; gap: 8px; }
+
+.action {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--card-action-bg);
+  color: var(--card-action-ink);
+  text-decoration: none;
+  transition: transform 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+
+.action:hover { transform: translateY(-2px); background: #e7e9ec; }
+.action__icon { width: 21px; height: 21px; }
+
+/* ---------- 10. 링크 / 소개 / 슬로건 ---------- */
+.namecard__links { border-top: 1px solid var(--card-line); }
+
+.namecard__links .linkrow + .linkrow { border-top: 1px solid var(--card-line); }
+
+.linkrow__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 20px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.linkrow__icon { flex: none; width: 24px; height: 24px; }
+.linkrow__label { flex: 1; font-size: 15px; font-weight: 700; }
+.linkrow__chevron { flex: none; width: 15px; height: 15px; opacity: 0.4; }
+
+.namecard__about {
+  padding: 22px 20px 26px;
+  border-top: 8px solid var(--card-line);
+}
+
+.namecard__about-title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.namecard__about-line {
+  margin: 0 0 7px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--card-ink-soft);
+}
+
+.namecard__slogan {
+  margin: 0;
+  padding: 20px;
+  border-top: 1px solid var(--card-line);
+  background: var(--card-surface);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- 11. 테마 ---------- */
+
+/* dark — 어두운 연락처 + 컬러 글래스 박스 */
+.namecard--dark {
+  --card-surface: #0f1013;
+  --card-ink: #ffffff;
+  --card-ink-soft: #a9b0ba;
+  --card-line: rgba(255, 255, 255, 0.1);
+  --hero-fade: var(--card-surface);
+}
+
+/* paper — 밝은 글래스 박스 + 흰 연락처 */
+.namecard--paper {
+  --glass-bg: #eff0f3;
+  --glass-alpha: 0.86;
+  --glass-ink: #1b1d22;
+  --glass-ink-soft: #565a63;
+  --glass-chip-bg: rgba(255, 255, 255, 0.72);
+  --glass-chip-ink: #3a3f47;
+  --logo-mark-bg: rgba(0, 0, 0, 0.08);
+  --logo-mark-ink: #2b2f36;
+  --hero-fade: var(--card-surface);
+}
+
+/* light — 회색 헤더 + 아이콘 액션 */
+.namecard--light {
+  --header-bg: #e9eaec;
+  --card-chip-bg: #dcdee2;
+  --logo-mark-bg: #2b2f36;
+  --logo-mark-ink: #ffffff;
+}
+
+.namecard--light .identity--header { color: var(--card-ink); }
+
+/* blue — 솔리드 컬러 배너 */
+.namecard--blue {
+  --logo-mark-bg: #ffffff;
+  --logo-mark-ink: var(--card-accent);
+}
+
+/* navy — 컬러 프레임 + 흰 본문 */
+.namecard--navy {
+  --card-frame-bg: var(--card-accent);
+  --card-frame-pad: 9px;
+  --card-hero-radius: 12px;
+  --card-chip-bg: var(--card-accent);
+  --card-chip-ink: #ffffff;
+  --logo-mark-bg: var(--card-accent);
+  --logo-mark-ink: #ffffff;
+}
+
+.namecard--navy .identity--stacked { margin-top: 9px; }
+
+/* ---------- 12. 상태 ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 40;
+  padding: 11px 18px;
+  border-radius: 11px;
+  background: #16181d;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 14px);
+  transition: opacity 0.24s var(--ease), transform 0.24s var(--ease);
+}
+
+.toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+:where(a, button):focus-visible {
+  outline: 2px solid #1a50d8;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- 13. 반응형 ---------- */
+/* 카드 크기는 :root 토큰으로만 조절한다 — .swiper-slide 와 .namecard 가 함께 읽는다 */
+@media (max-width: 900px) {
+  :root {
+    --card-w: min(390px, 86vw);
+    --card-h: clamp(560px, 80vh, 820px);
+  }
+}
+
+@media (max-width: 580px) {
+  :root {
+    --card-w: calc(100vw - 32px);
+    --card-h: clamp(540px, 78vh, 780px);
+    --radius-card: 26px;
+  }
+
+  .gallery { padding-inline: 16px; }
+  .gallery__controls { gap: 12px; padding-top: 16px; }
+  .namecard:hover { transform: none; }
+}
+
+/* ---------- 14. 모션 축소 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .namecard,
+  .action,
+  .toast,
+  .gallery__nav,
+  .gallery__pagination .swiper-pagination-bullet {
+    transition: none;
+  }
+
+  .namecard:hover,
+  .action:hover,
+  .gallery__nav:hover {
+    transform: none;
+  }
+
+  /* Swiper 의 슬라이드 전환도 즉시 끝나게 한다 (JS 의 SWIPER_SPEED 참고) */
+  .gallery .swiper-wrapper { transition-duration: 0ms !important; }
+}

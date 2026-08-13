@@ -1,0 +1,137 @@
+{
+  "section": {
+    "eyebrow": "Digital Name Card",
+    "title": "모바일 명함",
+    "subtitle": "테마 하나로 바뀌는 다섯 가지 온라인 디지털 명함 레이아웃"
+  },
+  "cards": [
+    {
+      "id": "lee-hangyeol",
+      "theme": "dark",
+      "accent": "#1f3a68",
+      "photo": "./imgs/lee-hangyeol.jpg",
+      "photoShape": "hero",
+      "name": "이한결",
+      "role": "송무팀 ㅣ 대표 변호사",
+      "company": "법률사무소 궤적",
+      "logo": { "mark": "GWE", "text": "TRAJECTORY", "sub": "법률사무소 궤적" },
+      "tags": ["고객 신뢰", "동반 성장"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "tel", "label": "유선전화", "value": "02-000-0000", "actions": ["call"] },
+        { "type": "email", "label": "이메일", "value": "lawyer@creatornomic.io", "actions": ["mail"] },
+        { "type": "web", "label": "홈페이지", "value": "www.lawyer.co.io", "actions": ["web"] },
+        { "type": "address", "label": "주소", "value": "서울특별시 강남구 역삼로 123", "actions": ["map"] }
+      ]
+    },
+    {
+      "id": "cho-hyunmin",
+      "theme": "light",
+      "accent": "#2f6bd8",
+      "photo": "./imgs/cho-hyunmin.jpg",
+      "photoShape": "circle",
+      "name": "조현민",
+      "role": "창동지점 ㅣ 영업과장",
+      "company": "이모션렌트",
+      "logo": { "mark": "ER", "text": "Emotion Rent", "sub": "" },
+      "tags": ["멤버십 문의", "차종 상담", "기업용 플랜"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "tel", "label": "유선전화", "value": "02-000-0000", "actions": ["call"] },
+        { "type": "email", "label": "이메일", "value": "sale@creatornomic.io", "actions": ["mail"] },
+        { "type": "web", "label": "홈페이지", "value": "www.emotionrent.co.io", "actions": ["web"] },
+        { "type": "address", "label": "주소", "value": "서울시 도봉구 도담로 123", "actions": ["map"] }
+      ],
+      "links": [
+        { "icon": "kakao", "label": "신차 출고 알림, 견적 문의", "href": "#" },
+        { "icon": "link", "label": "서비스 이용 가이드", "href": "#" }
+      ],
+      "about": {
+        "title": "전기차 & 프리미엄 차량 렌탈 전문",
+        "body": [
+          "🚗 프리미엄 전기차 렌트",
+          "• 최신형 Tesla Model 3 & Model Y 2025 Edition 입고!",
+          "• BMW iX3 / Mercedes EQE 등 인기 모델 상시 업데이트",
+          "• 하루 15만 원부터, 무제한 주행 패키지 제공"
+        ]
+      }
+    },
+    {
+      "id": "lee-soohwan",
+      "theme": "dark",
+      "accent": "#2f6146",
+      "photo": "./imgs/lee-soohwan.jpg",
+      "photoShape": "hero",
+      "name": "이수환",
+      "role": "IT 전문 ㅣ 대표세무사",
+      "company": "세무법인 리앤밸런스",
+      "logo": { "mark": "LB", "text": "Li & Balance", "sub": "" },
+      "tags": ["절세 전략", "세금 리스크 관리", "맞춤형 컨설팅"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "email", "label": "이메일", "value": "pro@creatornomic.io", "actions": ["mail"] },
+        { "type": "web", "label": "홈페이지", "value": "www.libalance.co.io", "actions": ["web"] },
+        { "type": "address", "label": "주소", "value": "강원도 속초시 중앙로 123, 2층", "actions": ["map"] }
+      ],
+      "slogan": "당신의 비즈니스에 세금의 균형을 더합니다."
+    },
+    {
+      "id": "kim-hyunsoo",
+      "theme": "paper",
+      "accent": "#8b8fa8",
+      "photo": "./imgs/kim-hyunsoo.jpg",
+      "photoShape": "hero",
+      "name": "김현수",
+      "role": "상업용 부동산 전문 ㅣ 공인중개사",
+      "company": "정착 공인중개사사무소",
+      "logo": { "mark": "정착", "text": "정착공인중개사사무소", "sub": "GANGNAM SEOCHO REAL ESTATE" },
+      "tags": ["고수익 매물", "상권·입지 분석", "1:1 문의"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "tel", "label": "유선전화", "value": "02-000-0000", "actions": ["call"] },
+        { "type": "web", "label": "홈페이지", "value": "www.srealty.co.io", "actions": ["web"] },
+        { "type": "address", "label": "주소", "value": "서울특별시 서초구 강남대로 123", "actions": ["map"] }
+      ],
+      "slogan": "수익률로 증명하는 상업 부동산, 이제 '정착'할 시간입니다."
+    },
+    {
+      "id": "kim-seojeong",
+      "theme": "blue",
+      "accent": "#1a50d8",
+      "photo": "./imgs/kim-seojeong.jpg",
+      "photoShape": "portrait",
+      "name": "김서정",
+      "role": "",
+      "company": "한결은행",
+      "logo": { "mark": "S", "text": "한결은행", "sub": "Hangyel Bank" },
+      "meta": [
+        { "label": "부서", "value": "PB센터 / 대출금융부" },
+        { "label": "직책", "value": "수석 상담원" }
+      ],
+      "tags": ["리스크 없는 빠른 대출", "카카오톡 1:1 상담"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "tel", "label": "유선전화", "value": "02-000-0000", "actions": ["call"] },
+        { "type": "address", "label": "주소", "value": "서울특별시 중구 을지로 123", "actions": ["map"] }
+      ]
+    },
+    {
+      "id": "yoon-siheon",
+      "theme": "navy",
+      "accent": "#16265c",
+      "photo": null,
+      "photoShape": "hero",
+      "name": "윤시헌",
+      "role": "재정보호 설계 전문가 ㅣ 컨설턴트",
+      "company": "정성 파이낸셜 리스크컨설팅",
+      "logo": { "mark": "JS", "text": "JEONGSEONG", "sub": "Financial Risk Consulting" },
+      "tags": ["기업 리스크 관리", "맞춤 컨설팅", "가계 보장 설계"],
+      "contacts": [
+        { "type": "mobile", "label": "휴대전화", "value": "010-0000-0000", "actions": ["call", "sms"] },
+        { "type": "tel", "label": "유선전화", "value": "02-000-0000", "actions": ["call"] },
+        { "type": "email", "label": "이메일", "value": "pro@creatornomic.io", "actions": ["mail"] },
+        { "type": "web", "label": "홈페이지", "value": "www.jeongseong.co.io", "actions": ["web"] }
+      ]
+    }
+  ]
+}
