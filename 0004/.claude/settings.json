@@ -1,0 +1,58 @@
+{
+  "model": "sonnet",
+  "plansDirectory": ".claude/plans/",
+  "outputStyle": "Explanatory",
+  "teammateMode": "tmux",
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(ls:*)",
+      "Bash(jq:*)",
+      "Bash(sips -g:*)",
+      "Bash(python3 -m http.server:*)",
+      "Bash(python3 -c:*)",
+      "Bash(curl -s -o /dev/null:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./build/**)"
+    ],
+    "ask": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-cards.sh\"",
+            "timeout": 15,
+            "statusMessage": "명함 데이터 검증 중..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/load-memory.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "defaultMode": "plan",
+  "additionalDirectories": ["/"]
+}
