@@ -79,20 +79,23 @@
       <p class="page__subtitle" data-bind="subtitle"></p>
     </header>
 
+    <!-- 슬라이더 컨트롤 — 서브타이틀 아래. 조작 대상은 아래 #cardGallery 다 -->
+    <div class="gallery__controls gallery__controls--top">
+      <button type="button" class="gallery__nav gallery__nav--prev" id="cardPrev"
+        aria-label="이전 명함" aria-controls="cardGallery">
+        <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
+      </button>
+      <div class="gallery__pagination" id="cardPagination"></div>
+      <button type="button" class="gallery__nav gallery__nav--next" id="cardNext"
+        aria-label="다음 명함" aria-controls="cardGallery">
+        <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
+      </button>
+    </div>
+
     <!-- 명함 슬라이더 — 카드는 .swiper-wrapper 안에 렌더링됩니다 -->
     <section class="gallery-shell" aria-label="디지털 명함 목록">
       <div class="gallery swiper" id="cardGallery">
         <div class="swiper-wrapper" id="cardTrack"></div>
-      </div>
-
-      <div class="gallery__controls">
-        <button type="button" class="gallery__nav gallery__nav--prev" id="cardPrev" aria-label="이전 명함">
-          <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
-        </button>
-        <div class="gallery__pagination" id="cardPagination"></div>
-        <button type="button" class="gallery__nav gallery__nav--next" id="cardNext" aria-label="다음 명함">
-          <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
-        </button>
       </div>
 
       <p class="gallery__message" id="galleryMessage"></p>

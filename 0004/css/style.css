@@ -138,6 +138,11 @@ li { list-style: none; }
   padding: 18px clamp(16px, 4vw, 40px) 4px;
 }
 
+/* 갤러리 위(서브타이틀 아래)에 놓이는 변형 — 위 여백은 .page__head 의 margin 이 담당한다 */
+.gallery__controls--top {
+  padding: 0 clamp(16px, 4vw, 40px) clamp(20px, 3vw, 30px);
+}
+
 .gallery__nav {
   display: grid;
   place-items: center;
@@ -731,6 +736,7 @@ li { list-style: none; }
 
   .gallery { padding-inline: 16px; }
   .gallery__controls { gap: 12px; padding-top: 16px; }
+  .gallery__controls--top { gap: 12px; padding-top: 0; padding-bottom: 20px; }
   .namecard:hover { transform: none; }
 }
 
