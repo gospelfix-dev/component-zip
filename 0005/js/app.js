@@ -6,7 +6,7 @@
   const FALLBACK = {
     section: {
       eyebrow: "Product Card",
-      title: "상품 썸네일 카드",
+      title: "상품 썸네일 UI 디자인",
       subtitle: "이미지·사이즈·가격을 하나의 카드로 보여주는 커머스 컴포넌트"
     },
     products: [
