@@ -4,15 +4,24 @@
 
 ## 파일명 규칙
 
-`data/products.json` 의 `images` 배열에 적힌 경로와 **정확히 같은 파일명**으로 넣습니다.
+`data/products.json` 의 `images` 배열(그리고 `js/app.js` 의 `FALLBACK.products[].images`)에
+적힌 경로와 **정확히 같은 파일명**으로 넣습니다. 하나라도 다르면 `<img onerror>` 가 자리표시자로
+조용히 대체해버려 사진이 안 보이는데, 에러가 뜨지 않아 원인을 찾기 어렵습니다.
+
+현재 등록된 상품 기준 실제 파일명(현재는 전부 `imgs/` 에 채워져 있음):
 
 ```
-imgs/light-hooded-tracksuit-1.jpg
-imgs/light-hooded-tracksuit-2.jpg
-imgs/light-hooded-tracksuit-3.jpg
-imgs/quilted-puffer-vest-1.jpg
-imgs/quilted-puffer-vest-2.jpg
+imgs/hooded-tracksuit-1.png       (상품 id: light-hooded-tracksuit)
+imgs/hooded-tracksuit-2.png
+imgs/hooded-tracksuit-3.png
+imgs/quilted-puffer-vest-1.png    (상품 id: quilted-puffer-vest)
+imgs/quilted-puffer-vest-2.png
+imgs/quilted-puffer-vest-3.png
 ```
+
+상품을 새로 추가할 때는 `id` 와 파일명을 반드시 일치시킬 필요는 없지만(파일명은 `images`
+배열에 적은 경로가 곧 진실이다), 위 목록처럼 상품별로 접두어를 통일해두면 폴더 안에서
+어떤 사진이 어떤 상품 것인지 구분하기 쉽습니다.
 
 ## 권장 사양
 
