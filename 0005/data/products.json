@@ -1,0 +1,37 @@
+{
+  "section": {
+    "eyebrow": "Product Card",
+    "title": "상품 썸네일 카드",
+    "subtitle": "이미지·사이즈·가격을 하나의 카드로 보여주는 커머스 컴포넌트"
+  },
+  "products": [
+    {
+      "id": "light-hooded-tracksuit",
+      "categoryIcon": "beanie",
+      "images": [
+        "./imgs/hooded-tracksuit-1.png",
+        "./imgs/hooded-tracksuit-2.png",
+        "./imgs/hooded-tracksuit-3.png"
+      ],
+      "badge": { "text": "-10%" },
+      "title": "WHERES RUDOLPH 6Panel Cap_washed red",
+      "brand": { "name": "WinterElegance", "initial": "W", "color": "#E8871E" },
+      "price": { "currency": "₩", "original": 49000, "discounted": 44100 },
+      "sizes": ["XS", "S", "M", "L", "XL"]
+    },
+    {
+      "id": "quilted-puffer-vest",
+      "categoryIcon": "hanger",
+      "images": [
+        "./imgs/quilted-puffer-vest-1.png",
+        "./imgs/quilted-puffer-vest-2.png",
+        "./imgs/quilted-puffer-vest-3.png"
+      ],
+      "badge": { "text": "-10%" },
+      "title": "WHERES RUDOLPH 6Panel Cap_navy",
+      "brand": { "name": "NordicPeak", "initial": "N", "color": "#2F6BD8" },
+      "price": { "currency": "₩", "original": 49000, "discounted": 44100 },
+      "sizes": ["S", "M", "L"]
+    }
+  ]
+}

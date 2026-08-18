@@ -1,0 +1,303 @@
+/* ---------- 1. 전역 토큰 ---------- */
+:root {
+  --page-bg: #eef0f0;
+  --page-ink: #16181d;
+  --page-ink-soft: #6b7178;
+
+  --card-w: 400px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+}
+
+/* ---------- 2. 리셋 ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--page-bg);
+  color: var(--page-ink);
+  -webkit-font-smoothing: antialiased;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+img { max-width: 100%; display: block; }
+ul { list-style: none; margin: 0; padding: 0; }
+svg { display: block; }
+
+/* ---------- 3. 페이지 레이아웃 ---------- */
+.page {
+  min-height: 100vh;
+  padding: 56px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.page__head { max-width: 560px; text-align: center; }
+.page__eyebrow {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--page-ink-soft);
+}
+.page__title { margin: 0 0 10px; font-size: clamp(24px, 3vw, 32px); font-weight: 800; }
+.page__subtitle { margin: 0; color: var(--page-ink-soft); font-size: 15px; line-height: 1.6; }
+
+/* ---------- 4. 갤러리 (여러 상품일 때 가로 스크롤) ---------- */
+.gallery { width: 100%; display: flex; justify-content: center; }
+.gallery__track {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  padding: 8px 24px 24px;
+  max-width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.gallery__track > .card { scroll-snap-align: center; flex: none; }
+
+/* ---------- 5. 카드 셸 ---------- */
+.card {
+  width: var(--card-w);
+  background: linear-gradient(180deg, #ffffff 0%, #f4f5f5 100%);
+  border-radius: 36px;
+  padding: 22px 22px 26px;
+  box-shadow: 0 30px 60px -25px rgba(20, 22, 28, 0.28), 0 2px 8px rgba(20, 22, 28, 0.04);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- 6. 아이콘 버튼 (원형) ---------- */
+.iconbtn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px -8px rgba(20, 22, 28, 0.35);
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.iconbtn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(20, 22, 28, 0.4); }
+.iconbtn:active { transform: translateY(0); }
+.iconbtn__icon { width: 20px; height: 20px; }
+.iconbtn--outline {
+  background: #fff;
+  border: 1.5px solid #e7e8ea;
+  box-shadow: none;
+}
+
+.card__wish[aria-pressed="true"] {
+  color: #e0483e;
+}
+.card__wish[aria-pressed="true"] .iconbtn__icon { fill: currentColor; }
+
+/* ---------- 7. 상단 바 ---------- */
+.card__topbar { display: flex; align-items: center; justify-content: space-between; }
+.card__topbar-end { display: flex; gap: 10px; }
+
+/* ---------- 8. 상품 이미지 스테이지 (Swiper 8.4.7, 벤더링) ---------- */
+.card__stage {
+  position: relative;
+  flex: 1 1 auto;
+  margin-top: 8px;
+  padding: 20px 8px 34px;
+  min-height: 300px;
+}
+.card__orbit {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 30%;
+  height: 42%;
+  border: 1.5px solid rgba(120, 124, 132, 0.28);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+.card__swiper { position: relative; width: 100%; height: 100%; }
+.card__slide { display: flex; align-items: center; justify-content: center; }
+.card__photo {
+  position: relative;
+  max-height: 320px;
+  width: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 24px rgba(20, 22, 28, 0.22));
+}
+.card__photo[data-fallback="true"] { display: none; }
+
+.card__photo-fallback {
+  display: none;
+  width: 100%;
+  height: 260px;
+  border-radius: 20px;
+  background: repeating-linear-gradient(45deg, #eceeee, #eceeee 10px, #e4e6e6 10px, #e4e6e6 20px);
+}
+.card__photo[data-fallback="true"] ~ .card__photo-fallback { display: block; }
+.card__photo-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 18px -10px rgba(20, 22, 28, 0.4);
+}
+.card__photo-btn:disabled { opacity: 0.35; cursor: default; }
+.card__photo-btn { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.card__photo-btn:hover { background: #f0f1f1; }
+.card__photo-icon { width: 15px; height: 15px; }
+.card__photo-nav[data-single="true"] { display: none; }
+
+/* ---------- 9. 배지 / 카테고리 ---------- */
+.card__meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #17181c;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+.card__category-icon { width: 24px; height: 24px; color: #b9bcc1; }
+
+/* ---------- 10. 제목 / 브랜드 / 가격 ---------- */
+.card__info-row {
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card__title { margin: 0 0 10px; min-height: 90px; font-size: 24px; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
+.card__brand { margin: 0; display: flex; align-items: center; gap: 8px; }
+.card__brand-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+}
+.card__brand-name { font-size: 14px; color: var(--page-ink-soft); font-weight: 500; }
+
+.card__price { text-align: right; flex: none; }
+.card__price-original {
+  display: block;
+  font-size: 14px;
+  color: #9a9ea5;
+  text-decoration: line-through;
+  margin-bottom: 4px;
+}
+.card__price-discounted { display: block; font-size: 22px; font-weight: 800; white-space: nowrap; }
+
+/* ---------- 11. 하단 액션 ---------- */
+.card__actions { margin-top: 20px; display: flex; align-items: center; gap: 10px; position: relative; }
+
+.pillbtn {
+  height: 56px;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 6px 16px -8px rgba(20, 22, 28, 0.3);
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.pillbtn:hover { transform: translateY(-1px); }
+.pillbtn__icon { width: 16px; height: 16px; }
+
+.card__size { flex: 1 1 0; justify-content: space-between; }
+.card__size[aria-expanded="true"] .pillbtn__icon { transform: rotate(180deg); }
+
+.card__add { flex: 1.35 1 0; }
+.card__add[data-added="true"] { background: #e8f6ee; color: #1c7c4c; }
+
+/* ---------- 12. 사이즈 드롭다운 ---------- */
+.sizemenu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  width: 220px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 8px;
+  box-shadow: 0 20px 40px -18px rgba(20, 22, 28, 0.4);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.sizemenu[hidden] { display: none; }
+.sizemenu__option {
+  padding: 10px 0;
+  text-align: center;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--page-ink);
+  cursor: pointer;
+}
+.sizemenu__option:hover { background: #f2f3f3; }
+.sizemenu__option[aria-selected="true"] { background: #17181c; color: #fff; }
+
+/* ---------- 13. 토스트 ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  background: #17181c;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+  z-index: 20;
+}
+.toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- 14. 반응형 ---------- */
+@media (max-width: 480px) {
+  :root { --card-w: min(400px, 88vw); }
+  .page { padding: 32px 12px 56px; }
+  .card__actions { flex-wrap: wrap; }
+  .card__size, .card__add { flex: 1 1 100%; }
+  .card__view3d { order: 3; margin-left: auto; }
+}
+
+/* ---------- 15. 모션 축소 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .iconbtn, .pillbtn, .toast { transition: none; }
+}
