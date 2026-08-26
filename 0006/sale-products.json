@@ -1,0 +1,152 @@
+{
+  "featured": [
+    {
+      "category": "cap",
+      "name": "Rudolph S Logo Cap",
+      "color": "navy",
+      "url": "/product/detail.html?product_no=16",
+      "image": "/SkinImg/imgs/sale/rudolph-S-Logo-Cap_navy.png",
+      "priceOrigin": "49,000",
+      "priceSale": "39,200",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    },
+    {
+      "category": "tote",
+      "name": "Holiday Cat Big Tote",
+      "color": "turquoise",
+      "url": "/product/detail.html?product_no=64",
+      "image": "/SkinImg/imgs/sale/holiday-cat-big-tote-hero.png",
+      "priceOrigin": "26,000",
+      "priceSale": "20,800",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    }
+  ],
+  "related": [
+    {
+      "category": "cap",
+      "name": "Rudolph S Logo Cap",
+      "color": "red",
+      "url": "/product/detail.html?product_no=17",
+      "image": "/SkinImg/imgs/sale/rudolph-S-Logo-Cap_red.png",
+      "priceOrigin": "49,000",
+      "priceSale": "39,200",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    },
+    {
+      "category": "cap",
+      "name": "Rudolph S Logo Cap",
+      "color": "beige",
+      "url": "/product/detail.html?product_no=15",
+      "image": "/SkinImg/imgs/sale/rudolph-S-Logo-Cap_beige.png",
+      "priceOrigin": "49,000",
+      "priceSale": "39,200",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    },
+    {
+      "category": "tote",
+      "name": "Holiday Cat Big Tote",
+      "color": "black",
+      "url": "/product/detail.html?product_no=63",
+      "image": "/SkinImg/imgs/sale/holiday-cat-big-tote-hero-black.png",
+      "priceOrigin": "26,000",
+      "priceSale": "20,800",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    },
+    {
+      "category": "tote",
+      "name": "Holiday Cat Big Tote",
+      "color": "beige",
+      "url": "/product/detail.html?product_no=61",
+      "image": "/SkinImg/imgs/sale/holiday-cat-big-tote-hero-beige.png",
+      "priceOrigin": "26,000",
+      "priceSale": "20,800",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    }
+  ],
+  "relatedNew": [
+    {
+      "category": "cap",
+      "name": "DTS cap",
+      "color": "black",
+      "url": "/product/detail.html?product_no=11",
+      "image": "/SkinImg/imgs/sale/ball-cap-black_v1.png",
+      "priceOrigin": "49,000",
+      "priceSale": "39,200",
+      "tags": [
+        { "text": "-20%", "type": "" }
+      ]
+    },
+    {
+      "category": "tote",
+      "name": "Wreath Bag",
+      "color": "purple",
+      "url": "/product/detail.html?product_no=20",
+      "image": "/SkinImg/imgs/sale/floral-tote-purple_v1.png",
+      "priceOrigin": "38,000",
+      "priceSale": "36,100",
+      "tags": [
+        { "text": "-5%", "type": "" }
+      ]
+    },
+    {
+      "category": "bag",
+      "name": "Santa Gift Bundle (Handmade)",
+      "color": "yellow",
+      "url": "/product/detail.html?product_no=52",
+      "image": "/SkinImg/imgs/sale/crochet-bucket-bag-yellow_v1.png",
+      "priceOrigin": "32,000",
+      "priceSale": "30,400",
+      "tags": [
+        { "text": "-5%", "type": "" }
+      ]
+    },
+    {
+      "category": "bag",
+      "name": "Reindeer Shoe Cover",
+      "color": "yellow",
+      "url": "/product/detail.html?product_no=25",
+      "image": "/SkinImg/imgs/sale/drawstring-bag-yellow_v1.png",
+      "priceOrigin": "22,000",
+      "priceSale": "20,900",
+      "tags": [
+        { "text": "-5%", "type": "" }
+      ]
+    },
+    {
+      "category": "pouch",
+      "name": "Secret Ornament Pouch",
+      "color": "multi",
+      "url": "/product/detail.html?product_no=23",
+      "image": "/SkinImg/imgs/sale/pouch-set_v1.png",
+      "priceOrigin": "28,000",
+      "priceSale": "26,600",
+      "tags": [
+        { "text": "-5%", "type": "" }
+      ]
+    },
+    {
+      "category": "mat",
+      "name": "The Wreath Ground",
+      "color": "red",
+      "url": "/product/detail.html?product_no=34",
+      "image": "/SkinImg/imgs/sale/roll-mat-red_v1.png",
+      "priceOrigin": "64,000",
+      "priceSale": "60,800",
+      "tags": [
+        { "text": "-5%", "type": "" }
+      ]
+    }
+  ]
+}

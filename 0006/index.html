@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloom Edit — Dear Tint Santa 기획전</title>
+
+  <!-- CSS 연동 (로컬/서버 공통 상대경로) -->
+  <link rel="stylesheet" href="sale_model.css">
+
+  <!-- jQuery (원본 layout이 제공하던 것을 CDN으로 대체) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    /* 로컬 프리뷰용 기본 배경 */
+    body { margin: 0; background: #EFEDE8; }
+    /* 이미지가 없을 때(로컬) 깨진 아이콘 대신 자리표시자 표시 */
+    img.sm-img-missing {
+      background: repeating-linear-gradient(45deg, #E7E2DA, #E7E2DA 10px, #DED8CE 10px, #DED8CE 20px);
+      position: relative;
+      min-height: 120px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sm-page">
+
+  <!-- 모델 이미지 + 닷 + 툴팁 -->
+  <div class="sm-shoppable__image">
+    <img
+      class="sm-shoppable__img"
+      src="imgs/model.jpg"
+      alt="Bloom Edit — Dear Tint Santa 기획전 모델컷"
+    >
+
+    <button class="sm-dot" data-category="tote" aria-label="TOTE 상품 보기"
+      style="left: 68%; top: 65%;" type="button">
+      <span class="sm-dot__pulse"></span>
+      <span class="sm-dot__core"></span>
+    </button>
+
+    <button class="sm-dot" data-category="cap" aria-label="CAP 상품 보기"
+      style="left: 46%; top: 22%;" type="button">
+      <span class="sm-dot__pulse"></span>
+      <span class="sm-dot__core"></span>
+    </button>
+
+    <!-- 툴팁 카드 - tote -->
+    <div class="sm-tooltip" data-tooltip="tote">
+      <div class="sm-tooltip__img-wrap">
+        <img src="" alt="">
+      </div>
+      <div class="sm-tooltip__info">
+        <p class="sm-tooltip__name"></p>
+        <p class="sm-tooltip__color"></p>
+        <div class="sm-tooltip__prices">
+          <span class="sm-tooltip__origin"></span>
+          <span class="sm-tooltip__sale"></span>
+        </div>
+        <a class="sm-tooltip__cta" href="#">상품 바로가기</a>
+      </div>
+    </div>
+
+    <!-- 툴팁 카드 - cap -->
+    <div class="sm-tooltip" data-tooltip="cap">
+      <div class="sm-tooltip__img-wrap">
+        <img src="" alt="">
+      </div>
+      <div class="sm-tooltip__info">
+        <p class="sm-tooltip__name"></p>
+        <p class="sm-tooltip__color"></p>
+        <div class="sm-tooltip__prices">
+          <span class="sm-tooltip__origin"></span>
+          <span class="sm-tooltip__sale"></span>
+        </div>
+        <a class="sm-tooltip__cta" href="#">상품 바로가기</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 에디토리얼 텍스트 -->
+  <section class="sm-editorial">
+    <div class="sm-editorial__header">
+      <p class="sm-editorial__label">DEAR TINT SANTA 2026</p>
+      <h2 class="sm-editorial__title">SUMMER<br>VACATION</h2>
+      <p class="sm-editorial__lead">올여름, 떠날 준비는 되셨나요?</p>
+    </div>
+    <div class="sm-editorial__body">
+      <p>강한 햇빛 아래에서는<br>루돌프가 숨어있는 S 로고 캡이 가볍게 그늘을 만들어주고,<br>짐이 많아지는 여행길에는<br>청량한 컬러의 고양이 홀리데이 컬렉션 에코백이 함께합니다.</p>
+      <p class="sm-editorial__sub">바다를 향하는 주말 여행,<br>계획해 둔 여름휴가,<br>아무 계획 없이 떠나는 하루까지.</p>
+      <p>가볍게 챙기기 좋고,<br>어디서든 자연스럽게 어울리는<br>디어틴트산타의 바캉스 아이템을 모았습니다.</p>
+      <p>여행의 순간은 짧지만,<br>그날의 사진과 기억은 오래 남습니다.</p>
+    </div>
+    <p class="sm-editorial__cta-text">이번 여름, 당신의 여행에 함께할 아이템을 만나보세요.</p>
+  </section>
+
+  <!-- 대표 상품 -->
+  <section class="sm-featured">
+    <h2 class="sm-featured__title">대표 상품</h2>
+    <ul class="sm-featured__grid" id="sm-featured-grid"></ul>
+  </section>
+
+  <!-- 모델컷 슬라이더 -->
+  <section class="sm-modelshots">
+    <div class="sm-modelshots__track">
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v4.jpg" alt="모델컷 5">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v1.jpg" alt="모델컷 2">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v2.jpg" alt="모델컷 3">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v3.jpg" alt="모델컷 4">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v5.jpg" alt="모델컷 6">
+      </div>
+
+       <!-- 관련 상품 -->
+      <div class="sm-related">
+        <ul class="sm-related__grid" id="sm-related-grid"></ul>
+      </div>
+
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v6.jpg" alt="모델컷 7">
+
+        <button class="sm-dot" data-category="tote" aria-label="TOTE 상품 보기"
+          style="left: 68%; top: 65%;" type="button">
+          <span class="sm-dot__pulse"></span>
+          <span class="sm-dot__core"></span>
+        </button>
+
+        <button class="sm-dot" data-category="cap" aria-label="CAP 상품 보기"
+          style="left: 60%; top: 14%;" type="button">
+          <span class="sm-dot__pulse"></span>
+          <span class="sm-dot__core"></span>
+        </button>
+
+        <!-- 툴팁 카드 - tote -->
+        <div class="sm-tooltip" data-tooltip="tote">
+          <div class="sm-tooltip__img-wrap">
+            <img src="" alt="">
+          </div>
+          <div class="sm-tooltip__info">
+            <p class="sm-tooltip__name"></p>
+            <p class="sm-tooltip__color"></p>
+            <div class="sm-tooltip__prices">
+              <span class="sm-tooltip__origin"></span>
+              <span class="sm-tooltip__sale"></span>
+            </div>
+            <a class="sm-tooltip__cta" href="#">상품 바로가기</a>
+          </div>
+        </div>
+
+        <!-- 툴팁 카드 - cap -->
+        <div class="sm-tooltip" data-tooltip="cap">
+          <div class="sm-tooltip__img-wrap">
+            <img src="" alt="">
+          </div>
+          <div class="sm-tooltip__info">
+            <p class="sm-tooltip__name"></p>
+            <p class="sm-tooltip__color"></p>
+            <div class="sm-tooltip__prices">
+              <span class="sm-tooltip__origin"></span>
+              <span class="sm-tooltip__sale"></span>
+            </div>
+            <a class="sm-tooltip__cta" href="#">상품 바로가기</a>
+          </div>
+        </div>
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v7.jpg" alt="모델컷 8">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v8.jpg" alt="모델컷 9">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v9.jpg" alt="모델컷 10">
+      </div>
+      <!-- 대표 상품 (인라인) -->
+      <section class="sm-featured">
+        <h2 class="sm-featured__title">대표 상품</h2>
+        <ul class="sm-featured__grid" id="sm-featured-grid-2"></ul>
+      </section>
+
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v10.jpg" alt="모델컷 11">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v11.jpg" alt="모델컷 12">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v12.jpg" alt="모델컷 13">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v13.jpg" alt="모델컷 14">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v14.jpg" alt="모델컷 15">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v15.jpg" alt="모델컷 16">
+      </div>
+      <div class="sm-modelshots__item">
+        <img src="imgs/model_v16.jpg" alt="모델컷 17">
+      </div>
+    </div>
+  </section>
+
+  <!-- 관련 상품 (신규) -->
+  <section class="sm-related">
+    <ul class="sm-related__grid" id="sm-related-grid-2"></ul>
+  </section>
+
+  <!-- 마키 배너 -->
+  <div class="sm-marquee" aria-hidden="true">
+    <div class="sm-marquee__track">
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+      <span>TINT SANTA SUMMER VACATION</span><span>✿</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 모델 영상 (왼쪽 하단 고정 플로팅) -->
+<section class="sm-video">
+  <button class="sm-video__close" type="button" aria-label="닫기">✕</button>
+  <video class="sm-video__player" autoplay muted loop playsinline>
+    <source src="https://gospelfix.github.io/profile/video/modelVideo.mp4" type="video/mp4">
+  </video>
+</section>
+
+<script>
+(function ($) {
+  let featuredProducts = [];
+
+  // 카페24 절대경로(/SkinImg/imgs/sale/)를 로컬 imgs/ 경로로 변환
+  const fixImg = (src) => (src || '').replace('/SkinImg/imgs/sale/', 'imgs/');
+
+  const buildCard = (p, prefix) => {
+    const tagsHtml = (p.tags || []).map(t => `
+      <span class="${prefix}__tag${t.type ? ` ${prefix}__tag--${t.type}` : ''}">${t.text}</span>
+    `).join('');
+
+    return `
+      <li class="${prefix}">
+        <a class="${prefix}__link" href="${p.url}">
+          <div class="${prefix}__img-wrap">
+            <img src="${fixImg(p.image)}" alt="${p.name}">
+            ${tagsHtml ? `<div class="${prefix}__tags">${tagsHtml}</div>` : ''}
+          </div>
+          <div class="${prefix}__info">
+            <span class="${prefix}__category">${p.category.toUpperCase()}</span>
+            <div class="${prefix}__title-row">
+              <p class="${prefix}__name">${p.name}</p>
+              <p class="${prefix}__color">${p.color}</p>
+            </div>
+            <div class="${prefix}__prices">
+              <span class="${prefix}__origin">${p.priceOrigin}원</span>
+              <span class="${prefix}__sale">${p.priceSale}원</span>
+            </div>
+          </div>
+        </a>
+      </li>`;
+  };
+
+  const renderProducts = (products, gridId, prefix) => {
+    const $grid = $(`#${gridId}`);
+    $grid.empty();
+    products.forEach(p => $grid.append(buildCard(p, prefix)));
+  };
+
+  const populateTooltip = ($tooltip, p) => {
+    $tooltip.find('.sm-tooltip__img-wrap img').attr({ src: fixImg(p.image), alt: p.name });
+    $tooltip.find('.sm-tooltip__name').text(p.name);
+    $tooltip.find('.sm-tooltip__color').text(p.color);
+    $tooltip.find('.sm-tooltip__origin').text(`${p.priceOrigin}원`);
+    $tooltip.find('.sm-tooltip__sale').text(`${p.priceSale}원`);
+    $tooltip.find('.sm-tooltip__cta').attr('href', p.url);
+  };
+
+  const positionTooltip = ($dot, $tooltip) => {
+    const $img  = $dot.closest('.sm-shoppable__image, .sm-modelshots__item');
+    const iW    = $img.outerWidth();
+    const iH    = $img.outerHeight();
+    const dotL  = parseFloat($dot[0].style.left) / 100 * iW;
+    const dotT  = parseFloat($dot[0].style.top)  / 100 * iH;
+    const tW    = $tooltip.outerWidth();
+    const tH    = $tooltip.outerHeight();
+    const gap   = 14;
+
+    let left = dotL - tW / 2;
+    let top  = dotT + gap;
+
+    if (top + tH > iH - 8) top = dotT - tH - gap;
+    left = Math.max(8, Math.min(left, iW - tW - 8));
+
+    $tooltip.css({ left: `${left}px`, top: `${top}px` });
+  };
+
+  const showDotTooltip = ($dot) => {
+    const cat      = $dot.data('category');
+    const matched  = featuredProducts.filter(p => p.category === cat);
+    if (!matched.length) return;
+
+    const $container = $dot.closest('.sm-shoppable__image, .sm-modelshots__item');
+    const $tooltip   = $container.find(`.sm-tooltip[data-tooltip="${cat}"]`);
+    populateTooltip($tooltip, matched[0]);
+    $dot.addClass('is-active');
+    $tooltip.show();
+    positionTooltip($dot, $tooltip);
+  };
+
+  const hideDotTooltip = ($dot) => {
+    const cat        = $dot.data('category');
+    const $container = $dot.closest('.sm-shoppable__image, .sm-modelshots__item');
+    const $tooltip   = $container.find(`.sm-tooltip[data-tooltip="${cat}"]`);
+    $dot.removeClass('is-active');
+    $tooltip.addClass('sm-tooltip--hiding');
+    setTimeout(() => {
+      $tooltip.hide().removeClass('sm-tooltip--hiding');
+    }, 350);
+  };
+
+  // 로컬/서버에 이미지 파일이 없을 때 깨진 아이콘 대신 자리표시자 처리
+  const markMissingImages = () => {
+    document.querySelectorAll('.sm-page img, .sm-tooltip__img-wrap img').forEach(img => {
+      img.addEventListener('error', () => img.classList.add('sm-img-missing'));
+    });
+  };
+
+  $(document).ready(() => {
+
+    // JSON 연동 (로컬/서버 공통 상대경로)
+    $.getJSON('sale-products.json', (data) => {
+      featuredProducts = data.featured || [];
+      renderProducts(featuredProducts,      'sm-featured-grid',   'sm-featured-card');
+      renderProducts(featuredProducts,      'sm-featured-grid-2', 'sm-featured-card');
+      renderProducts(data.related || [],    'sm-related-grid',    'sm-related-card');
+      renderProducts(data.relatedNew || [], 'sm-related-grid-2',  'sm-related-card');
+
+      markMissingImages();
+
+      // 닷이 있는 컨테이너별로 뷰포트 진입 시 툴팁 표시 → 자동 숨김
+      document.querySelectorAll('.sm-shoppable__image, .sm-modelshots__item').forEach(container => {
+        const $container = $(container);
+        if (!$container.find('.sm-dot').length) return;
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            $container.find('.sm-dot').each(function () { showDotTooltip($(this)); });
+            setTimeout(() => {
+              $container.find('.sm-dot').each(function () { hideDotTooltip($(this)); });
+            }, 1400);
+          });
+        }, { threshold: 0.4 });
+
+        observer.observe(container);
+      });
+    }).fail((jqxhr, textStatus, error) => {
+      console.error('sale-products.json 로드 실패:', textStatus, error);
+    });
+
+    $(document).on('click', '.sm-dot', function (e) {
+      e.stopPropagation();
+      const $dot = $(this);
+      if ($dot.hasClass('is-active')) {
+        hideDotTooltip($dot);
+      } else {
+        showDotTooltip($dot);
+      }
+    });
+
+    $(document).on('click', (e) => {
+      if (!$(e.target).closest('.sm-dot, .sm-tooltip').length) {
+        $('.sm-dot').each(function () { hideDotTooltip($(this)); });
+      }
+    });
+
+    $('.sm-video__close').on('click', () => {
+      $('.sm-video').hide();
+    });
+
+  });
+}(jQuery));
+</script>
+
+</body>
+</html>
