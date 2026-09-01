@@ -1,0 +1,28 @@
+---
+name: gopumgyeok-open-issues
+description: "고품격대패 랜딩의 미해결 항목과 다음 단계 — 창업비용 금액 미확보, 시안 컨펌 대기, Next.js+Supabase 마이그레이션"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 64490a38-09ba-439e-83a5-66505594f155
+  modified: 2026-09-01T07:20:29.855Z
+---
+
+2026-09-01 CLI 인계 시점 기준 [[gopumgyeok-landing-project]]의 미해결 상태.
+
+**블로커 / 확인 필요**
+1. **창업비용 실제 금액 없음** — 카탈로그에 가맹비·교육비 등 구체 금액이 없어 04 섹션이 전부 "상담 시 안내"로만 채워져 있다. 이제 `data/content.json`의 `cost.rows[].price`만 고치면 반영된다.
+2. **Pretendard가 아직도 로드되지 않는다** — `index.html`의 `<link>`가 여전히 `fonts.googleapis.com/css2?family=Pretendard…`이고 이 URL은 **HTTP 400**이다. 지금 화면은 `-apple-system` 폴백. 고치는 법은 [[gopumgyeok-design-system]]에 적어뒀지만 **2026-09-01 기준 아직 적용하지 않았다**(사용자가 다른 작업을 우선함).
+3. **지점별 네이버 지도 링크가 검색 딥링크다** — 각 지점의 플레이스 ID를 확인할 방법이 없어 `map.naver.com/p/search/고품격대패 왕십리` 형태로 걸었다. 정확한 `map.naver.com/p/entry/place/{id}` URL을 받으면 `data/content.json`의 `stores[].mapUrl`만 교체하면 된다.
+4. **03 수익분석 아래 웨이브의 fill 색이 아래 섹션과 다르다** — SVG `fill="#18140F"`인데 `.cost` 배경은 `#0E0C0A`라 얇은 띠가 보인다. 원래 있던 문제이고 한 글자만 고치면 되지만, 색은 디자인 판단이라 사용자 확인 대기 중.
+5. **`file://` 더블클릭으로는 이제 콘텐츠가 안 뜬다** — `data/content.json`을 `fetch`하므로 로컬 서버가 필요하다(화면에 안내 문구가 뜬다). GitHub Pages 배포에는 영향 없음.
+6. **최종 시안 미확정** — 시안A(다크 프리미엄) / 시안A_v2(=0007, 최신) / 시안B(라이트 에디토리얼) 중 클라이언트 컨펌 대기.
+7. **문의폼 완전 목업** — 제출해도 버튼 텍스트만 바뀌고 전송 없음.
+8. **이미지 저해상도** — 전부 카탈로그 PDF 크롭이라 프로덕션에선 클라이언트 고해상도 원본으로 교체하는 게 좋다([[gopumgyeok-brand-data]]).
+
+**계약 범위 / 다음 단계** (디자인 맞춤제작 + 반응형 + 5섹션 + 자체 DB 수집 + 관리자모드 + 도메인 + 호스팅)
+- 확정 시안을 **Next.js + Supabase** 구조로 마이그레이션: 정적 HTML → React 컴포넌트 분해, `data/content.json` → Supabase 테이블/CMS (JSON 구조가 그대로 시드 데이터가 된다), 문의폼 → 실제 insert 연동(RLS: anon insert 허용, admin만 select/update, `@supabase/ssr` 기반).
+- 관리자모드: 로그인 + 문의내역 조회/CSV 다운로드 + 콘텐츠 CMS.
+- 도메인 연결 및 호스팅 배포.
+
+**기존 산출물**: 구축 기획서 v1→v2(docx/pdf/md), 유사 프랜차이즈 랜딩 11곳 벤치마킹 리스트, 시안A, 시안B, 시안A_v2(=0007). 원문 인계문서는 `0007/README.md`.
