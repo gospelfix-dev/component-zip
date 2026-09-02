@@ -136,6 +136,31 @@ const initReceiptReveal = () => {
   cols.forEach((col) => observer.observe(col));
 };
 
+/**
+ * 01 경쟁력 섹션의 카드/트러스트 항목을 스크롤로 처음 들어올 때 한 번만 떠오르게 한다
+ * (수익분석 영수증과 달리 반복 재생할 필요는 없어 한 번 보이면 관찰을 끊는다).
+ */
+const initGridReveal = () => {
+  const targets = [
+    ...document.querySelectorAll('#compGrid .comp-card'),
+    ...document.querySelectorAll('#trustStrip .trust-item'),
+  ];
+  if (!targets.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        obs.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  targets.forEach((el) => observer.observe(el));
+};
+
 /** 네비게이션 스크롤 이동 */
 const initSmoothScroll = () => {
   const links = document.querySelectorAll('[data-target]');
@@ -218,7 +243,7 @@ const showDataError = (err) => {
 
   console.error('[고품격대패]', msg, err);
   document.querySelectorAll('[data-content]').forEach((el) => {
-    el.innerHTML = `<p style="color:#B3A995; font-size:14px; line-height:1.8;">${msg}</p>`;
+    el.innerHTML = `<p style="color:#B3A995; font-size:18px; line-height:1.8;">${msg}</p>`;
   });
 };
 
@@ -251,6 +276,7 @@ const boot = async () => {
 
   // 카드가 DOM 에 올라온 뒤에 관찰을 시작해야 한다
   initReceiptReveal();
+  initGridReveal();
 };
 
 document.addEventListener('DOMContentLoaded', boot);

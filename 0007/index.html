@@ -7,12 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/animations.css">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
 <header class="nav" id="siteNav">
-  <div class="nav-logo"><img src="assets/logo_gold.jpg" alt="고품격대패"> 고품격대패</div>
+  <div class="nav-logo"><img src="assets/imgs/logo_gold.png" alt="고품격대패"> 고품격대패</div>
   <nav class="nav-links" id="navLinks">
     <a href="#competitiveness" data-target="competitiveness">경쟁력</a>
     <a href="#menu" data-target="menu">메뉴</a>
@@ -58,8 +59,6 @@
     <div class="trust-strip" id="trustStrip" data-content><!-- data/content.json → trust --></div>
   </div>
 </section>
-
-<div class="wave wave--from-card"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 Q150,0 300,30 T600,30 T900,30 T1200,30 V60 H0 Z" fill="#0E0C0A"/></svg></div>
 
 <!-- 02. 메뉴 -->
 <section class="menu" id="menu">
@@ -148,7 +147,7 @@
 
 <footer>
   <div class="wrap footer-grid">
-    <div class="footer-logo"><img src="assets/logo_gold.jpg" alt="logo"> <span>고품격대패</span></div>
+    <div class="footer-logo"><img src="assets/imgs/logo_gold.png" alt="logo"> <span>고품격대패</span></div>
     <div class="meta">고품격 대패삼겹살 전문점 · 창업문의 1877-1960<br>© GOPUMGYEOK DAEPAE. All rights reserved.</div>
     <div class="socials"><a href="#">Instagram</a><a href="#">창업안내</a></div>
   </div>
@@ -156,6 +155,6 @@
 
 <!-- type="module" 은 file:// 에서 스크립트 자체가 CORS 로 차단돼 안내조차 뜨지 않는다.
      script.js 에 import/export 가 없으므로 defer 로 충분하다(실행 시점은 동일). -->
-<script src="script.js" defer></script>
+<script src="assets/js/script.js" defer></script>
 </body>
 </html>

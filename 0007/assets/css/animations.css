@@ -1,0 +1,10 @@
+/* 재사용 키프레임 모음 — 특정 컴포넌트에 종속되지 않는 애니메이션만 여기 둔다.
+   컴포넌트 전용 애니메이션(예: hero-wordmark 의 wordmarkShine)은 style.css 해당 블록 옆에 그대로 둘 것. */
+
+/* 큰 배율로 나타났다가 빠르게 제자리 크기로 줄어드는 임팩트용 인트로.
+   사용법: animation: wordmarkIntro .85s cubic-bezier(0.16,1,0.3,1) both; */
+@keyframes wordmarkIntro{
+  0%{ transform:scale(4.4); opacity:0; }
+  55%{ opacity:1; }
+  100%{ transform:scale(1); opacity:1; }
+}

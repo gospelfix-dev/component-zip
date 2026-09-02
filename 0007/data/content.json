@@ -33,26 +33,26 @@
   ],
 
   "meat": [
-    { "image": "assets/meat_modum.jpg",         "name": "모듬 한판" },
-    { "image": "assets/meat_dwaeji.jpg",        "name": "돼지 한판" },
-    { "image": "assets/meat_ori_dwaeji.jpg",    "name": "오리&돼지 한판" },
-    { "image": "assets/meat_samgyeop.jpg",      "name": "삼겹 대패" },
-    { "image": "assets/meat_byeol.jpg",         "name": "뻘항정 대패" },
-    { "image": "assets/meat_kkot_samgyeop.jpg", "name": "꽃삼겹 대패" },
-    { "image": "assets/meat_kkot_moksal.jpg",   "name": "꽃목살 대패" },
-    { "image": "assets/meat_kkot_deungsim.jpg", "name": "++꽃등심 대패" },
-    { "image": "assets/meat_ori.jpg",           "name": "오리 대패" }
+    { "image": "assets/imgs/meat_modum.jpg",         "name": "모듬 한판" },
+    { "image": "assets/imgs/meat_dwaeji.jpg",        "name": "돼지 한판" },
+    { "image": "assets/imgs/meat_ori_dwaeji.jpg",    "name": "오리&돼지 한판" },
+    { "image": "assets/imgs/meat_samgyeop.jpg",      "name": "삼겹 대패" },
+    { "image": "assets/imgs/meat_byeol.jpg",         "name": "뻘항정 대패" },
+    { "image": "assets/imgs/meat_kkot_samgyeop.jpg", "name": "꽃삼겹 대패" },
+    { "image": "assets/imgs/meat_kkot_moksal.jpg",   "name": "꽃목살 대패" },
+    { "image": "assets/imgs/meat_kkot_deungsim.jpg", "name": "++꽃등심 대패" },
+    { "image": "assets/imgs/meat_ori.jpg",           "name": "오리 대패" }
   ],
 
   "selfbar": [
-    { "image": "assets/sb_albaechu.jpg",  "name": "알배추" },
-    { "image": "assets/sb_sangchu.jpg",   "name": "상추" },
-    { "image": "assets/sb_romaine.jpg",   "name": "로메인" },
-    { "image": "assets/sb_kkaennip.jpg",  "name": "깻잎" },
-    { "image": "assets/sb_kale.jpg",      "name": "케일" },
-    { "image": "assets/sb_goguma.jpg",    "name": "고구마" },
-    { "image": "assets/sb_yeongeun.jpg",  "name": "연근" },
-    { "image": "assets/sb_kongnamul.jpg", "name": "콩나물" }
+    { "image": "assets/imgs/sb_albaechu.jpg",  "name": "알배추" },
+    { "image": "assets/imgs/sb_sangchu.jpg",   "name": "상추" },
+    { "image": "assets/imgs/sb_romaine.jpg",   "name": "로메인" },
+    { "image": "assets/imgs/sb_kkaennip.jpg",  "name": "깻잎" },
+    { "image": "assets/imgs/sb_kale.jpg",      "name": "케일" },
+    { "image": "assets/imgs/sb_goguma.jpg",    "name": "고구마" },
+    { "image": "assets/imgs/sb_yeongeun.jpg",  "name": "연근" },
+    { "image": "assets/imgs/sb_kongnamul.jpg", "name": "콩나물" }
   ],
 
   "profit": [
@@ -77,19 +77,19 @@
     {
       "name": "왕십리 본점",
       "date": "2024. 11. 27 OPEN",
-      "image": "assets/store1.jpg",
+      "image": "assets/imgs/store1.jpg",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 왕십리"
     },
     {
       "name": "천호 직영점",
       "date": "2025. 03. 04 OPEN",
-      "image": "assets/store2.jpg",
+      "image": "assets/imgs/store2.jpg",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 천호"
     },
     {
       "name": "시흥 은계점",
       "date": "2026. 01. 28 OPEN",
-      "image": "assets/store3.jpg",
+      "image": "assets/imgs/store3.jpg",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 시흥 은계"
     }
   ]

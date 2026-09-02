@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # 고품격대패 — 프랜차이즈 창업 랜딩페이지 (시안A_v2)
 
-빌드 도구 없이 동작하는 단일 페이지 랜딩. HTML5/CSS3/JS(ES6) 세 파일 + `assets/` 이미지가 전부다.
+빌드 도구 없이 동작하는 단일 페이지 랜딩. `index.html` + `assets/css`(스타일) + `assets/js`(스크립트)
++ `assets/imgs`(이미지) + `data/content.json`(콘텐츠)이 전부다. **2026-09-02 에 `style.css`/
+`animations.css`/`script.js`가 프로젝트 루트에서 `assets/css`·`assets/js` 로, 이미지가
+`assets/*.jpg` 평면 구조에서 `assets/imgs/` 로 이동했다** — 오래된 문서나 커밋 메시지에서
+루트의 `style.css`, `script.js`, `assets/파일명.jpg` 를 보게 되면 실제 위치가 아니라 이동 전
+기록임을 감안할 것.
 
 **형제 폴더와 성격이 다르다.** `0001`~`0006`은 재사용 가능한 컴포넌트 데모지만, 이 폴더는
 **실제 클라이언트(고품격대패)에게 제출할 랜딩 시안**이다. 구조를 임의로 재작성하지 않는다.
@@ -15,6 +20,9 @@ GitHub Pages 로 배포된다(`.github/workflows/static.yml`) — 빌드 단계 
 
 작업 전 **`README.md` 를 먼저 읽는다.** 이 시안은 claude.ai 웹 대화에서 만들어져
 CLI 로 인계된 것이라, 확정된 결정과 이미 제거된 요소가 그 문서에 정리되어 있다.
+색상 토큰·타이포그래피 크기 표·컴포넌트별 규칙 같은 디자인 세부 값은 **`docs/design.md`** 가
+정본이다 — 이 파일(CLAUDE.md)은 "왜 이렇게 짜여 있는지"를, `docs/design.md` 는 "정확히 몇 px/
+몇 hex 인지"를 다룬다.
 
 ---
 
@@ -36,7 +44,7 @@ python3 -c "import json;json.load(open('data/content.json'));print('ok')"
   --screenshot=/tmp/shot.png "http://localhost:8765/index.html"
 
 # 에셋 참조 정합성 (참조하는데 없는 파일 찾기)
-grep -oE 'assets/[A-Za-z0-9_./-]+' index.html style.css script.js | sort -u | \
+grep -oE 'assets/[A-Za-z0-9_./-]+' index.html assets/css/*.css assets/js/*.js data/content.json | sort -u | \
   while read f; do [ -f "$f" ] || echo "MISSING: $f"; done
 ```
 
@@ -53,7 +61,7 @@ CSS 를 만졌으면 반드시 실제로 렌더해서 확인한다.
 경쟁력 카드·트러스트 스트립·고기 9종·셀프바·수익 3개 매장·창업비용표·매장 카드·연락처가
 전부 이 JSON 에 있다. **문구나 이미지를 바꿀 일이 생기면 거의 항상 JSON 만 고치면 된다.**
 
-`index.html` 에는 각 자리에 빈 컨테이너(`data-content` 속성 + id)만 있고, `script.js` 가
+`index.html` 에는 각 자리에 빈 컨테이너(`data-content` 속성 + id)만 있고, `assets/js/script.js` 가
 `fetch` 로 읽어 채운다. `0003`~`0005` 처럼 JS 안에 `FALLBACK` 사본을 두지 **않았다** —
 사본을 두면 JSON 을 고쳐도 화면이 안 바뀌는 함정이 생긴다. 대신 `fetch` 실패 시
 (대개 `file://` 로 연 경우) 해당 자리에 이유를 적어 보여준다.
@@ -94,8 +102,19 @@ DOMContentLoaded
 브레이크포인트는 900 / 820 / 700px 세 가지로 이미 정착되어 있으니 새 값을 만들지 않는다.
 맨 끝의 `@media (prefers-reduced-motion: reduce)` 블록은 유지한다.
 
-디자인 토큰은 `style.css` 의 `:root` 11개(`--bg` 계열 3, `--gold` 계열 2, 텍스트 3, `--line`, `--red`).
+디자인 토큰은 `assets/css/style.css` 의 `:root` 11개(`--bg` 계열 3, `--gold` 계열 2, 텍스트 3, `--line`, `--red`).
 색을 새로 쓰지 말고 토큰에서 가져온다.
+
+**폰트 크기는 프로젝트 전역 18px~96px 범위만 허용한다** (2026-09-02 확정, 예외 없음). 고정값·
+`clamp()` 의 최소/최대 모두 이 범위 안에 있어야 한다. 정확한 요소별 크기표는 `docs/design.md`
+Typography 절 참고.
+
+### 다크/라이트 섹션에서 텍스트 색이 뒤집힌다
+
+히어로·메뉴·수익분석·창업비용은 어두운 배경이라 해당 섹션에서 `--text: var(--text-invert)` 로
+재선언되고, 경쟁력·매장위치는 흰 배경이라 기본 `--text`(#333)를 그대로 쓴다. 새 섹션이나 어두운
+배경의 카드를 추가하면서 이 재선언을 빠뜨리면 텍스트가 배경에 묻혀 안 보이는 회귀가 난다 —
+실제로 `--bg-card`/`--text` 토큰을 전역으로 흰색/검정으로 바꿨을 때 이 방식으로 발생했다.
 
 ### 시그니처 장치
 
@@ -114,7 +133,7 @@ DOMContentLoaded
 | `rules/01-project.md` ~ `04-data-contract.md` | 아이스크림 카드 기준. `data/palettes.json`, `js/app.js`, `FALLBACK` 등 **이 폴더에 없는 파일**을 전제로 한다 |
 | `memory/` | **정리 완료.** 0003 사본이던 `decisions.md` 를 제거하고(동일 파일이 `0003/.claude/memory/` 에 그대로 있다) 이 폴더의 실제 메모리 `gopumgyeok-*.md` 5개 + `MEMORY.md` 를 넣었다. `SessionStart` 훅이 이걸 주입한다 |
 | `hooks/validate-palettes.sh` | `data/palettes.json`/`js/app.js` 를 대상으로 하므로 여기서는 항상 무해하게 통과(no-op) |
-| `agents/design-qa`·`asset-optimizer`·`markup-a11y` | 컴포넌트 일반론이라 그대로 쓸 만하다 |
+| `agents/` | **2026-09-02 재구성 완료.** `router`(라우팅 오케스트레이터) + `content-editor`/`css-stylist`/`screenshot-verifier`/`code-reviewer`(신규) + `design-qa`/`markup-a11y`/`asset-optimizer`(0007 실제 경로·컴포넌트 기준으로 재작성) 총 8개. 모두 `name/description/tools/model/color/memory` 프론트매터를 갖추고 이 폴더의 실제 파일(`assets/css/style.css`, `data/content.json`, `assets/imgs/`)을 전제로 한다 — 더 이상 0003 사본이 아니다 |
 
 이 폴더의 진짜 "왜"는 `README.md` 와 `0007/.claude/memory/gopumgyeok-*.md` 5개에 있다
 (`SessionStart` 훅이 후자를 자동 주입한다). `rules/` 를 이 폴더에 맞게 다시 쓰기 전까지는 인용하지 않는다.
@@ -130,7 +149,7 @@ DOMContentLoaded
    `https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css`
 2. **창업비용 금액이 전부 "상담 시 안내"** — 카탈로그에 실제 금액이 없어서다. `index.html` 의
    `.cost-table` 은 정적이라 수치를 받으면 바로 채울 수 있다.
-3. **셀프바 이미지 16장이 미사용** — `assets/sb_*.jpg` 20종 중 그리드에 8종만 노출된다.
+3. **셀프바 이미지 16장이 미사용** — `assets/imgs/sb_*.jpg` 20종 중 그리드에 8종만 노출된다.
    `interior1~4`, `hero_food`, `black_texture` 도 백업용으로만 남아 있다. 누락이 아니라 의도된 여분이다.
 4. **에셋 44장이 전부 카탈로그 PDF 크롭본** — 저해상도다. 프로덕션에서는 클라이언트 원본 사진으로 교체.
 5. **문의폼은 목업** — 최종 프로덕션은 Next.js + Supabase 로 마이그레이션 예정(관리자모드·도메인·호스팅 포함).

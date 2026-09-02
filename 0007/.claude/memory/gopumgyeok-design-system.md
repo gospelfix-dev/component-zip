@@ -10,7 +10,7 @@ metadata:
 
 `component-zip/0007/` 랜딩([[gopumgyeok-landing-project]])의 **확정된** 디자인 규칙. 임의로 바꾸지 말 것.
 
-**컬러 토큰** (`style.css` `:root`)
+**컬러 토큰** (`assets/css/style.css` `:root`)
 ```
 --bg:#0E0C0A  --bg-card:#18140F  --bg-card-2:#211B14
 --gold:#C9A227  --gold-light:#E8CD7A
@@ -31,7 +31,7 @@ metadata:
 5. `#location` 매장위치 — 매장 3곳 카드 + 문의폼
 
 히어로는 nav에 포함되지 않는 인트로 섹션. **2026-09-01에 대대적으로 비워냈다** — 자세한 구조와 패럴랙스는 [[gopumgyeok-hero-parallax]] 참고.
-현재 남은 것은 5개뿐: 배경(`meat_platter.jpg` 풀블리드) + 그라디언트 오버레이 + 중앙 스택(아이캐치 문구 → 골드 그라디언트 워드마크 `clamp(52px,11vw,132px)` → 서브카피 → CTA 버튼 2개 → "창업문의 1877-1960" 알약 배지).
+현재 남은 것은 5개뿐: 배경(`meat_platter.jpg` 풀블리드) + 그라디언트 오버레이 + 중앙 스택(아이캐치 문구 → 골드 그라디언트 워드마크 `clamp(52px,11vw,96px)` → 서브카피 → CTA 버튼 2개 → "창업문의 1877-1960" 알약 배지). 폰트 크기는 2026-09-02부터 프로젝트 전역 규칙(18~96px)이 적용됐다 — [[gopumgyeok-landing-project]] 또는 `docs/design.md` Typography 참고.
 
 **히어로에서 삭제된 것 — 사용자가 하나씩 지목해 없앴다. 되살리지 말 것:**
 - `.hero-bottom-photos` (하단 좌우 고기 사진, radial 마스크 페이드)
@@ -43,6 +43,6 @@ metadata:
 
 `.hero-badge-phone`은 **삭제가 아니라 이동**이다 — 우상단 절대배치(헤더 "창업 상담" 버튼에 가려졌었다)에서 중앙 스택 맨 아래로 옮겨 `display:inline-flex` + 부모의 `text-align:center`로 정렬한다.
 
-**콘텐츠 데이터**: 2026-09-01부터 `data/content.json` 이 단일 진실 공급원이다(경쟁력·트러스트·고기·셀프바·수익·창업비용·매장·연락처). `index.html` 은 빈 컨테이너만 갖고 `script.js` 가 `fetch` 로 채운다. **JS 안에 `FALLBACK` 사본을 두지 않았다** — 그래서 `file://` 더블클릭으로는 콘텐츠가 안 뜬다(안내 문구가 대신 표시됨). 로컬 서버로 볼 것.
+**콘텐츠 데이터**: 2026-09-01부터 `data/content.json` 이 단일 진실 공급원이다(경쟁력·트러스트·고기·셀프바·수익·창업비용·매장·연락처). `index.html` 은 빈 컨테이너만 갖고 `assets/js/script.js` 가 `fetch` 로 채운다. **JS 안에 `FALLBACK` 사본을 두지 않았다** — 그래서 `file://` 더블클릭으로는 콘텐츠가 안 뜬다(안내 문구가 대신 표시됨). 로컬 서버로 볼 것.
 
-**JS 구조** (`script.js`, `defer`): `boot()` 가 JSON 을 읽어 `renderAll()` 로 8개 영역을 그린 뒤 `initReceiptReveal()` 을 붙인다. 데이터와 무관한 `initSmoothScroll()` / `initMobileNav()`(900px↓ 햄버거) / `initScrollSpy()` / `initInquiryForm()`(목업) 은 fetch 전에 먼저 붙는다.
+**JS 구조** (`assets/js/script.js`, `defer`): `boot()` 가 JSON 을 읽어 `renderAll()` 로 8개 영역을 그린 뒤 `initReceiptReveal()` 을 붙인다. 데이터와 무관한 `initSmoothScroll()` / `initMobileNav()`(900px↓ 햄버거) / `initScrollSpy()` / `initInquiryForm()`(목업) 은 fetch 전에 먼저 붙는다.
