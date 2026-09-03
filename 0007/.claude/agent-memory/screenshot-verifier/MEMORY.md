@@ -1,0 +1,3 @@
+- [헤드리스 Chrome IntersectionObserver 검증 한계](headless-intersection-observer-limitation.md) — 프로그래매틱 scrollTo 후 IO 콜백이 재발화하지 않음. dump-dom/screenshot 모두 영향받음
+- [receipt 영수증 리빌 로직 구조](gopumgyeok-receipt-reveal-logic.md) — initReceiptReveal 의 rootMargin 트릭과 검증 결과
+- [헤드리스 Chrome 프로세스 종료 지연](headless-chrome-hang-after-screenshot.md) — --screenshot 완료 후에도 프로세스가 안 죽는 경우가 흔함, kill -9 로 강제 종료 필요
