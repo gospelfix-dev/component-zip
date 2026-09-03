@@ -120,11 +120,14 @@ const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contact
 // ---- 인터랙션 ----
 
 /**
- * 수익분석 섹션이 화면에 들어오면 영수증이 프린터에서 뽑혀나오듯 애니메이션한다.
- * "03. 수익분석" 섹션(#profit) 상단이 뷰포트 상단에 맞닿는 순간 재생하고,
- * 다시 그 지점 위로 스크롤이 올라가면 되감는다 — 섹션에 들어올 때마다 반복 재생한다.
- * rootMargin 을 '0px 0px -100% 0px' 로 줘서 관찰 영역을 뷰포트 최상단 한 줄로
- * 좁혀두면, isIntersecting 은 정확히 섹션 상단이 그 줄을 지나는 동안만 true 가 된다.
+ * 수익분석 섹션의 영수증은 "03. 수익분석" 섹션(#profit) 자체가 아니라, 그 바로 앞
+ * 02 메뉴 섹션의 셀프바 그리드(#selfbarGrid — 상추 등 메뉴가 있는 영역) 상단을
+ * 기준으로 미리 펼쳐진다: 뷰포트 상단이 셀프바 그리드 상단을 지나는 순간 펼쳐지고,
+ * 이후 03 섹션에 도착해서도 계속 펼쳐진 채로 유지되며, 다시 그 지점(셀프바 그리드
+ * 상단) 위로 스크롤을 올려야 접힌다 — 그 지점을 지날 때마다 반복 재생한다.
+ * IntersectionObserver 의 "요소 자신의 높이 구간에서만 true" 특성으로는 셀프바
+ * 그리드를 지나자마자(03 섹션 도달 전에) 다시 false 가 되어버려 이 요건을 표현할
+ * 수 없다 — 대신 스크롤 위치와 셀프바 그리드의 문서 좌표를 직접 비교한다.
  */
 const initReceiptReveal = () => {
   const section = document.getElementById('profit');
@@ -132,16 +135,17 @@ const initReceiptReveal = () => {
   const cols = [...section.querySelectorAll('.receipt-col')];
   if (!cols.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        cols.forEach((col) => col.classList.toggle('in-view', entry.isIntersecting));
-      });
-    },
-    { threshold: 0, rootMargin: '0px 0px -100% 0px' }
-  );
+  const trigger = document.getElementById('selfbarGrid') || section;
 
-  observer.observe(section);
+  const update = () => {
+    const triggerTop = trigger.getBoundingClientRect().top + window.scrollY;
+    const revealed = window.scrollY >= triggerTop;
+    cols.forEach((col) => col.classList.toggle('in-view', revealed));
+  };
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 };
 
 /**

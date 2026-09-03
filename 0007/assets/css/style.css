@@ -170,7 +170,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
    assets/css/animations.css 에 있다(이 프로젝트 규칙상 모든 @keyframes 는 그 파일에 모은다).
    전환 구간을 0.01% 로 razor-thin 하게 둬서 이징이 걸려 있어도 보간 시간이 사실상 없어
    "턱" 하고 끊어지는 인상을 준다. */
-.accent-impact{ display:inline-block; animation:accentSnap 2.6s infinite; }
+.accent-impact{ display:inline-block; animation:accentSnap 1.5s infinite; }
 
 /* COMPETENCY */
 /* 흰 배경은 임팩트가 약하다는 피드백으로 2026-09-02에 어두운 배경으로 되돌렸다.
