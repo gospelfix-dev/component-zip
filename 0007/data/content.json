@@ -77,19 +77,19 @@
     {
       "name": "왕십리 본점",
       "date": "2024. 11. 27 OPEN",
-      "image": "assets/imgs/store1.jpg",
+      "image": "assets/imgs/bg.png",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 왕십리"
     },
     {
       "name": "천호 직영점",
       "date": "2025. 03. 04 OPEN",
-      "image": "assets/imgs/store2.jpg",
+      "image": "assets/imgs/bg.png",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 천호"
     },
     {
       "name": "시흥 은계점",
       "date": "2026. 01. 28 OPEN",
-      "image": "assets/imgs/store3.jpg",
+      "image": "assets/imgs/bg.png",
       "mapUrl": "https://map.naver.com/p/search/고품격대패 시흥 은계"
     }
   ]

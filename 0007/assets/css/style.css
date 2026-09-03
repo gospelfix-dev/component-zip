@@ -11,19 +11,9 @@
   --line:#332C22;
   --red:#A6291F;
 }
-*{box-sizing:border-box; margin:0; padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  line-height:1.6;
-  overflow-x:hidden;
-}
-img{display:block; max-width:100%;}
+/* 리셋은 assets/css/init.css, 폰트 로드는 assets/css/fonts.css, 키프레임은
+   assets/css/animations.css 로 분리되어 있다. 이 파일에는 토큰 + 컴포넌트만 둔다. */
 .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
-a{color:inherit; text-decoration:none;}
-ul,li{list-style:none;}
 
 /* NAV */
 header.nav{
@@ -59,7 +49,7 @@ header.nav.nav-open .nav-toggle span:nth-child(1){ transform:translateY(7px) rot
 header.nav.nav-open .nav-toggle span:nth-child(2){ opacity:0; }
 header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
 
-@media (max-width:900px){
+@media (max-width:1024px){
   .nav-links{
     position:fixed; top:0; right:0; height:100vh; width:min(280px,72vw);
     background:var(--bg-card); flex-direction:column; justify-content:center; gap:28px;
@@ -99,7 +89,7 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
 }
 /* iOS Safari 는 background-attachment:fixed 를 무시하고 배경이 깨져 보인다.
    터치 기기와 좁은 화면에서는 일반 스크롤 배경으로 되돌린다. */
-@media (max-width:820px), (hover:none){
+@media (max-width:1024px), (hover:none){
   .hero-bg{ background-attachment:scroll; }
 }
 .hero-overlay{
@@ -118,7 +108,7 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
 }
 .hero-badge-phone b{ color:var(--gold-light); font-weight:700; }
 .hero-badge-phone .dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); flex-shrink:0; }
-@media (max-width:700px){ .hero-badge-phone{ padding:9px 18px; } }
+@media (max-width:1024px){ .hero-badge-phone{ padding:9px 18px; } }
 
 .hero-center{ position:relative; z-index:5; text-align:center; max-width:900px; margin:0 auto; }
 .hero-eyebrow2{ color:var(--text-dim); font-size:clamp(18px,1.25vw,20px); margin-bottom:24px; letter-spacing:0.01em; }
@@ -140,17 +130,13 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
     wordmarkIntro .85s cubic-bezier(0.16,1,0.3,1) both,
     wordmarkShine 5s linear infinite;
 }
-@keyframes wordmarkShine{
-  0%{ background-position:0% 50%; }
-  100%{ background-position:-260% 50%; }
-}
 .hero-sub2{ color:var(--text); font-size:clamp(18px,1.55vw,22px); line-height:1.6; margin-bottom:38px; }
 .hero-sub2 b{ color:var(--gold-light); font-weight:800; }
 .hero-cta-group{ display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:36px; }
 .btn-primary{ background:var(--gold); color:#1B1608; font-weight:700; padding:20px 42px; font-size:clamp(18px,1.15vw,19px); letter-spacing:0.02em; border-radius:2px; display:inline-block; border:none; cursor:pointer; }
 .btn-ghost{ border:1px solid rgba(243,238,226,.35); color:var(--text); padding:20px 42px; font-size:clamp(18px,1.15vw,19px); border-radius:2px; display:inline-block; }
 
-@media (max-width:820px){
+@media (max-width:1024px){
   .hero{ padding:130px 24px 90px; }
   .hero-cta-group{ margin-bottom:48px; }
 }
@@ -166,15 +152,66 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
 section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .section-head{ margin-bottom:64px; max-width:640px; }
 .kicker{ color:var(--gold); font-size:18px; letter-spacing:0.14em; margin-bottom:16px; font-weight:600; }
-.section-head h2{ font-weight:800; font-size:clamp(28px,3.4vw,42px); line-height:1.35; color:var(--text); letter-spacing:-0.01em; }
+/* 섹션 상단 타이틀은 전부 RixYeoljeongdo 디스플레이 폰트를 쓴다(2026-09-02) — 폰트 자체가
+   굵은 서체라 font-weight 는 400 으로 둔다(800 을 주면 브라우저가 가짜로 두껍게 합성해 지저분해진다). */
+/* 폰트 크기는 01 경쟁력 포스터 타이틀(.comp-title)과 통일한다(2026-09-03) — "섹션마다 타이틀
+   크기가 다르다"는 피드백으로, 이 값과 .profit-head h2 를 .comp-title 과 같은 clamp 로 맞췄다. */
+.section-head h2{ font-family:'RixYeoljeongdo','Pretendard',sans-serif; font-weight:400; font-size:clamp(34px,5vw,64px); line-height:1.35; color:var(--text); letter-spacing:-0.01em; }
+/* 섹션 타이틀 안에서 강조하는 문구는 빨간색으로 포인트를 준다(2026-09-02) — .comp-title 의
+   .cline--accent 와 같은 의도, 색만 재사용하고 외곽선/그림자 처리는 이 타이틀들에는 넣지 않는다. */
+.section-head h2 .h2-accent{ color:var(--red); }
 .section-head p{ color:var(--text-dim); margin-top:18px; font-size:18px; max-width:520px; }
 
+/* "즉시 토글" 임팩트 효과 — 6개 섹션 타이틀의 빨간 강조 문구(.h2-accent/.cline--accent/
+   .profit-head h2 em/.inquiry-left h3 em, index.html 에서 .accent-impact 를 함께 건다) 공용.
+   스크롤 위치와 무관하게 페이지에 있는 동안 계속 무한 반복한다(2026-09-03, 스크롤 트리거 방식
+   에서 변경 — JS/IntersectionObserver 없이 순수 CSS 애니메이션). @keyframes accentSnap 은
+   assets/css/animations.css 에 있다(이 프로젝트 규칙상 모든 @keyframes 는 그 파일에 모은다).
+   전환 구간을 0.01% 로 razor-thin 하게 둬서 이징이 걸려 있어도 보간 시간이 사실상 없어
+   "턱" 하고 끊어지는 인상을 준다. */
+.accent-impact{ display:inline-block; animation:accentSnap 2.6s infinite; }
+
 /* COMPETENCY */
-/* 흰 배경으로 바뀐 뒤 어두운 배경 전용이던 --text-dim(#B3A995, 밝은 베이지)이
-   흰 바탕 위에서 거의 안 보여서, 이 섹션 안에서만 어두운 회색으로 되돌린다. */
-.competency{ background:var(--bg-card); --text-dim:#6B6B6B; }
+/* 흰 배경은 임팩트가 약하다는 피드백으로 2026-09-02에 어두운 배경으로 되돌렸다.
+   --text-dim 은 :root 기본값(#B3A995, 밝은 베이지)이 어두운 배경에 맞으므로 별도 재선언이
+   필요 없다 — --text 만 --text-invert 로 뒤집는다. 배경은 은은한 골드 글로우 + 상차림 사진
+   워터마크로 깊이를 준다. RixYeoljeongdo @font-face 는 assets/css/fonts.css 로 옮겼다. */
+.comp-stars{ color:var(--gold); font-size:22px; letter-spacing:0.4em; margin-bottom:10px; }
+/* 포스터 임팩트 타이틀 — 헤드라인 전용 디스플레이 폰트 + 굵은 외곽선 + 계단식 그림자로
+   입체감(pop-art extrusion)을 낸다. font-size 는 2026-09-03부터 다른 섹션 타이틀(.section-head
+   h2, .profit-head h2)과 같은 clamp(34px,5vw,64px) — 이 규칙엔 그대로 남겨 명시적으로 고정해
+   두되(중복이어도 무방), line-height/letter-spacing/외곽선-그림자는 이 섹션만의 것이다. */
+.section-head h2.comp-title{
+  font-family:'RixYeoljeongdo','Pretendard',sans-serif; font-weight:400;
+  font-size:clamp(34px,5vw,64px); line-height:1.25; letter-spacing:0;
+}
+.comp-title .cline{
+  display:inline-block; -webkit-text-stroke:2px #140F0A;
+  text-shadow:
+    1px 1px 0 #140F0A, 2px 2px 0 #140F0A, 3px 3px 0 #140F0A,
+    4px 4px 0 #140F0A, 5px 5px 0 #140F0A;
+}
+.comp-title .cline--light{ color:var(--text-invert); }
+.comp-title .cline--accent{ color:var(--red); }
+.competency{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(ellipse 900px 480px at 15% -10%, rgba(232,205,122,.12), transparent 62%),
+    var(--bg);
+  --text: var(--text-invert);
+}
+.competency::before{
+  content:''; position:absolute; z-index:0; pointer-events:none;
+  top:-40px; right:-60px; width:760px; height:760px;
+  background-image:url('../imgs/generated.png');
+  background-repeat:no-repeat; background-position:top right; background-size:contain;
+  opacity:.55;
+  -webkit-mask-image:linear-gradient(135deg, rgba(0,0,0,.95) 40%, transparent 85%);
+  mask-image:linear-gradient(135deg, rgba(0,0,0,.95) 40%, transparent 85%);
+}
+.competency .wrap{ position:relative; z-index:1; }
 /* 참고 시안(치킨신드롬 혜택 카드)처럼 어두운 "티켓" 카드 안에 아이콘 타일 3개를 담는다.
-   좌우 반원 노치는 배경(--bg-card, 흰색)과 같은 색을 칠해 punch-hole 처럼 보이게 한다 —
+   좌우 반원 노치는 섹션 배경의 기본 톤(--bg)과 같은 색을 칠해 punch-hole 처럼 보이게 한다 —
    섹션 배경색이 바뀌면 이 값도 함께 바꿔야 한다. */
 .comp-grid{
   position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
@@ -185,7 +222,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 }
 .comp-grid::before, .comp-grid::after{
   content:''; position:absolute; top:50%; width:26px; height:26px; z-index:3;
-  background:var(--bg-card); border-radius:50%; transform:translateY(-50%);
+  background:var(--bg); border-radius:50%; transform:translateY(-50%);
   box-shadow:inset 0 0 0 1px rgba(232,205,122,.3);
 }
 .comp-grid::before{ left:-13px; }
@@ -197,7 +234,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
   transition:transform .45s cubic-bezier(0.16,1,0.3,1), box-shadow .45s cubic-bezier(0.16,1,0.3,1), background-color .45s ease;
 }
 .comp-card:nth-child(odd){ background:#1C160E; }
-.comp-card:nth-child(even){ background:var(--bg); }
+.comp-card:nth-child(even){ background:var(--bg-card-2); }
 .comp-card:first-child{ border-radius:26px 0 0 26px; }
 .comp-card:last-child{ border-radius:0 26px 26px 0; }
 /* 카드 상단에 얇게 깔아두고 호버 시 왼쪽에서 오른쪽으로 채워지는 골드 바 */
@@ -231,37 +268,62 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .comp-card p{ color:var(--text-dim); font-size:18px; line-height:1.75; }
 /* 핵심 키워드(<b>) 는 골드로 강조하면서 계속 깜빡여 시선을 붙잡는다 */
 .comp-card b{ display:inline-block; color:var(--gold-light); font-weight:700; animation:keywordBlink 1.6s ease-in-out infinite; }
-@keyframes keywordBlink{
-  0%, 100%{ opacity:1; }
-  50%{ opacity:.4; }
-}
-@keyframes compCardReveal{
-  0%{ opacity:0; transform:translateY(32px); }
-  100%{ opacity:1; transform:translateY(0); }
-}
-@media (max-width:820px){
+@media (max-width:1024px){
   .comp-grid{ grid-template-columns:1fr; }
   .comp-card:first-child{ border-radius:26px 26px 0 0; }
   .comp-card:last-child{ border-radius:0 0 26px 26px; }
   .comp-grid::before, .comp-grid::after{ display:none; }   /* 세로로 쌓이면 좌우 노치는 어색해 숨긴다 */
 }
 
-.trust-strip{ margin-top:64px; padding-top:48px; border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(4,1fr); gap:32px; }
+.trust-strip{ margin-top:64px; padding-top:48px; border-top:1px solid rgba(232,205,122,.18); display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+/* 카드형 "뱃지" — 어두워진 섹션 배경 위에서 강한 대비를 내도록 흰 카드로 뒤집는다.
+   우측 상단 접힌 리본 모서리 + 좌측 상단 번호 배지 + 중앙 아이콘(진한 색, 골드는 리본/배지 전용). */
 .trust-item{
-  opacity:0; transition:transform .3s cubic-bezier(0.16,1,0.3,1);
+  position:relative; overflow:hidden; isolation:isolate;
+  background:var(--bg-card); border-radius:18px;
+  padding:56px 20px 26px; text-align:center;
+  --text:#231B12; --text-dim:#6B6B6B;
+  box-shadow:0 20px 40px -20px rgba(0,0,0,.55);
+  opacity:0;
+  transition:transform .35s cubic-bezier(0.16,1,0.3,1), box-shadow .35s cubic-bezier(0.16,1,0.3,1);
 }
 .trust-item.in-view{ animation:compCardReveal .6s cubic-bezier(0.16,1,0.3,1) forwards; }
 .trust-item.in-view:nth-child(2){ animation-delay:.08s; }
 .trust-item.in-view:nth-child(3){ animation-delay:.16s; }
 .trust-item.in-view:nth-child(4){ animation-delay:.24s; }
-.trust-item:hover{ transform:translateY(-6px); }
+.trust-item:hover{ transform:translateY(-8px); box-shadow:0 22px 34px -18px rgba(0,0,0,.4); }
+/* 우측 상단 접힌 리본 모서리 (border-triangle 트릭) */
+.trust-item::before{
+  content:''; position:absolute; top:0; right:0; z-index:1;
+  border-style:solid; border-width:0 32px 32px 0;
+  border-color:transparent var(--gold) transparent transparent;
+  transition:border-color .3s ease;
+}
+.trust-item:hover::before{ border-color:transparent var(--gold-light) transparent transparent; }
+/* 중앙 아이콘 — 항목마다 다른 SVG */
+.trust-item::after{
+  content:''; position:absolute; top:20px; left:50%; width:30px; height:30px;
+  transform:translateX(-50%); background-repeat:no-repeat; background-position:center; background-size:contain;
+  transition:transform .4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.trust-item:nth-child(1)::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%232A2118%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%229%22%20r%3D%225.3%22%2F%3E%3Cpath%20d%3D%22M9.3%209.2l1.8%201.8%203.4-3.6%22%2F%3E%3Cpath%20d%3D%22M9.3%2013.6l-1.6%206%204.3-2%204.3%202-1.6-6%22%2F%3E%3C%2Fsvg%3E"); }
+.trust-item:nth-child(2)::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%232A2118%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2010l1-5.2h14L20%2010%22%2F%3E%3Cpath%20d%3D%22M4%2010.2a2.1%202.1%200%20004.1%200%202.1%202.1%200%20004.1%200%202.1%202.1%200%20004%200%202.1%202.1%200%20004%200%22%2F%3E%3Cpath%20d%3D%22M5%2010.6V20h14v-9.4%22%2F%3E%3Cpath%20d%3D%22M10%2020v-5.2h4V20%22%2F%3E%3C%2Fsvg%3E"); }
+.trust-item:nth-child(3)::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%232A2118%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3.5%2012h17%22%2F%3E%3Cpath%20d%3D%22M4.5%2012a7.5%207.5%200%200015%200%22%2F%3E%3Cpath%20d%3D%22M8.5%2012c-.3-2.6%201-4.6%203-5.6%22%2F%3E%3Cpath%20d%3D%22M12.5%2012c-.2-3%201.4-5.2%203.4-6.2%22%2F%3E%3C%2Fsvg%3E"); }
+.trust-item:nth-child(4)::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%232A2118%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5.2%2019c8.6%200%2013.6-5.2%2013.6-13.6-8.6%200-13.6%205.2-13.6%2013.6z%22%2F%3E%3Cpath%20d%3D%22M6.4%2017.8c2.8-3%204.6-6.2%205.6-9.8%22%2F%3E%3C%2Fsvg%3E"); }
+.trust-item:hover::after{ transform:translateX(-50%) scale(1.12); }
+.trust-num{
+  position:absolute; top:14px; left:14px; z-index:2;
+  background:linear-gradient(135deg, var(--gold), var(--gold-light));
+  color:#1C160E; font-weight:800; font-size:18px; letter-spacing:0.02em;
+  padding:3px 10px; border-radius:999px;
+}
 .trust-item h5{
-  color:var(--gold-light); font-weight:800; font-size:24px; margin-bottom:8px;
+  color:var(--text); font-weight:800; font-size:19px; margin:14px 0 8px;
   transition:transform .4s cubic-bezier(0.34,1.56,0.64,1), color .3s ease;
 }
-.trust-item:hover h5{ transform:scale(1.1); color:var(--gold); }
-.trust-item p{ color:var(--text-dim); font-size:18px; }
-@media (max-width:820px){ .trust-strip{grid-template-columns:repeat(2,1fr); row-gap:32px;} }
+.trust-item:hover h5{ transform:scale(1.06); color:#8A6A1F; }
+.trust-item p{ color:var(--text-dim); font-size:18px; line-height:1.6; }
+@media (max-width:1024px){ .trust-strip{grid-template-columns:repeat(2,1fr); row-gap:22px;} }
 
 /* MENU */
 .menu{ background:var(--bg); --text: var(--text-invert); }  /* 어두운 배경 — section-head h2, meat-label 이 밝은 글자를 쓰도록 */
@@ -270,7 +332,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .meat-card img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.05); transition:transform .5s ease; }
 .meat-card:hover img{ transform:scale(1.05); }
 .meat-label{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px 12px; background:linear-gradient(to top, rgba(0,0,0,0.75), transparent); font-size:18px; color:var(--text); font-weight:600; letter-spacing:0.01em; }
-@media (max-width:700px){ .meat-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:1024px){ .meat-grid{grid-template-columns:repeat(2,1fr);} }
 
 .selfbar-note{ display:flex; align-items:baseline; gap:14px; margin:56px 0 20px; color:var(--text-dim); font-size:18px; flex-wrap:wrap;}
 .selfbar-note b{ color:var(--gold-light); font-size:18px;}
@@ -279,7 +341,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .sb-item .circle{ width:100%; aspect-ratio:1; border-radius:50%; overflow:hidden; border:1px solid var(--line); }
 .sb-item .circle img{ width:100%; height:100%; object-fit:cover; }
 .sb-item span{ display:block; margin-top:8px; font-size:18px; color:var(--muted); }
-@media (max-width:820px){ .selfbar-grid{grid-template-columns:repeat(4,1fr); row-gap:24px;} }
+@media (max-width:1024px){ .selfbar-grid{grid-template-columns:repeat(4,1fr); row-gap:24px;} }
 
 /* PROFIT — 영수증 롤 스타일 */
 .profit{
@@ -293,10 +355,11 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .profit-head{ text-align:center; max-width:100%; margin-bottom:72px; }
 .profit-head .kicker{ text-align:center; }
 .profit-head h2{
-  font-weight:800; font-size:clamp(30px,4.4vw,50px); line-height:1.3; color:var(--text);
+  font-family:'RixYeoljeongdo','Pretendard',sans-serif; font-weight:400;
+  font-size:clamp(34px,5vw,64px); line-height:1.3; color:var(--text);
 }
 .profit-head h2 em{
-  font-style:normal; font-weight:900; color:var(--gold-light);
+  font-style:normal; font-weight:400; color:var(--red);
 }
 .profit-sub{ margin-top:20px; font-size:18px; color:var(--text-dim); }
 .underline-mark{ position:relative; color:var(--text); font-weight:600; }
@@ -333,13 +396,18 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
   position:relative; z-index:3;   /* 바와 같은 z-index + DOM 상 뒤 → 종이가 바 앞으로 나온다 */
   /* 폭은 슬롯(.printer-slot: 바 기준 left/right 9%)과 정확히 같은 82%.
      종이가 슬롯 구멍에서 그대로 빠져나오는 것처럼 보이게 하려면 두 값을 함께 움직일 것. */
-  width:82%; overflow:hidden; max-height:0; margin-top:-19px;
-  transition:max-height 1s cubic-bezier(0.16,1,0.3,1) var(--d, 0ms);
+  width:82%; margin-top:-19px;
+  /* 높이는 항상 실제 콘텐츠 높이(auto)로 고정한다 — max-height 를 0↔실측값으로 움직이면
+     이 박스의 문서 흐름 높이 자체가 바뀌어 03 수익분석 섹션 전체 높이가 펼쳐짐/접힘마다
+     출렁인다(2026-09-03 수정). clip-path 로 "보이는 영역"만 위→아래로 드러내면 레이아웃
+     높이는 처음부터 고정되고, 슬롯에서 슬라이스되어 나오는 시각 효과는 그대로 유지된다. */
+  clip-path: inset(0 0 100% 0);
+  transition:clip-path 1s cubic-bezier(0.16,1,0.3,1) var(--d, 0ms);
 }
-.receipt-col.in-view .receipt-mask{ max-height:760px; }
+.receipt-col.in-view .receipt-mask{ clip-path: inset(0 0 0% 0); }
 
 /* 페이드 인/아웃은 제거했다(2026-09-01) — 종이는 항상 불투명하고, 슬롯에서 밀려 나오는
-   .receipt-mask 의 max-height 만으로 움직인다. drop-shadow 는 여기(wrapper)에 유지할 것. */
+   .receipt-mask 의 clip-path 만으로 움직인다. drop-shadow 는 여기(wrapper)에 유지할 것. */
 .receipt-body{
   filter:drop-shadow(0 16px 20px rgba(0,0,0,.45));
 }
@@ -398,7 +466,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
   );
 }
 
-@media (max-width:820px){
+@media (max-width:1024px){
   .receipt-track{ flex-direction:column; align-items:center; gap:40px; }
   .receipt-col{ max-width:400px; width:100%; }
   .receipt-col.center{ margin-top:0; order:-1; }
@@ -418,7 +486,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .cost-row.cost-head{ background:var(--bg-card); }
 .cost-row.cost-head span{ color:var(--gold); font-size:18px; letter-spacing:0.04em; font-weight:700; border-bottom:1px solid var(--line); }
 .cost-row:last-child span{ border-bottom:none; }
-@media (max-width:700px){
+@media (max-width:1024px){
   .cost-row{ grid-template-columns:1fr 1fr; }
   .cost-row span:nth-child(2){ display:none; }
 }
@@ -428,29 +496,125 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .cost-cta{ margin-top:36px; }
 
 /* LOCATION */
-.location{ background:var(--bg-card); --text-dim:#6B6B6B; }  /* competency 와 동일한 이유 */
-.store-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:16px; }
-/* store-card 는 흰 location 섹션 안에서도 여전히 어두운 카드(--bg-card-2)라
-   위에서 밝은 배경용으로 되돌린 --text/--text-dim 을 다시 원래(어두운 배경용) 값으로 뒤집는다. */
-.store-card{ background:var(--bg-card-2); border:1px solid var(--line); --text:var(--text-invert); --text-dim:#B3A995; }
-.store-card .photo{ aspect-ratio:16/9; overflow:hidden; }
+/* 흰 배경 정적 그리드에서 어두운 배경사진 + Swiper 캐러셀로 전환했다(2026-09-02) — 다른
+   어두운 섹션들과 같은 --text-invert 패턴을 쓴다. 배경은 .hero-bg/.hero-overlay 와 같은
+   절대배치 레이어 방식(사진 + 어두운 그라디언트)을 재사용한다. */
+.location{ position:relative; --text: var(--text-invert); }
+/* 배경(블러+확대)만 담당하는 클리핑 전용 프레임 — overflow:hidden 을 섹션 자체가 아니라
+   여기 걸어야, 아래 .location-right 의 뷰포트 우측 bleed(2026-09-03)가 잘리지 않는다. */
+.location-bg-frame{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+.location-bg{
+  position:absolute; inset:0;
+  background-image:url('../imgs/bg.png');
+  background-position:center; background-size:cover;
+  filter:blur(6px); transform:scale(1.08);   /* 블러 가장자리가 프레임 밖으로 비치지 않도록 살짝 확대 */
+}
+.location-overlay{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(100deg, rgba(14,12,10,.94) 0%, rgba(14,12,10,.82) 40%, rgba(14,12,10,.55) 75%, rgba(14,12,10,.35) 100%);
+}
+/* .location 배경(.location-bg-frame/.location-overlay)이 absolute + z-index 를 쓰는 포지셔닝
+   스택이라, 뒤따르는 .wrap 이 기본(static) 상태면 페인트 순서상 배경 아래로 깔린다 — 반드시
+   같은 z-index 오버라이드가 필요하다. */
+.location .wrap{ position:relative; z-index:2; }
+
+/* minmax(0, …) 가 핵심이다 — 없으면 .store-swiper 안의 슬라이드 콘텐츠가 min-content 폭을
+   그대로 요구해서 그리드 트랙(과 Swiper 가 측정하는 컨테이너 폭)이 화면 밖으로 부풀어 오른다
+   (그리드/플렉스 아이템의 기본 min-width:auto 때문에 생기는 흔한 "blowout" 버그). */
+/* align-items:stretch(기본값) — 좌측 컬럼이 우측 캐러셀과 같은 높이로 늘어나야 아래
+   .location-left 의 justify-content:space-between 이 타이틀 블록은 위에, 컨트롤 버튼은
+   맨 아래에 붙이는 식으로 세로 여백을 분배한다(2026-09-03). */
+.location-layout{ display:grid; grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr); gap:56px; align-items:stretch; }
+.location-left, .location-right{ min-width:0; }
+/* 우측 캐러셀만 .wrap(max-width:1120px) 을 뚫고 나가 뷰포트 오른쪽 끝까지 꽉 채운다
+   (2026-09-03, 레퍼런스 참고). 왼쪽 텍스트는 그대로 .wrap 안에 머문다.
+   음수 margin-right 로 grid 트랙의 auto 폭을 그만큼 더 늘리는 방식 —
+   확장폭 = (뷰포트 절반) − (.wrap 콘텐츠 폭의 절반). .wrap 콘텐츠 폭 = 1120 − 32*2 = 1056,
+   그 절반이 528px. 뷰포트가 1120px 보다 좁아 .wrap 이 더 이상 중앙 정렬되지 않는 구간
+   (1024px 이하 모바일 브레이크포인트 바로 위, 1024~1120px)에서는 이 공식이 실제 필요한
+   32px 확장보다 작게 나오므로 min() 으로 "최소 32px 확장"을 보장한다. */
+.location-right{ margin-right: min(-32px, calc(528px - 50vw)); }
+/* gap 은 최소 여백 보장용 — 1024px 이하(모바일 1열 스택)에서는 좌측 컬럼이 우측과 높이를
+   공유하지 않아 space-between 이 분배할 여유 공간이 없으므로 이 gap 값이 곧 실제 간격이 된다. */
+.location-left{ display:flex; flex-direction:column; justify-content:space-between; gap:40px; }
+
+/* 원형 이전/일시정지/다음 버튼 — 아이콘은 Lucide(chevron-left, pause/play, chevron-right) */
+.store-nav{ display:flex; align-items:center; gap:14px; }
+.store-nav-btn{
+  width:48px; height:48px; border-radius:50%; flex-shrink:0;
+  border:1px solid rgba(243,238,226,.35); background:rgba(14,12,10,.4);
+  color:var(--text); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:border-color .2s ease, background-color .2s ease;
+}
+.store-nav-btn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; }
+.store-nav-btn:hover{ border-color:var(--gold); background:rgba(201,162,39,.15); }
+/* 일시정지↔재생 아이콘은 두 SVG 를 같이 두고 .is-paused 로 표시만 바꾼다 */
+.store-nav-toggle .icon-play{ display:none; }
+.store-nav-toggle.is-paused .icon-pause{ display:none; }
+.store-nav-toggle.is-paused .icon-play{ display:block; }
+.store-nav-btn.swiper-button-disabled{ opacity:.35; cursor:default; }
+
+/* 자동재생 남은 시간을 시각화하는 원형 타이머 — Swiper 의 autoplayTimeLeft 이벤트가
+   assets/js/script.js 에서 --store-timer(0~1)를 실시간으로 갱신하면, 그 값을 stroke-dashoffset
+   으로 변환해 12시 방향부터 시계방향으로 채운다(2026-09-03). 일시정지 중엔 이벤트가 멈추므로
+   링도 멈춘 지점에 그대로 고정된다 — 별도 처리가 필요 없다. */
+.store-nav-toggle{ position:relative; }
+/* .store-nav-btn svg{width:18px;height:18px} 보다 우선해야 해서 부모 클래스를 함께 건다
+   (셀렉터 단독 특정성(0,1,0)으로는 그 규칙(0,1,1)에 밀린다).
+   top/left 는 inset:0 이 아니라 -1px 다 — .store-nav-toggle 에 1px 테두리가 있으면 absolute
+   자식의 기준(containing block)이 테두리 안쪽 padding box 가 되어, inset:0 을 쓰면 링이
+   오른쪽·아래로 1px 밀려 버튼의 흰 테두리와 어긋난다(2026-09-03 버그 수정). */
+.store-nav-toggle .store-nav-toggle__ring{
+  position:absolute; top:-1px; left:-1px; width:48px; height:48px;
+  transform:rotate(-90deg); pointer-events:none;
+}
+.store-nav-toggle__ring circle{
+  fill:none; stroke:var(--gold); stroke-width:2.5; stroke-linecap:round;
+  stroke-dasharray:132; /* 2π×21, r=21 */
+  stroke-dashoffset:calc(132 * var(--store-timer, 0));
+}
+
+.store-swiper{ overflow:hidden; }
+.swiper-slide{ height:auto; }
+/* 2026-09-03, 레퍼런스처럼 사진이 카드 전체를 꽉 채운다 — 카드 안에는 사진만 있다.
+   이름·오픈일·지도 버튼은 더 이상 카드 위에 얹지 않고 좌측 컬럼의 .store-caption 으로
+   옮겨서, 캐러셀이 넘어갈 때마다 현재 슬라이드 정보로 바뀌어 보이게 했다(아래 참고). */
+.store-card{ position:relative; aspect-ratio:8/9; border-radius:20px; overflow:hidden; border:1px solid var(--line); }
+.store-card .photo{ position:absolute; inset:0; }
 .store-card .photo img{ width:100%; height:100%; object-fit:cover; }
-.store-card .meta{ padding:22px 24px 26px; }
-.store-card .meta .date{ color:var(--gold); font-size:18px; letter-spacing:0.04em; margin-bottom:8px; }
-.store-card .meta h4{ font-size:18px; color:var(--text); font-weight:700; }
+
+/* .store-bottom 이 .store-caption(현재 슬라이드 정보) + .store-nav(컨트롤) 를 한 덩어리로
+   묶어서, .location-left 의 justify-content:space-between 이 이 덩어리 전체를 타이틀 블록
+   반대편 끝(맨 아래)에 붙인다 — 정보와 컨트롤 버튼이 항상 붙어 다니게 하려는 것. */
+.store-bottom{ display:flex; flex-direction:column; gap:20px; }
+/* JS(initStoreSwiper 의 syncCaption)가 Swiper 의 slideChange 마다 내용을 다시 그린다.
+   min-height 는 지점명이 한 줄/두 줄로 바뀌어도 버튼 위치가 출렁이지 않게 하는 최소 보장값. */
+.store-caption{ min-height:96px; }
+.store-caption h4{ font-size:clamp(20px,2.4vw,26px); color:var(--text); font-weight:800; }
+.store-caption .date{ color:var(--gold); font-size:18px; letter-spacing:0.04em; margin-top:8px; }
 /* 지점별 네이버 지도 링크 — 새 창으로 열린다 */
+/* border/color 는 var(--line)/var(--text-dim) 대신 밝은 값을 쓴다 — 이 버튼이 얹히는
+   .location 배경이 어두워서 어두운 톤(가독성 낮음)으론 테두리도, 글자도 잘 안 보인다
+   (2026-09-03, .store-nav-btn 과 같은 밝기의 테두리로 맞췄다). */
 .map-btn{
   display:inline-flex; align-items:center; gap:7px; margin-top:16px;
-  border:1px solid var(--line); border-radius:2px; padding:10px 16px;
-  color:var(--text-dim); font-size:18px; font-weight:600; letter-spacing:0.01em;
+  border:1px solid rgba(243,238,226,.35); border-radius:2px; padding:10px 16px;
+  color:var(--text); font-size:18px; font-weight:600; letter-spacing:0.01em;
   transition:border-color .2s ease, color .2s ease, background-color .2s ease;
 }
 .map-btn svg{ width:14px; height:14px; fill:var(--gold); flex-shrink:0; }
 .map-btn:hover{ border-color:var(--gold); color:var(--gold-light); background:rgba(201,162,39,.08); }
-@media (max-width:820px){ .store-grid{grid-template-columns:1fr;} }
+@media (max-width:1024px){
+  .location-layout{ grid-template-columns:minmax(0,1fr); gap:32px; }
+  /* 모바일 1열 스택에서는 이미지가 좌측 텍스트와 폭을 공유하지 않으므로, 우측만 비대칭으로
+     bleed 시키면 카드가 어색하게 잘린다 — .wrap 폭 그대로 유지한다. */
+  .location-right{ margin-right:0; }
+}
 
 .inquiry-grid{ margin-top:80px; padding-top:64px; border-top:1px solid var(--line); display:grid; grid-template-columns:0.9fr 1.1fr; gap:72px; }
-.inquiry-left h3{ font-weight:800; font-size:clamp(26px,3vw,36px); line-height:1.4; margin-bottom:24px; }
+/* 폰트 크기를 다른 섹션 타이틀과 통일했다(2026-09-03, .comp-title 기준). */
+.inquiry-left h3{ font-family:'RixYeoljeongdo','Pretendard',sans-serif; font-weight:400; font-size:clamp(34px,5vw,64px); line-height:1.4; margin-bottom:24px; color:var(--text); }
+.inquiry-left h3 em{ font-style:normal; font-weight:400; color:var(--red); }
 .inquiry-left p{ color:var(--text-dim); font-size:18px; margin-bottom:36px; }
 .contact-line{ display:flex; align-items:center; gap:14px; padding:16px 0; border-top:1px solid var(--line); }
 .contact-line:last-child{ border-bottom:1px solid var(--line); }
@@ -465,7 +629,7 @@ input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--gold
 textarea{ resize:vertical; min-height:110px; }
 .submit-btn{ margin-top:8px; background:var(--gold); color:#1B1608; border:none; padding:17px; font-size:18px; font-weight:700; letter-spacing:0.02em; border-radius:2px; cursor:pointer; }
 .submit-btn:hover{ background:var(--gold-light); }
-@media (max-width:820px){ .inquiry-grid{grid-template-columns:1fr;} .field-row{grid-template-columns:1fr;} }
+@media (max-width:1024px){ .inquiry-grid{grid-template-columns:1fr;} .field-row{grid-template-columns:1fr;} }
 
 /* FOOTER */
 footer{ position:relative; z-index:1; background:#0A0806; border-top:1px solid var(--line); padding:56px 0 40px; }
@@ -489,4 +653,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .comp-card:hover, .trust-item:hover{ transform:none; }
   .comp-card:hover .comp-num, .trust-item:hover h5{ transform:none; }
   .comp-card b{ animation:none !important; opacity:1 !important; }
+  .accent-impact{ animation:none !important; opacity:1 !important; transform:none !important; }
 }

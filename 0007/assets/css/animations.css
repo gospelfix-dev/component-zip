@@ -1,10 +1,41 @@
-/* 재사용 키프레임 모음 — 특정 컴포넌트에 종속되지 않는 애니메이션만 여기 둔다.
-   컴포넌트 전용 애니메이션(예: hero-wordmark 의 wordmarkShine)은 style.css 해당 블록 옆에 그대로 둘 것. */
+/* 키프레임 전용 파일 — @keyframes 로 정의하는 애니메이션은 컴포넌트 전용 여부와 무관하게
+   전부 여기 모은다(2026-09-02 확정). 실제 사용(animation: 이름 …)은 assets/css/style.css 의
+   해당 컴포넌트 규칙에서 한다. */
 
 /* 큰 배율로 나타났다가 빠르게 제자리 크기로 줄어드는 임팩트용 인트로.
-   사용법: animation: wordmarkIntro .85s cubic-bezier(0.16,1,0.3,1) both; */
+   사용처: .hero-wordmark */
 @keyframes wordmarkIntro{
   0%{ transform:scale(4.4); opacity:0; }
   55%{ opacity:1; }
   100%{ transform:scale(1); opacity:1; }
+}
+
+/* 골드 그라디언트가 좌→우로 계속 흐르는 반짝임.
+   사용처: .hero-wordmark */
+@keyframes wordmarkShine{
+  0%{ background-position:0% 50%; }
+  100%{ background-position:-260% 50%; }
+}
+
+/* 핵심 키워드가 계속 깜빡여 시선을 붙잡는다.
+   사용처: .comp-card b */
+@keyframes keywordBlink{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:.4; }
+}
+
+/* 스크롤로 처음 들어올 때 아래→위로 떠오르는 카드 리빌.
+   사용처: .comp-card.in-view, .trust-item.in-view */
+@keyframes compCardReveal{
+  0%{ opacity:0; transform:translateY(32px); }
+  100%{ opacity:1; transform:translateY(0); }
+}
+
+/* 흐림/작음 ↔ 빨간색/원래 크기를 무한 반복하는 "즉시 토글" 임팩트. keywordBlink 와 달리
+   부드럽게 페이드하지 않는다 — 전환 구간이 0.01% 로 razor-thin 해서 기본 이징이 걸려도
+   보간 시간이 사실상 없다("턱" 하고 끊어지는 인상). 사용처: .accent-impact (섹션 타이틀의
+   빨간 강조 문구 6곳, 2026-09-03) */
+@keyframes accentSnap{
+  0%, 15%{ opacity:.0; transform:scale(.82); }
+  15.01%, 100%{ opacity:1; transform:scale(1); }
 }

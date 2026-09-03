@@ -34,9 +34,13 @@ const renderCompetency = (list = []) => fill('compGrid', list.map(({ num, title,
     <p>${desc ?? ''}</p>
   </div>`).join(''));
 
-/** 01 경쟁력 — 하단 트러스트 스트립 */
-const renderTrust = (list = []) => fill('trustStrip', list.map(({ label, desc }) => `
-  <div class="trust-item"><h5>${esc(label)}</h5><p>${esc(desc)}</p></div>`).join(''));
+/** 01 경쟁력 — 하단 트러스트 스트립 (번호는 데이터가 아니라 순서에서 생성) */
+const renderTrust = (list = []) => fill('trustStrip', list.map(({ label, desc }, i) => `
+  <div class="trust-item">
+    <span class="trust-num">${String(i + 1).padStart(2, '0')}</span>
+    <h5>${esc(label)}</h5>
+    <p>${esc(desc)}</p>
+  </div>`).join(''));
 
 /** 02 메뉴 — 고기 그리드 */
 const renderMeat = (list = []) => fill('meatGrid', list.map(({ image, name }) => `
@@ -88,14 +92,21 @@ const renderCost = ({ head, rows = [] } = {}) => {
 /** 05 매장위치 — 매장 카드 + 지점별 네이버 지도 버튼 */
 const PIN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
 
+/**
+ * 05 매장위치 — 카드는 사진만 담고, 이름·오픈일·지도 버튼은 좌측 컬럼의 .store-caption 으로
+ * 옮겼다(2026-09-03). 캐러셀이 넘어갈 때마다 initStoreSwiper 가 이 마크업을 다시 그린다 —
+ * 슬라이드 쪽 data-name/date/map-url 속성을 그대로 읽어서 쓰므로 데이터 형태가 여기 하나뿐이다.
+ */
+const storeCaptionHTML = ({ name, date, mapUrl }) => `
+  <h4>${esc(name)}</h4>
+  <div class="date">${esc(date)}</div>
+  ${mapUrl ? `<a class="map-btn" href="${esc(mapUrl)}" target="_blank" rel="noopener noreferrer"
+     aria-label="${esc(name)} 네이버 지도에서 보기 (새 창)">${PIN_SVG} 네이버 지도로 보기</a>` : ''}`;
+
 const renderStores = (list = []) => fill('storeGrid', list.map(({ name, date, image, mapUrl }) => `
-  <div class="store-card">
-    <div class="photo"><img src="${esc(image)}" alt="${esc(name)}"></div>
-    <div class="meta">
-      <div class="date">${esc(date)}</div>
-      <h4>${esc(name)}</h4>
-      ${mapUrl ? `<a class="map-btn" href="${esc(mapUrl)}" target="_blank" rel="noopener noreferrer"
-         aria-label="${esc(name)} 네이버 지도에서 보기 (새 창)">${PIN_SVG} 네이버 지도로 보기</a>` : ''}
+  <div class="swiper-slide" data-name="${esc(name)}" data-date="${esc(date)}" data-map-url="${esc(mapUrl || '')}">
+    <div class="store-card">
+      <div class="photo"><img src="${esc(image)}" alt="${esc(name)}"></div>
     </div>
   </div>`).join(''));
 
@@ -110,9 +121,10 @@ const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contact
 
 /**
  * 수익분석 섹션이 화면에 들어오면 영수증이 프린터에서 뽑혀나오듯 애니메이션한다.
- * 섹션에 들어올 때마다 반복 재생한다 — 카드가 35% 이상 보이면 재생하고,
- * 화면에서 완전히 벗어났을 때만 되감는다(임계값을 하나로 두면 스크롤 도중
- * 아직 보이는 카드가 접히면서 깜빡인다).
+ * "03. 수익분석" 섹션(#profit) 상단이 뷰포트 상단에 맞닿는 순간 재생하고,
+ * 다시 그 지점 위로 스크롤이 올라가면 되감는다 — 섹션에 들어올 때마다 반복 재생한다.
+ * rootMargin 을 '0px 0px -100% 0px' 로 줘서 관찰 영역을 뷰포트 최상단 한 줄로
+ * 좁혀두면, isIntersecting 은 정확히 섹션 상단이 그 줄을 지나는 동안만 true 가 된다.
  */
 const initReceiptReveal = () => {
   const section = document.getElementById('profit');
@@ -123,17 +135,13 @@ const initReceiptReveal = () => {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.intersectionRatio >= 0.35) {
-          entry.target.classList.add('in-view');
-        } else if (!entry.isIntersecting) {
-          entry.target.classList.remove('in-view');
-        }
+        cols.forEach((col) => col.classList.toggle('in-view', entry.isIntersecting));
       });
     },
-    { threshold: [0, 0.35] }
+    { threshold: 0, rootMargin: '0px 0px -100% 0px' }
   );
 
-  cols.forEach((col) => observer.observe(col));
+  observer.observe(section);
 };
 
 /**
@@ -159,6 +167,90 @@ const initGridReveal = () => {
   );
 
   targets.forEach((el) => observer.observe(el));
+};
+
+/**
+ * 05 매장위치 — Swiper 캐러셀. prefers-reduced-motion 을 존중해 자동재생을 아예 켜지 않고,
+ * 일시정지 토글 버튼은 클릭할 때마다 swiper.autoplay 를 멈추고/다시 시작한다.
+ * 2026-09-03: 자동재생은 #location 섹션이 30% 이상 뷰포트에 들어왔을 때만 돈다 — 화면 밖
+ * 캐러셀이 계속 넘어가는 걸 막기 위해 IntersectionObserver 로 진입/이탈에 맞춰 시작/정지한다.
+ * "뷰포트 안에 있음"과 "사용자가 일시정지 버튼을 누르지 않음" 둘 다 만족해야 재생되고,
+ * 토글 버튼 아이콘/aria-label 은 사용자의 의도(userPaused)만 반영한다 — 화면 밖으로 나가서
+ * 조용히 멈춘 것까지 아이콘에 반영하면(예: 스크롤만 했는데 재생 아이콘이 바뀜) 오히려 헷갈린다.
+ */
+const initStoreSwiper = () => {
+  const track = document.getElementById('storeGrid');
+  if (!track || typeof Swiper === 'undefined') return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const toggleBtn = document.getElementById('storeAutoplayToggle');
+
+  const swiper = new Swiper('.store-swiper', {
+    slidesPerView: 1.08,
+    spaceBetween: 20,
+    loop: true,
+    speed: reduceMotion ? 0 : 550,
+    autoplay: reduceMotion ? false : { delay: 4200, disableOnInteraction: false, pauseOnMouseEnter: true },
+    navigation: { prevEl: '.store-nav-prev', nextEl: '.store-nav-next' },
+    a11y: { enabled: true },
+    breakpoints: { 1025: { slidesPerView: 1.35, spaceBetween: 28 } },
+  });
+
+  const ring = document.querySelector('.store-nav-toggle__ring');
+  if (ring && swiper.autoplay) {
+    swiper.on('autoplayTimeLeft', (_s, _timeLeft, percentage) => {
+      ring.style.setProperty('--store-timer', percentage);
+    });
+  }
+
+  /* 카드 안에 있던 이름·오픈일·지도 버튼을 좌측 컬럼(.store-caption)으로 옮겼다(2026-09-03) —
+     loop:true 라 activeIndex 는 복제된 슬라이드를 가리킬 수도 있지만, Swiper 가 복제할 때
+     원본 슬라이드의 data-* 속성까지 그대로 복사하므로 realIndex 를 따로 계산할 필요 없이
+     swiper.slides[activeIndex] 에서 바로 읽으면 된다. */
+  const captionEl = document.getElementById('storeCaption');
+  const syncCaption = () => {
+    const slide = captionEl && swiper.slides[swiper.activeIndex];
+    if (!slide) return;
+    captionEl.innerHTML = storeCaptionHTML({
+      name: slide.dataset.name,
+      date: slide.dataset.date,
+      mapUrl: slide.dataset.mapUrl,
+    });
+  };
+  syncCaption();
+  swiper.on('slideChange', syncCaption);
+
+  if (!toggleBtn || !swiper.autoplay) return;
+
+  let userPaused = reduceMotion;
+  let inView = false;
+  const syncAutoplay = () => {
+    if (inView && !userPaused) swiper.autoplay.start();
+    else swiper.autoplay.stop();
+  };
+
+  swiper.autoplay.stop();   // 관찰자가 진입을 감지하기 전까지는 재생하지 않는다
+  toggleBtn.classList.toggle('is-paused', userPaused);
+  toggleBtn.addEventListener('click', () => {
+    userPaused = !userPaused;
+    toggleBtn.classList.toggle('is-paused', userPaused);
+    toggleBtn.setAttribute('aria-label', userPaused ? '자동 재생 시작' : '자동 재생 일시정지');
+    syncAutoplay();
+  });
+
+  if (reduceMotion) return;   // autoplay 자체가 꺼져 있으므로 관찰할 필요가 없다
+  const section = document.getElementById('location');
+  if (!section) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        inView = entry.isIntersecting;
+        syncAutoplay();
+      });
+    },
+    { threshold: 0.3 }
+  );
+  observer.observe(section);
 };
 
 /** 네비게이션 스크롤 이동 */
@@ -277,6 +369,7 @@ const boot = async () => {
   // 카드가 DOM 에 올라온 뒤에 관찰을 시작해야 한다
   initReceiptReveal();
   initGridReveal();
+  initStoreSwiper();
 };
 
 document.addEventListener('DOMContentLoaded', boot);

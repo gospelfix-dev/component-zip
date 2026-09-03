@@ -1,6 +1,6 @@
 # 고품격대패 — Design Guide
 
-`0007` 랜딩(시안A_v2)의 디자인 시스템 문서다. 실제 `assets/css/style.css` / `index.html` / `assets/css/animations.css` 를 기준으로
+`0007` 랜딩(시안A_v2)의 디자인 시스템 문서다. 실제 `index.html` / `assets/css/*.css` 를 기준으로
 작성했으며, 코드와 문서가 어긋나면 **코드가 항상 우선**이다 — 이 문서는 스냅샷이지 소스가 아니다.
 
 ---
@@ -11,13 +11,28 @@
   "프리미엄 정육점/스테이크하우스" 느낌을 낸다.
 - **구조**: 단일 페이지, 5개 섹션(경쟁력 → 메뉴 → 수익분석 → 창업비용 → 매장위치) + 히어로 + 푸터.
   섹션은 `id`로 구분되고 상단 내비게이션과 스크롤스파이(`initScrollSpy`)로 연결된다.
-- **빌드 없음**: HTML5/CSS3/바닐라 JS(ES6) + `assets/imgs/` 이미지가 전부다. `assets/css/style.css`(컴포넌트) +
-  `assets/css/animations.css`(재사용 키프레임)로 CSS 파일이 분리되어 있고, `index.html` 이 `assets/css/animations.css` →
-  `assets/css/style.css` 순서로 로드한다.
+- **빌드 없음**: HTML5/CSS3/바닐라 JS(ES6) + `assets/imgs/` 이미지가 전부다. 유일한 예외는
+  05 매장위치 캐러셀에 쓰는 **Swiper.js**(jsdelivr CDN, `swiper@11/swiper-bundle.min.{css,js}`,
+  2026-09-02 추가) — 이 프로젝트 최초의 외부 JS 런타임 의존성이다. 빌드 단계 없이 `<link>`/
+  `<script defer>` 만으로 붙였으므로 "빌드 도구 없음" 원칙 자체는 깨지 않았다.
+- **CSS 는 역할별로 4개 파일로 분리되어 있다** (2026-09-02 확정) — `index.html` 이 이 순서로 로드한다:
+  1. `assets/css/init.css` — 브라우저 기본값 리셋(`*`, `html`, `body`, `img`, `a`, `ul/li`)만 담는다.
+  2. `assets/css/fonts.css` — `@font-face` 선언만 담는다(Pretendard 9웨이트 self-host + RixYeoljeongdo).
+  3. `assets/css/animations.css` — `@keyframes` 로 정의하는 모든 애니메이션을 담는다(컴포넌트
+     전용이어도 예외 없이 여기로 모은다).
+  4. `assets/css/style.css` — 디자인 토큰(`:root`)과 실제 컴포넌트 스타일. 위 세 파일에 정의된
+     리셋/폰트/키프레임을 이름으로 참조해서 쓴다.
+
+  새 `@font-face`/`@keyframes`/리셋 규칙을 추가할 때도 반드시 해당 파일에 넣는다 — `style.css`
+  에 다시 섞어 넣지 않는다.
 - **콘텐츠 단일 진실 공급원**: `data/content.json`. 카드 문구·이미지·수치를 바꿀 일이 생기면 거의 항상
   이 파일만 고치면 된다(`assets/js/script.js` 가 `fetch` 로 읽어 8개 영역을 렌더링).
-- **베이스 상태**: 섹션 배경은 어두운 계열(히어로/메뉴/수익분석/창업비용)과 흰색 계열(경쟁력/매장위치)이
-  섞여 있다 — 하나의 다크 테마가 아니라 **섹션별로 배경이 전환되는 구조**다. 자세한 규칙은 Colors 참고.
+- **베이스 상태**: 전 섹션(히어로/경쟁력/메뉴/수익분석/창업비용/매장위치)이 어두운 배경을 쓴다 —
+  하나의 다크 테마로, 섹션마다 배경 장식(그라디언트/워터마크 사진/블러 사진)만 달라지는 구조다.
+  경쟁력 섹션은 원래 흰 배경이었으나 "임팩트가 약하다"는 피드백으로 2026-09-02에 다시 어두운
+  배경으로 되돌렸고(골드 글로우 + 상차림 사진 워터마크), 같은 날 매장위치 섹션도 정적 흰 그리드에서
+  Swiper 캐러셀 + 블러 처리한 매장 사진(`bg.png`) 배경으로 바뀌면서 마지막 흰 섹션이 사라졌다.
+  자세한 규칙은 Colors 참고.
 
 ---
 
@@ -27,9 +42,9 @@
 
 | 토큰 | 값 | 용도 |
 |---|---|---|
-| `--bg` | `#0E0C0A` | 페이지 기본 배경(거의 검정), 메뉴/창업비용 섹션 배경 |
-| `--bg-card` | `#FFFFFF` | 흰 배경 섹션(경쟁력/매장위치), 카드/인풋 배경, 좌우 노치 펀치홀 색 |
-| `--bg-card-2` | `#211B14` | 매장위치 섹션 안의 어두운 스토어 카드 배경 |
+| `--bg` | `#0E0C0A` | 페이지 기본 배경(거의 검정), 메뉴/경쟁력/창업비용 섹션 배경, 경쟁력 노치 펀치홀 색 |
+| `--bg-card` | `#FFFFFF` | 카드/인풋 배경, 경쟁력 트러스트 배지 카드 배경, 모바일 nav 플라이아웃, 창업비용표 헤더 행(2026-09-02부터 섹션 전체 배경으로는 더 이상 쓰이지 않는다 — 매장위치가 마지막 흰 섹션이었다) |
+| `--bg-card-2` | `#211B14` | 매장위치 섹션 안의 어두운 스토어 카드 배경, 경쟁력 티켓 카드 짝수 배경 |
 | `--gold` | `#C9A227` | 브랜드 골드(진한 톤) — 라벨, 강조, 포커스 컬러 |
 | `--gold-light` | `#E8CD7A` | 브랜드 골드(밝은 톤) — 본문 강조, 호버 상태 |
 | `--text` | `#333333` | 기본 텍스트(밝은/흰 배경용) |
@@ -50,14 +65,20 @@
 .menu{ --text: var(--text-invert); }
 .profit{ --text: var(--text-invert); }
 .cost{ --text: var(--text-invert); }
-.competency{ --text-dim:#6B6B6B; }   /* 흰 배경이라 어두운 회색으로 */
-.location{ --text-dim:#6B6B6B; }
+.competency{ --text: var(--text-invert); }   /* 2026-09-02: 흰 배경 → 다시 어두운 배경으로 */
+.location{ --text: var(--text-invert); }     /* 2026-09-02: 마지막 흰 섹션도 어두운 배경사진으로 */
 ```
 
-그리고 흰 섹션 **안에 다시 어두운 박스**가 있으면(`.comp-card`, `.store-card`) 그 박스 셀렉터에서
-`--text`/`--text-dim` 을 **한 번 더 뒤집는다**. 즉 색 규칙은 "가장 가까운 조상의 실제 배경 밝기"를
-따라 다시 선언하는 식으로 중첩된다 — 새 컴포넌트를 추가할 때 반드시 자신이 앉을 배경이 밝은지
-어두운지 먼저 확인하고 그에 맞는 텍스트 토큰 스코프를 잡을 것.
+그리고 어두운 섹션 **안에 다시 밝은/어두운 박스**가 있으면(`.comp-card`, `.trust-item`) 그 박스
+셀렉터에서 `--text`/`--text-dim` 을 **한 번 더 뒤집는다**. 즉 색 규칙은 "가장 가까운 조상의
+실제 배경 밝기"를 따라 다시 선언하는 식으로 중첩된다 — 새 컴포넌트를 추가할 때 반드시 자신이 앉을
+배경이 밝은지 어두운지 먼저 확인하고 그에 맞는 텍스트 토큰 스코프를 잡을 것. 예를 들어 경쟁력
+섹션의 `.trust-item` 은 어두운 섹션 배경 위에서 강한 대비를 내려고 **흰 카드**로 만들었으므로,
+`--text`/`--text-dim` 을 전역 토큰이 아니라 밝은 카드에 맞는 값(`#231B12`/`#6B6B6B`)으로 직접
+지정해 "두 번 뒤집힌" 상태를 만든다. `.store-card` 는 반대로 이 패턴에서 **빠진** 예다 — 매장위치
+섹션이 흰 배경이던 시절에는 어두운 카드로 만들려고 `--text`/`--text-dim` 을 뒤집었지만, 2026-09-02
+이후 `.location` 자체가 어두운 배경이 되면서 부모와 카드의 밝기가 같아져 더 이상 오버라이드가
+필요 없어졌다.
 
 ### 그 외 하드코딩 색상 (토큰화되지 않음, 용도가 국지적이라 의도적으로 리터럴 사용)
 
@@ -69,9 +90,44 @@
 
 ## Typography
 
-- **서체**: Pretendard 단일 패밀리 (`-apple-system, BlinkMacSystemFont, sans-serif` 폴백).
-  ⚠️ 알려진 이슈 — `index.html` 의 Google Fonts 링크가 400 에러를 뱉어 실제로는 항상 시스템
-  폰트(`-apple-system`)로 렌더링 중이다. 고치려면 `0004`/`0005` 처럼 jsDelivr CDN 링크로 교체.
+- **서체**: Pretendard 단일 패밀리 (`-apple-system, BlinkMacSystemFont, sans-serif` 폴백), 9웨이트
+  모두 `assets/fonts/Pretendard-*.woff2` 로 self-host 한다(`assets/css/fonts.css`). 2026-09-02
+  이전에는 `index.html` 이 Google Fonts CSS2 링크를 썼는데, Google Fonts 에는 Pretendard 가
+  없어 항상 HTTP 400 이 떨어지고 `-apple-system` 폴백으로만 렌더링되던 known issue였다 — 로컬
+  woff2 로 옮기며 해결했다.
+- **섹션 타이틀 안의 강조 문구는 빨간색(`var(--red)`)**: 2026-09-02, `.comp-title` 의
+  `.cline--accent`(경쟁력 "세 가지 기준")와 같은 의도로 나머지 4개 섹션 타이틀에도 강조 문구를
+  빨간색으로 표시했다. `.section-head h2` 안에서는 `<span class="h2-accent">` 로 감싸면 되고
+  (`.section-head h2 .h2-accent{ color:var(--red); }`), 수익분석(`.profit-head h2`)은 원래
+  있던 `<em>` 태그의 색만 `var(--gold-light)` → `var(--red)` 로 바꿨다. 색만 재사용하고
+  `.cline--accent` 의 외곽선/그림자(pop-art extrusion)는 이 타이틀들에는 넣지 않는다 — 그
+  효과는 경쟁력 포스터 타이틀 전용이다. 실제 강조 문구:
+  - 경쟁력: "세 가지 기준" (`.cline--accent`, 외곽선 포함)
+  - 메뉴: "9가지" (`.h2-accent`)
+  - 수익분석: "거짓 없는 선택!" (`<em>`)
+  - 창업비용: "창업 준비 항목" (`.h2-accent`)
+  - 매장위치: "확장을 증명하는 기록" (`.h2-accent`)
+  - 문의 소제목: "함께하세요" (`.inquiry-left h3 em`)
+- **강조 문구 "즉시 토글" 임팩트 효과(`.accent-impact`, 2026-09-03)**: 위 6개 강조 문구 전부에
+  `accent-impact` 클래스를 같이 걸었다(기존 색상용 클래스는 유지). 처음엔 스크롤 진입 시 1회
+  스냅되는 IntersectionObserver 방식이었는데, "스크롤과 무관하게 섹션마다 전부 동일하게, 한
+  번만이 아니라 무한 반복으로"라는 요청으로 순수 CSS 무한 애니메이션으로 바꿨다 — JS 관여
+  없음. `assets/css/style.css` 의 `.accent-impact{ animation:accentSnap 2.6s infinite; }` 가
+  `assets/css/animations.css` 의 `@keyframes accentSnap`(흐림/작음 ↔ 빨간색/원래 크기,
+  전환 구간이 `15%→15.01%` 로 razor-thin해 기본 이징이 걸려 있어도 보간 시간이 사실상 없다)을
+  돌린다 — `transition` 대신 극단적으로 좁은 keyframe 구간으로 "즉시"를 만드는 트릭이다.
+  `prefers-reduced-motion` 에서는 `.accent-impact{ animation:none !important; opacity:1
+  !important; transform:none !important; }` 로 고정한다(맨 아래 미디어쿼리).
+- **예외 — 섹션 상단 타이틀(`.section-head h2`, `.profit-head h2`, `.comp-title`, `.inquiry-left h3`)**:
+  2026-09-02에 `RixYeoljeongdo`(`@font-face`, `assets/fonts/RixYeoljeongdo.woff2`) 를 5개 섹션
+  헤드라인 + 05 매장위치 문의 블록 소제목("지금, 고품격대패와 함께하세요")에 적용했다(처음엔
+  경쟁력만 넣었다가 순차적으로 확장). 폰트 자체가 굵은 디스플레이체라
+  `font-weight` 는 `800` 대신 `400` 을 쓴다 — 800 을 주면 브라우저가 가짜로 두껍게 합성해
+  지저분해진다. 히어로 워드마크(`.hero-wordmark`)는 5개 섹션에 속하지 않는 별도 인트로라
+  이 예외에 포함되지 않고 계속 Pretendard 900 골드 그라디언트를 쓴다. `RixYeoljeongdo` 는 이
+  프로젝트에서 Pretendard가 아닌 폰트를 쓰는 **유일한 예외**다 — 세리프 폰트 금지 규칙과는
+  별개(디스플레이용 고딕 계열이라 저촉되지 않음)다. 섹션 타이틀 밖(본문, 라벨, 버튼 등)으로는
+  확장하지 않는다.
 - **크기 범위 규칙(2026-09-02 확정)**: **`font-size` 는 항상 18px 이상 96px 이하다.** 라벨·배지·
   각주·폼 힌트처럼 전통적으로 "잔글씨"였던 자리도 예외 없이 18px 이상이고, 히어로 워드마크처럼
   가장 큰 글자도 96px 을 넘지 않는다. 새 요소를 추가할 때 이 범위를 벗어나는 값을 쓰고 싶다면 —
@@ -85,10 +141,8 @@
 
 | 요소 | 값 | 굵기 |
 |---|---|---|
-| 히어로 워드마크(`.hero-wordmark`) | `clamp(52px, 11vw, 96px)` | 900 |
-| 수익분석 타이틀(`.profit-head h2`) | `clamp(30px, 4.4vw, 50px)` | 800 |
-| 섹션 타이틀(`.section-head h2`) | `clamp(28px, 3.4vw, 42px)` | 800 |
-| 문의 좌측 타이틀(`.inquiry-left h3`) | `clamp(26px, 3vw, 36px)` | 800 |
+| 섹션 타이틀 전체(`.comp-title`, `.profit-head h2`, `.section-head h2`, `.inquiry-left h3`) | `clamp(34px, 5vw, 64px)` | 400(`RixYeoljeongdo`) |
+| 히어로 워드마크(`.hero-wordmark`) | `clamp(52px, 11vw, 96px)` | 900(Pretendard — 5개 섹션에 속하지 않아 RixYeoljeongdo 예외 대상 아님) |
 | 히어로 서브카피(`.hero-sub2`) | `clamp(18px, 1.55vw, 22px)` | 400 |
 | 히어로 eyebrow(`.hero-eyebrow2`) | `clamp(18px, 1.25vw, 20px)` | 400 |
 | 버튼(`.btn-primary`, `.btn-ghost`) | `clamp(18px, 1.15vw, 19px)` | 700 / 400 |
@@ -100,11 +154,11 @@
 
 | 크기 | 요소 |
 |---|---|
-| 24px | 트러스트 숫자(`.trust-item h5`) |
+| 22px | 경쟁력 타이틀 상단 별 장식(`.comp-stars`) |
 | 20px | `.nav-logo` |
-| 19px | 경쟁력 카드 타이틀(`.comp-card h3`) |
+| 19px | 경쟁력 카드 타이틀(`.comp-card h3`), 트러스트 배지 카드 타이틀(`.trust-item h5`) |
 | 18px | 그 외 전부 — `.nav-links`(모바일 플라이아웃 포함), `.nav-cta`, `.kicker`, `.section-head p`,
-  `.comp-num`, `.comp-card p`, `.trust-item p`, `.meat-label`, `.selfbar-note`(+`b`), `.sb-item span`,
+  `.comp-num`, `.comp-card p`, `.trust-num`, `.trust-item p`, `.meat-label`, `.selfbar-note`(+`b`), `.sb-item span`,
   `.profit-sub`, `.r-label`, `.r-sub`, `.r-date`, `.profit-footnote`, `.cost-row span`(헤더 행 포함),
   `.cost-badge`, `.cost-note p`, `.store-card .meta h4`, `.store-card .meta .date`, `.map-btn`,
   `.inquiry-left p`, `.contact-line .k`/`.v`, `label`, `input`/`select`/`textarea`, `.submit-btn`,
@@ -119,22 +173,32 @@
 ## Layout
 
 - **컨테이너**: `.wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }` — 모든 섹션 콘텐츠가
-  이 폭 안에 정렬된다.
+  이 폭 안에 정렬된다. **부분 예외**: `05 매장위치`(`.location`)는 2026-09-03부터 `.location-right`
+  (매장 캐러셀)만 `.wrap` 을 뚫고 나가 뷰포트 오른쪽 끝까지 채운다 — `.location-left`(타이틀·설명·
+  컨트롤 버튼)와 하단 문의 폼(`.inquiry-grid`)은 그대로 `.wrap` 안에 머문다. 자세한 내용은 아래
+  "매장위치 캐러셀" 절 참고.
 - **섹션 리듬**: `section{ padding:120px 0; }`, 섹션 헤드(`.section-head`)는 `margin-bottom:64px`,
   `max-width:640px` 로 본문보다 좁게 잡아 타이틀 가독성을 확보한다.
-- **그리드**:
-  - 경쟁력 카드: 3열(데스크톱) → 1열(≤820px)
-  - 트러스트 스트립: 4열 → 2열(≤820px)
-  - 메뉴(고기): 3열 → 2열(≤700px)
-  - 셀프바: 8열 → 4열(≤820px)
-  - 창업비용 표: `1fr 2fr 1fr` → 가운데 열 숨김, `1fr 1fr`(≤700px)
-  - 매장 카드: 3열 → 1열(≤820px)
-  - 문의 폼: `0.9fr 1.1fr` 2열 → 1열(≤820px)
-- **브레이크포인트**: **900 / 820 / 700px** 세 가지로 고정. 새 반응형 규칙이 필요해도 이 값을
-  재사용하고, 임의의 새 브레이크포인트를 만들지 않는다.
-- **미디어쿼리 위치**: 해당 컴포넌트 블록 바로 뒤에 붙인다(파일 끝에 몰아두지 않음). `assets/css/style.css` 는
-  대략 "토큰 → nav → hero → wave → section 공통 → 섹션별(경쟁력→메뉴→수익분석→창업비용→매장위치)
-  → 폼 → 푸터 → 접근성 → reduced-motion" 순서를 유지한다.
+- **그리드** (전부 아래 단일 브레이크포인트 기준):
+  - 경쟁력 카드: 3열(PC) → 1열(모바일)
+  - 트러스트 스트립: 4열 → 2열
+  - 메뉴(고기): 3열 → 2열
+  - 셀프바: 8열 → 4열
+  - 창업비용 표: `1fr 2fr 1fr` → 가운데 열 숨김, `1fr 1fr`
+  - 매장 카드: 3열 → 1열
+  - 문의 폼: `0.9fr 1.1fr` 2열 → 1열
+  - 내비게이션: 가로 메뉴 → 햄버거 + 흰 배경 풀스크린 플라이아웃
+- **브레이크포인트(2026-09-02 확정)**: **PC/모바일 2단계, 기준 `max-width:1024px`** 하나만 쓴다.
+  가로 1024px 초과는 PC 버전, 1024px 이하는 모바일 버전이다. 예전에는 900/820/700px 세 값이
+  컴포넌트마다 섞여 있었는데, 전부 `1024px` 로 통일했다 — **새 반응형 규칙도 `@media
+  (max-width:1024px)` 만 쓰고, 다른 값을 새로 만들지 않는다.** (`.hero-bg` 의
+  `@media (max-width:1024px), (hover:none)` 처럼 `hover:none` 같은 능력 기반 쿼리를 폭 조건과
+  함께 쓰는 건 별개 관심사라 계속 허용된다.) `.hero-center{ max-width:900px; }` 처럼 브레이크포인트가
+  아니라 순수 레이아웃 폭 제한으로 쓰인 `900px` 값은 이 규칙과 무관하므로 바꾸지 않는다.
+- **미디어쿼리 위치**: 해당 컴포넌트 블록 바로 뒤에 붙인다(파일 끝에 몰아두지 않음, 파일을
+  4개로 나눈 뒤에도 이 관례는 `assets/css/style.css` 안에서 그대로 유지). 대략 "토큰 → nav →
+  hero → wave → section 공통 → 섹션별(경쟁력→메뉴→수익분석→창업비용→매장위치) → 폼 → 푸터 →
+  접근성 → reduced-motion" 순서를 유지한다.
 - **히어로는 `position:sticky`**: 배경·문구·버튼이 화면에 고정된 채 다음 섹션이 그 위로 스크롤되어
   덮인다. `.wave`, `footer` 처럼 sticky 뒤에 오는 정적 형제는 `position:relative` + `z-index` 로
   sticky 위에 그려지도록 만든다.
@@ -165,13 +229,15 @@
 
 ## Shapes
 
-- **모서리**: 대부분 각지거나 아주 약한 라운드(`border-radius:2px`) — 버튼, 인풋, 창업비용 표, 카드
-  프레임(`.store-card`, `.meat-card`) 전부 이 값을 공유한다. 브랜드가 "칼같이 정직한" 느낌을 원해서
-  둥근 모서리를 거의 안 쓴다.
-- **예외 — 경쟁력 티켓 카드**: 유일하게 큰 라운드(`border-radius:28px` 프레임, 낱장 타일은 `26px`)를
-  쓰는 컴포넌트. 참고 시안(치킨신드롬 혜택 카드)을 재현한 "티켓" 은유라서 의도적으로 다르다. 좌우
+- **모서리**: 대부분 각지거나 아주 약한 라운드(`border-radius:2px`) — 버튼, 인풋, 창업비용 표,
+  카드 프레임(`.meat-card`) 전부 이 값을 공유한다. 브랜드가 "칼같이 정직한" 느낌을 원해서 둥근
+  모서리를 거의 안 쓴다.
+- **예외 — 경쟁력 티켓 카드**: 큰 라운드(`border-radius:28px` 프레임, 낱장 타일은 `26px`)를 쓰는
+  컴포넌트. 참고 시안(치킨신드롬 혜택 카드)을 재현한 "티켓" 은유라서 의도적으로 다르다. 좌우
   가장자리에 반지름 13px 원(`::before`/`::after`, 배경색 = 섹션 배경)을 배치해 티켓에 펀치홀이 뚫린
   것처럼 보이게 한다 — **섹션 배경색이 바뀌면 이 원의 `background` 도 함께 바꿔야** 이질감이 안 생긴다.
+- **예외 — 매장위치 캐러셀 카드**: 2026-09-03부터 `.store-card` 도 큰 라운드(`border-radius:20px`)로
+  바뀌었다 — 풀블리드 사진 카드 레퍼런스를 그대로 재현한 것. "매장위치 캐러셀" 절 참고.
 - **원형**: 셀프바 아이템(`.sb-item .circle`, `border-radius:50%`), 히어로 배지 폰(`border-radius:999px`,
   알약형), 프린터 바(`border-radius:999px`).
 - **시그니처 웨이브**: `.wave` SVG(물결 패스)가 브랜드의 "물결형 인테리어" 정체성을 섹션 구분선으로
@@ -186,17 +252,27 @@
 
 ### Navigation (`header.nav`)
 고정 헤더, 반투명 검정 배경(`rgba(0,0,0,.6)`). 로고 + 5개 링크(스크롤스파이로 `active` 갱신) +
-CTA 버튼 + 모바일 햄버거(≤900px 에서 흰 배경 풀스크린 플라이아웃으로 전환).
+CTA 버튼 + 모바일 햄버거(≤1024px 에서 흰 배경 풀스크린 플라이아웃으로 전환).
 
 ### Hero (`.hero`)
 `position:sticky` 배경 사진(패럴랙스, `background-attachment:fixed`) + 오버레이 그라디언트.
 `.hero-wordmark` 는 골드 그라디언트 텍스트(`background-clip:text`)에 진입 시 화면을 꽉 채울 만큼
-커졌다가(`scale(4.4)`) 빠르게(0.85s) 제자리로 줄어드는 `wordmarkIntro` 애니메이션(→ `assets/css/animations.css`,
-재사용 가능한 키프레임)과, 계속 흐르는 `wordmarkShine` 그라디언트 반짝임을 가진다.
+커졌다가(`scale(4.4)`) 빠르게(0.85s) 제자리로 줄어드는 `wordmarkIntro` 애니메이션과, 계속 흐르는
+`wordmarkShine` 그라디언트 반짝임을 가진다. 두 `@keyframes` 모두 `assets/css/animations.css` 에 있다
+(컴포넌트 전용이어도 예외 없이 그쪽에 모은다 — 아래 CSS 파일 분리 규칙 참고).
+
+### 경쟁력 섹션 배경 (`.competency`)
+2026-09-02부터 어두운 배경(`var(--bg)` + 좌상단 은은한 골드 radial glow)이다. `::before` 로
+우상단에 상차림 사진(`assets/imgs/generated.png`, 투명 배경 PNG)을 깔고 `mask-image` 선형
+그라디언트로 좌하단을 향해 페이드아웃시켜 배경에 자연스럽게 녹아들게 한다(불투명도 `.55`).
+텍스트를 크게 키워 배경 장식을 만들지 않는다 — 폰트 크기 18~96px 규칙이 예외 없이 적용되므로,
+장식은 반드시 이미지/SVG 로 그린다(글자가 아니다).
 
 ### 경쟁력 카드 — "티켓" 그리드 (`.comp-grid` / `.comp-card`)
 어두운 라운드 프레임(펀치홀 노치 포함) 안에 타일 3개. 타일은 홀/짝으로 배경 톤이 미묘하게
-갈린다(`#1C160E` / `var(--bg)`). 각 타일 구성:
+갈린다(`#1C160E` / `var(--bg-card-2)` — 섹션 배경(`var(--bg)`)보다 밝게 잡아야 카드가 배경에
+묻히지 않는다). 좌우 펀치홀 노치(`.comp-grid::before/::after`)는 섹션 배경 톤(`var(--bg)`)과
+같은 색을 칠해야 뚫린 것처럼 보인다 — 섹션 배경이 바뀌면 이 값도 반드시 같이 바꾼다. 각 타일 구성:
 1. 상단 중앙 아이콘(`::after`, 카드마다 다른 인라인 SVG data-URI, 흰색 스트로크, `mask` 대신
    `background-image` 를 직접 씀 — 색은 SVG 안에 하드코딩)
 2. 골드 eyebrow 라벨(`.comp-num`, 대문자)
@@ -209,23 +285,103 @@ CTA 버튼 + 모바일 햄버거(≤900px 에서 흰 배경 풀스크린 플라�
 호버 시 카드가 10px 떠오르고, 상단 골드 바가 왼쪽→오른쪽으로 채워지며, 아이콘이 살짝 확대된다.
 
 ### 트러스트 스트립 (`.trust-strip` / `.trust-item`)
-4개 통계(HACCP/7호점/25종+/ECO). 경쟁력 카드와 같은 `compCardReveal` 진입 애니메이션을 공유하고,
-호버 시 숫자(`h5`)가 확대 + 색이 진해진다.
+4개 통계(HACCP/7호점/25종+/ECO), "POINT 카드" 스타일 레퍼런스를 참고해 리본형 뱃지 카드로
+디자인했다. 어두워진 섹션 배경 위에서 대비를 강하게 내려고 **흰 카드**(`var(--bg-card)`)로
+만든다 — 경쟁력 티켓 카드(어두운 카드)와 반대다. 카드 구성:
+1. 좌측 상단 골드 그라디언트 번호 배지(`.trust-num`, `01`~`04`) — 데이터가 아니라
+   `script.js` `renderTrust` 가 배열 순서(`i+1`)로 생성한다
+2. 우측 상단 접힌 리본 모서리(`::before`, `border-width` 트라이앵글 트릭으로 그린 삼각형, 골드)
+3. 중앙 아이콘(`::after`, 항목마다 다른 SVG, **진한 색 스트로크** `#2A2118` — 흰 카드 위라 경쟁력
+   카드 아이콘과 달리 골드가 아니라 어두운 색을 쓴다. 골드는 리본/배지 전용으로 남겨 위계를 만든다)
+4. 제목(`h5`, 어두운 텍스트)과 설명(`p`)은 `--text`/`--text-dim` 을 흰 카드에 맞는 값
+   (`#231B12`/`#6B6B6B`)으로 로컬 재정의한다
+
+경쟁력 카드와 같은 `compCardReveal` 진입 애니메이션을 공유하고, 호버 시 카드가 떠오르며 리본
+색이 밝아지고 제목이 확대+ 진한 골드로 바뀐다.
 
 ### 메뉴 카드 (`.meat-card`)
 이미지 카드, 하단 그라디언트 오버레이 위에 라벨. 호버 시 이미지만 `scale(1.05)`.
 
 ### 수익분석 영수증 (`.receipt-*`)
-프린터 슬롯에서 영수증이 뽑혀 나오는 은유. `initReceiptReveal` 이 35% 이상 보이면 `.in-view` 를 줘
-`max-height` 트랜지션으로 종이가 펼쳐지고, 섹션에서 완전히 벗어나면 다시 접는다(반복 재생).
+프린터 슬롯에서 영수증이 뽑혀 나오는 은유. `initReceiptReveal` 은 `#profit` 섹션 상단이 뷰포트
+상단에 닿는 순간(`rootMargin:'0px 0px -100% 0px'` 로 관찰 영역을 뷰포트 최상단 한 줄로 좁힌
+IntersectionObserver) 모든 `.receipt-col` 에 한꺼번에 `.in-view` 를 주고, 섹션이 다시 그 지점
+위로 스크롤되면 제거한다(반복 재생). 2026-09-03부터 종이가 펼쳐지는 실제 애니메이션은
+`.receipt-mask` 의 `clip-path`(`inset(0 0 100% 0)` → `inset(0 0 0% 0)`)로 처리한다 — 이전에는
+`max-height:0→760px` 를 움직였는데, 그 방식은 `.receipt-mask` 의 문서 흐름 높이 자체가 접힘/
+펼침마다 바뀌어 `03 수익분석` 섹션 전체 높이가 스크롤 도중 출렁이는 문제가 있었다. `clip-path`
+는 레이아웃 높이(항상 실제 콘텐츠 높이)에 영향을 주지 않고 보이는 영역만 위→아래로 드러내므로
+섹션 높이가 접힘/펼침 상태와 무관하게 고정된다.
 **"원" 단위는 사용자 요청으로 삭제됨 — 되살리지 않는다.**
 
 ### 창업비용 표 (`.cost-table` / `.cost-row`)
 3열 그리드 표. 헤더 행(`.cost-head`)만 흰 배경 + 골드 라벨. 현재 모든 금액이 "상담 시 안내" —
 실제 수치를 받으면 `index.html` 의 정적 마크업에 바로 채워 넣을 수 있다.
 
-### 매장 카드 (`.store-card`)
-흰 매장위치 섹션 안에 있는 어두운 카드(`--bg-card-2`). 사진 + 오픈일 + 지점명 + 네이버 지도 링크.
+### 매장위치 캐러셀 (`.location-*` / `.store-swiper` / `.store-card`)
+2026-09-03, 좌측 텍스트(`.location-left`)는 `.wrap`(max-width:1120px) 안에 그대로 두고
+`.location-right`(캐러셀)만 뷰포트 오른쪽 끝까지 bleed 시켰다 — 참고 레퍼런스처럼 "텍스트는
+본문 폭, 이미지는 화면 꽉 차게"를 구현한 것. `.location-right{ margin-right: min(-32px,
+calc(528px - 50vw)); }` — 528px 은 `.wrap` 콘텐츠 폭(1120-32*2=1056)의 절반. 이 값만큼 grid
+트랙의 auto 폭이 음수 마진을 흡수해 오른쪽으로 늘어난다. `min()` 은 `.wrap` 이 더 이상 중앙
+정렬되지 않는 1024~1120px 구간에서 확장폭이 32px 밑으로 떨어지지 않게 하는 안전장치다. 1024px
+이하 모바일(1열 스택)에서는 비대칭 bleed 가 어색해 `margin-right:0` 으로 되돌린다.
+
+이 bleed 가 섹션 경계에 잘리지 않으려면 `.location{ overflow:hidden; }` 을 섹션 자체에 걸면 안
+된다 — 배경 블러(`.location-bg{ transform:scale(1.08); }`)가 살짝 부풀어 오르는 것만 잘라내는
+전용 프레임 `.location-bg-frame{ position:absolute; inset:0; overflow:hidden; }` 을 따로 두고,
+`.location-bg` 를 그 안에 넣었다. `body{ overflow-x:hidden; }`(`assets/css/init.css`)가 페이지
+레벨에서 가로 스크롤 발생을 막아주므로 bleed 자체는 안전하다.
+
+하단 문의 폼(`.inquiry-grid`)은 `.location-layout` 과 별개로 자기 자신만의 `.wrap` 으로 감싸
+1120px 폭을 유지한다(즉 이 섹션 안에 `.wrap` 이 두 번 나온다) — 캐러셀의 bleed 와는 무관하다.
+
+2026-09-02, 정적 3열 그리드에서 Swiper.js 캐러셀로 바꿨다 — 이 프로젝트 **최초의 외부 JS
+의존성**(jsdelivr CDN `swiper@11/swiper-bundle.min.{css,js}`, `index.html` 에 `<link>`/`<script
+defer>` 로 로드).
+
+**카드 디자인(`.store-card`)은 2026-09-03에 레퍼런스를 참고해 풀블리드 사진으로 바꿨다** —
+`.store-card{ position:relative; aspect-ratio:8/9; border-radius:20px; overflow:hidden; }` 안에
+`.photo`(`position:absolute; inset:0`) 하나만 있고, 사진이 카드 전체를 꽉 채운다. 카드 배경 토큰
+(`--bg-card-2`)은 더 이상 쓰이지 않는다. 이 카드만 `border-radius:20px` 로 둥글다(다른 컴포넌트는
+대부분 2px 안팎의 각진 프레임, Shapes 절 참고) — 레퍼런스가 명시적으로 요구한 둥근 카드라 의도된
+예외다.
+
+**이름·오픈일·지도 버튼은 카드 위가 아니라 좌측 컬럼의 `.store-caption` 에 있다**(같은 날 후속
+수정) — 처음엔 카드 하단에 그라디언트 스크림으로 얹었지만, "정보가 좌우 컨트롤 버튼 바로 위에
+있으면 좋겠다+ 슬라이드가 넘어갈 때마다 그 정보가 바뀌어 보이면 좋겠다"는 요청으로 위치를
+옮겼다. `.store-bottom`(`.location-left` 안, `.section-head` 다음)이 `.store-caption` +
+`.store-nav` 를 한 덩어리로 묶어 항상 붙어 다니게 하고, `.location-left` 의
+`justify-content:space-between` 이 이 덩어리를 타이틀 블록 반대편(맨 아래)에 붙인다.
+
+내용 동기화는 `assets/js/script.js` `initStoreSwiper` 의 `syncCaption()` 이 담당한다 — 각
+`.swiper-slide` 에 `data-name`/`data-date`/`data-map-url` 속성을 심어두고(`renderStores`),
+Swiper 의 `slideChange` 이벤트마다 `swiper.slides[swiper.activeIndex].dataset` 를 읽어
+`.store-caption` 을 다시 그린다. `loop:true` 로 Swiper 가 슬라이드를 복제해도 원본의 data-*
+속성까지 그대로 복사되므로, `activeIndex` 가 복제본을 가리키는 경우까지 감안한 `realIndex`
+보정 없이 그냥 `activeIndex` 로 읽어도 항상 맞는 데이터가 나온다.
+
+레이아웃은 좌(`.location-left`: 섹션 헤드 + 캡션 + 원형 컨트롤 3개) / 우(`.location-right`:
+캐러셀) 2단 그리드(`.location-layout{ grid-template-columns:0.85fr 1.15fr; }`, 1024px 이하에서
+1열로 스택). 배경은 `.location-bg`(`assets/imgs/bg.png` 매장 개업식 사진, `filter:blur(6px)` +
+`transform:scale(1.08)` 로 블러 가장자리를 숨김) 위에 `.location-overlay` 어두운 대각선
+그라디언트(`linear-gradient(100deg, rgba(14,12,10,.94)…)`)를 얹어 왼쪽 텍스트의 대비를 확보한다
+— `.hero-bg`/`.hero-overlay` 와 같은 절대배치 레이어 패턴 재사용.
+
+Swiper 설정(`assets/js/script.js` `initStoreSwiper`): `slidesPerView:1.08`(1024px↑에서 `1.35`)
++ `spaceBetween`, `loop:true`, `autoplay`(4.2초 간격, 마우스 오버 시 정지) — 다음 카드가 오른쪽에
+살짝 겹쳐 보이는(peeking) 효과를 낸다. `prefers-reduced-motion` 이면 `autoplay:false` + `speed:0`
+으로 자동재생 자체를 켜지 않는다(CSS 쪽 마지막 미디어쿼리와 대칭). 이전/다음은
+`navigation:{ prevEl:'.store-nav-prev', nextEl:'.store-nav-next' }` 로 좌측 원형 버튼에 연결하고,
+가운데 일시정지 버튼(`#storeAutoplayToggle`)은 클릭 시 `swiper.autoplay.stop()/.start()` 를
+토글하며 버튼 안의 아이콘 두 개(`.icon-pause`/`.icon-play`)를 `.is-paused` 클래스로 전환한다.
+
+컨트롤 버튼 아이콘은 **Lucide**(lucide.dev, MIT) 소스에서 그대로 가져온 인라인 SVG다 —
+`chevron-left`(`m15 18-6-6 6-6`), `chevron-right`(`m9 18 6-6-6-6`), `pause`(세로 막대 2개,
+`rect x=14/5 y=3 width=5 height=18 rx=1`), `play`(삼각형 `path`). `stroke="currentColor"` 라
+`.store-nav-btn` 의 `color` 토큰만 바꾸면 아이콘 색도 같이 바뀐다 — 프로젝트가 이미 쓰던
+"인라인 SVG 아이콘" 관례(`PIN_SVG`, 경쟁력/트러스트 아이콘)와 동일한 방식이라 별도 아이콘
+폰트나 스크립트가 필요 없다.
 
 ### 문의 폼 (`.inquiry-grid` / `form`)
 완전 목업 — `initInquiryForm` 이 `submit` 을 가로채 버튼 텍스트만 바꾼다. 실제 전송 없음(추후
@@ -244,13 +400,15 @@ Next.js + Supabase 마이그레이션 예정).
 ### Do
 - 색은 항상 `:root` 토큰(`var(--gold)` 등)에서 가져온다. 새 배경 밝기가 필요하면 그 컴포넌트
   스코프에서 `--text`/`--text-dim` 을 재정의하는 기존 패턴을 따른다(Colors 절 참고).
-- 반응형 폭은 `clamp()` 로 처리하고, 브레이크포인트는 900/820/700px 만 쓴다.
+- 반응형 폭은 `clamp()` 로 처리하고, 브레이크포인트는 `max-width:1024px` 하나만 쓴다(PC/모바일 2단계).
 - **`font-size` 는 항상 18px 이상 96px 이하**로 쓴다. `clamp()` 를 쓰더라도 `min` 이 18px 미만,
   `max` 가 96px 초과이면 안 된다.
 - 새 애니메이션을 추가하면 **`prefers-reduced-motion` 블록에 반드시 예외를 추가**한다
   (`animation:none`, `transform:none`, `opacity:1` 로 무력화).
-- 여러 컴포넌트에서 재사용할 만한 키프레임은 `assets/css/animations.css` 로 분리하고, `assets/css/style.css` 에는
-  적용부(`animation: name …`)만 남긴다.
+- **모든 `@keyframes` 는 `assets/css/animations.css` 에 정의한다** — 컴포넌트 전용이라도 예외
+  없다(2026-09-02 확정). `assets/css/style.css` 에는 적용부(`animation: name …`)만 남긴다.
+- **`@font-face` 는 `assets/css/fonts.css` 에, 리셋 규칙(`*`/`html`/`body`/`img`/`a`/`ul,li`)은
+  `assets/css/init.css` 에 정의한다.** `assets/css/style.css` 에 다시 섞어 넣지 않는다.
 - CSS 를 만졌으면 반드시 로컬 서버로 실제 렌더링해서 확인한다(`python3 -m http.server 8765`).
   지금까지 이 프로젝트의 CSS 버그는 전부 "브라우저로 본 적이 없어서" 생겼다.
 - 문구·수치·이미지 경로를 바꿀 일이 있으면 `data/content.json` 을 고친다 — JS 안에 사본을 두지
@@ -278,7 +436,7 @@ Next.js + Supabase 마이그레이션 예정).
 - **새 색상 값을 컴포넌트 안에 직접 하드코딩하지 않는다** — 영수증/프린터 바처럼 "실물을 재현하는"
   국지적 색은 예외지만, 브랜드 색(골드/배경/텍스트)은 반드시 토큰을 통해서만 쓴다.
 - **경쟁력 티켓 카드의 노치 색을 잊고 방치하지 않는다** — `.comp-grid::before/::after` 의
-  `background` 는 부모 섹션 배경(`var(--bg-card)`)과 같아야 펀치홀 착시가 유지된다. 섹션 배경을
+  `background` 는 부모 섹션 배경(현재 `var(--bg)`)과 같아야 펀치홀 착시가 유지된다. 섹션 배경을
   바꾸면 이 값도 함께 바꾼다.
 - **`.claude/rules/*.md` 를 그대로 인용하지 않는다** — `0003`(아이스크림 카드) 컴포넌트 기준으로
   작성된 스캐폴딩이라 `data/palettes.json`, `js/app.js`, ES5/`FALLBACK` 같은 이 폴더에 없는 개념을
