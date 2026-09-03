@@ -113,7 +113,7 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
 .hero-center{ position:relative; z-index:5; text-align:center; max-width:900px; margin:0 auto; }
 .hero-eyebrow2{ color:var(--text-dim); font-size:clamp(18px,1.25vw,20px); margin-bottom:24px; letter-spacing:0.01em; }
 .hero-wordmark{
-  font-weight:900; font-size:clamp(52px, 11vw, 96px); line-height:1;
+  font-weight:900; font-size:clamp(72px, 15vw, 132px); line-height:1;
   display:inline-block;
   background:linear-gradient(115deg,
     #8E6E1E 0%, var(--gold) 20%, var(--gold-light) 38%,
@@ -123,11 +123,12 @@ header.nav.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-7px) ro
   /* 아래 붉은 웨이브 언더라인(.hero-underline)을 삭제하면서, 그 요소가 갖고 있던
      아래 여백 28px 을 워드마크로 옮겼다(원래 값 2px). */
   letter-spacing:-0.02em; margin-bottom:28px;
-  /* 진입 시 화면을 꽉 채울 만큼 크게 나타났다가 빠르게 제자리 크기로 줄어든 뒤,
-     이어서 그라디언트가 계속 흐르며 반짝인다. wordmarkIntro 키프레임은 재사용을
-     위해 animations.css 로 분리했다(index.html 에서 style.css 보다 먼저 로드). */
+  /* 화면을 꽉 채울 만큼 크게 나타났다가 빠르게 제자리 크기로 줄어들고, 이어서
+     그라디언트가 계속 흐르며 반짝인다. 이 팝 인트로는 3s 마다 무한 반복된다(2026-09-03).
+     wordmarkIntro 키프레임은 재사용을 위해 animations.css 로 분리했다(index.html 에서
+     style.css 보다 먼저 로드). */
   animation:
-    wordmarkIntro .85s cubic-bezier(0.16,1,0.3,1) both,
+    wordmarkIntro 3s cubic-bezier(0.16,1,0.3,1) infinite,
     wordmarkShine 5s linear infinite;
 }
 .hero-sub2{ color:var(--text); font-size:clamp(18px,1.55vw,22px); line-height:1.6; margin-bottom:38px; }
@@ -330,7 +331,7 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .meat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:16px; }
 .meat-card{ position:relative; background:var(--bg-card); overflow:hidden; aspect-ratio:5/3.4; }
 .meat-card img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.05); transition:transform .5s ease; }
-.meat-card:hover img{ transform:scale(1.05); }
+.meat-card:hover img{ transform:scale(1.15); }
 .meat-label{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px 12px; background:linear-gradient(to top, rgba(0,0,0,0.75), transparent); font-size:18px; color:var(--text); font-weight:600; letter-spacing:0.01em; }
 @media (max-width:1024px){ .meat-grid{grid-template-columns:repeat(2,1fr);} }
 
@@ -633,7 +634,7 @@ textarea{ resize:vertical; min-height:110px; }
 
 /* FOOTER */
 footer{ position:relative; z-index:1; background:#0A0806; border-top:1px solid var(--line); padding:56px 0 40px; }
-.footer-grid{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+.footer-grid{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;}
 .footer-logo{ display:flex; align-items:center; gap:10px; }
 .footer-logo img{ height:28px; border-radius:3px; }
 .footer-logo span{ color:var(--gold-light); font-weight:700; font-size:18px; }

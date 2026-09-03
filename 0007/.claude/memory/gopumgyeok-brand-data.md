@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 64490a38-09ba-439e-83a5-66505594f155
-  modified: 2026-09-01T07:20:12.107Z
+  modified: 2026-09-03T00:00:00.000Z
 ---
 
 클라이언트 공식 인쇄 카탈로그(`고품격대패_카달로그_최종_인쇄.pdf`, 8p)에서 발췌한 실제 브랜드 데이터. 카피·수치를 새로 지어내지 말고 여기서 가져올 것([[gopumgyeok-landing-project]]).
@@ -25,3 +25,12 @@ metadata:
 - **레퍼런스 사이트**: 더맛있는족발보쌈(xn--sh1b6nw5n8pcxvw8ib.kr), 귀한족발(xn--hh0b95yusj63m.com), 치킨신드롬(chickensyndrome.co.kr)
 
 **이미지 출처**: `0007/assets/`의 44장은 전부 이 카탈로그 PDF 크롭본이다. 추출 방식 = `pymupdf`로 300%(3x) 렌더링 → PIL 좌표 크롭 → JPG 82% 최적화. 재추출이 필요하면 동일 방식을 쓰되, 원본 PDF는 이전 claude.ai 컨테이너 경로(`/mnt/user-data/uploads/`)에 있었으므로 **로컬에는 없다 — 사용자에게 다시 받아야 함**.
+
+**예외 — 02 메뉴 고기 9종은 더 이상 카탈로그 크롭이 아니다(2026-09-03).** `meat_*.jpg`(카탈로그 크롭,
+25~35KB)는 여전히 파일로 남아있지만 `data/content.json`은 전부 `meat_*.png`(나무 테이블 배경 +
+와사비 접시 + 반짝이 아이콘 스타일의 AI 생성 이미지, 개당 2.2~2.4MB)를 가리킨다 — 사용자가
+명시적으로 png 전환을 요청했고, 용량이 원본 대비 약 90배라는 점을 알린 뒤에도 그대로 진행을
+선택했다([[gopumgyeok-font-size-rule-exception]]과 같은 패턴 — 트레이드오프를 알리고 사용자
+선택을 존중). `meat_dwaeji.png`(돼지 한판)만 처음엔 없었는데 사용자가 세션 도중 직접
+파일시스템에 추가했다. 9종 총합 약 20MB로, 최적화(리사이즈/압축) 없이 그대로 배포 중 —
+[[gopumgyeok-open-issues]] 참고.

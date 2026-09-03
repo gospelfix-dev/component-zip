@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 64490a38-09ba-439e-83a5-66505594f155
-  modified: 2026-09-01T07:20:29.855Z
+  modified: 2026-09-03T00:00:00.000Z
 ---
 
 2026-09-01 CLI 인계 시점 기준 [[gopumgyeok-landing-project]]의 미해결 상태.
@@ -19,6 +19,10 @@ metadata:
 6. **최종 시안 미확정** — 시안A(다크 프리미엄) / 시안A_v2(=0007, 최신) / 시안B(라이트 에디토리얼) 중 클라이언트 컨펌 대기.
 7. **문의폼 완전 목업** — 제출해도 버튼 텍스트만 바뀌고 전송 없음.
 8. **이미지 저해상도** — 전부 카탈로그 PDF 크롭이라 프로덕션에선 클라이언트 고해상도 원본으로 교체하는 게 좋다([[gopumgyeok-brand-data]]).
+9. **02 메뉴 png 이미지 9종이 무압축 상태(2026-09-03 신규)** — `meat_*.png`(나무 테이블 스타일)로
+   전환하면서 개당 2.2~2.4MB, 9종 총합 약 20MB가 됐다(기존 jpg는 총 230KB 수준이었다). 리사이즈·
+   압축을 아직 안 거쳤다 — asset-optimizer 에이전트로 최적화하는 게 다음 단계. 자세한 경위는
+   [[gopumgyeok-brand-data]] 참고.
 
 **계약 범위 / 다음 단계** (디자인 맞춤제작 + 반응형 + 5섹션 + 자체 DB 수집 + 관리자모드 + 도메인 + 호스팅)
 - 확정 시안을 **Next.js + Supabase** 구조로 마이그레이션: 정적 HTML → React 컴포넌트 분해, `data/content.json` → Supabase 테이블/CMS (JSON 구조가 그대로 시드 데이터가 된다), 문의폼 → 실제 insert 연동(RLS: anon insert 허용, admin만 select/update, `@supabase/ssr` 기반).

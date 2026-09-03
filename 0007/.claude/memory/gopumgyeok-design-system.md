@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 64490a38-09ba-439e-83a5-66505594f155
-  modified: 2026-09-02T17:30:00.000Z
+  modified: 2026-09-03T00:00:00.000Z
 ---
 
 `component-zip/0007/` 랜딩([[gopumgyeok-landing-project]])의 **확정된** 디자인 규칙. 임의로 바꾸지 말 것.
@@ -38,7 +38,16 @@ Google Fonts에 Pretendard가 없어 **HTTP 400**이었다(2026-09-01 확인, �
    배경 → 어두운 배경으로 바뀌어, 이제 전 섹션이 어두운 톤이다(흰 배경 섹션 없음)
 
 히어로는 nav에 포함되지 않는 인트로 섹션. **2026-09-01에 대대적으로 비워냈다** — 자세한 구조와 패럴랙스는 [[gopumgyeok-hero-parallax]] 참고.
-현재 남은 것은 5개뿐: 배경(`meat_platter.jpg` 풀블리드) + 그라디언트 오버레이 + 중앙 스택(아이캐치 문구 → 골드 그라디언트 워드마크 `clamp(52px,11vw,96px)` → 서브카피 → CTA 버튼 2개 → "창업문의 1877-1960" 알약 배지). 폰트 크기는 2026-09-02부터 프로젝트 전역 규칙(18~96px)이 적용됐다 — [[gopumgyeok-landing-project]] 또는 `docs/design.md` Typography 참고.
+현재 남은 것은 5개뿐: 배경(`meat_platter.jpg` 풀블리드) + 그라디언트 오버레이 + 중앙 스택(아이캐치 문구 → 골드 그라디언트 워드마크 → 서브카피 → CTA 버튼 2개 → "창업문의 1877-1960" 알약 배지). 폰트 크기는 2026-09-02부터 프로젝트 전역 규칙(18~96px)이 적용됐다 — [[gopumgyeok-landing-project]] 또는 `docs/design.md` Typography 참고.
+
+**`.hero-wordmark`는 이 96px 규칙의 유일한 예외다.** 원래 132px → 96px로 줄었다가(2026-09-02),
+2026-09-03에 사용자가 "타이틀을 더 크게" 요청 → 96px 상한을 지키며 임팩트를 키우는 대안(letter-spacing/그림자 등)을 먼저 제안했으나 사용자가 명시적으로 96px 예외를 선택 →
+`docs/design.md`에 남아있던 "132px→96px" 이력을 근거로 원래 값 132px로 복원. 현재 `clamp(72px,15vw,132px)`.
+같이 확인할 것: `wordmarkIntro` 팝 인트로는 원래 1회성(`both`, 애니메이션 없음 반복)이었는데
+2026-09-03에 "6초마다 반복" → 다시 "3초가 너무 길다"는 피드백으로 최종 **3초 주기 무한 반복**
+(`animation: wordmarkIntro 3s … infinite`)으로 바뀌었다. 팝 자체의 체감 속도(약 0.85s)는 유지하고
+나머지 구간은 scale(1)/opacity:1로 정지해 있다가 주기마다 다시 팝인다.
+다른 요소에 96px 예외를 유추 확장하지 말 것 — [[gopumgyeok-font-size-rule-exception]] 참고.
 
 **히어로에서 삭제된 것 — 사용자가 하나씩 지목해 없앴다. 되살리지 말 것:**
 - `.hero-bottom-photos` (하단 좌우 고기 사진, radial 마스크 페이드)
