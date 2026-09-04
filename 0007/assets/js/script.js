@@ -315,7 +315,71 @@ const initScrollSpy = () => {
   sections.forEach((section) => observer.observe(section));
 };
 
-/** 문의 폼 (목업 제출) */
+/**
+ * 문의하기 Bottom Sheet — [data-open-inquiry] 트리거(헤더/히어로/창업비용/05 매장위치 CTA)
+ * 클릭으로도 열리고, 02 메뉴 섹션에 진입할 때마다 자동으로 열린다 — 03 수익분석의 영수증
+ * 리빌(initReceiptReveal)과 같은 반복 재생 패턴으로, observer 를 disconnect 하지 않는다.
+ * 사용자가 닫아도 그 섹션을 벗어났다 다시 들어오면 또 뜬다. hidden 을 뗀 다음 프레임에
+ * .is-open 을 붙여야 CSS transition 이 시작값을 인식한다 — 같은 프레임에 같이
+ * 붙이면 애니메이션 없이 바로 최종 상태로 뛴다. 목업 제출은 기존 인라인 폼과 동일하게 버튼
+ * 텍스트만 바꾸고 끝낸다(실제 전송 없음). 05 섹션 맨 아래의 원래 문의 폼(#inquiryForm)과는
+ * 별개 — 이 시트는 자체 폼(#inquirySheetForm)을 쓴다.
+ */
+const initInquirySheet = () => {
+  const backdrop = document.getElementById('inquirySheetBackdrop');
+  if (!backdrop) return;
+
+  const form = document.getElementById('inquirySheetForm');
+  const closeBtn = document.getElementById('inquirySheetClose');
+  const openers = document.querySelectorAll('[data-open-inquiry]');
+
+  let lastFocused = null;
+
+  const open = () => {
+    lastFocused = document.activeElement;
+    backdrop.hidden = false;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => backdrop.classList.add('is-open'));
+    form?.querySelector('input, select, textarea')?.focus();
+  };
+
+  const close = () => {
+    backdrop.classList.remove('is-open');
+    document.body.style.overflow = '';
+    lastFocused?.focus();
+    setTimeout(() => { backdrop.hidden = true; }, 350);
+  };
+
+  openers.forEach((btn) => btn.addEventListener('click', open));
+  closeBtn?.addEventListener('click', close);
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && backdrop.classList.contains('is-open')) close();
+  });
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('inquirySheetSubmit');
+    btn.textContent = '접수되었습니다 (시안 예시)';
+    btn.disabled = true;
+  });
+
+  const menuSection = document.getElementById('menu');
+  if (!menuSection) return;
+  const autoOpenObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) open();
+      });
+    },
+    { threshold: 0.3 }
+  );
+  autoOpenObserver.observe(menuSection);
+};
+
+/** 05 매장위치 맨 아래 문의 폼 (목업 제출) */
 const initInquiryForm = () => {
   const form = document.getElementById('inquiryForm');
   if (!form) return;
@@ -360,6 +424,7 @@ const boot = async () => {
   initMobileNav();
   initScrollSpy();
   initInquiryForm();
+  initInquirySheet();
 
   try {
     const res = await fetch(DATA_URL, { cache: 'no-cache' });

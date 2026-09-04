@@ -27,7 +27,8 @@ memory: project
 **시맨틱 구조**
 - 제목 레벨(`h1`(히어로 워드마크 1개) → 각 섹션 `h2` → 카드 내부 `h3`/`h4`)이 건너뛰지 않는가
 - 장식 전용 요소에 `aria-hidden="true"` 가 있는가 (`.hero-bg`(배경 사진, 이미 `role="img"
-  aria-label` 로 처리됨), `.wave` SVG 디바이더 등)
+  aria-label` 로 처리됨) 등 — `.wave` SVG 디바이더는 2026-09-04에 죽은 CSS 로 확인되어 제거됐다,
+  되살아났는지 확인 대상이 아니다)
 - 섹션(`#competitiveness`, `#menu`, `#profit`, `#cost`, `#location`)에 내비게이션과 매칭되는
   식별자·의미가 유지되는가 (`assets/js/script.js` 의 `initScrollSpy` 가 이 id 들을 그대로 참조한다)
 
@@ -39,15 +40,16 @@ memory: project
   `aria-label="… (새 창)"`, `rel="noopener noreferrer"` 가 짝을 이루는가
 
 **색상 대비**
-- 본문 텍스트와 배경의 대비가 WCAG AA(4.5:1)를 넘는가. 이 프로젝트는 섹션마다 배경 밝기가
-  달라 `--text`/`--text-invert`/`--text-dim` 토큰이 섹션별로 재선언된다 — 다크 섹션(히어로/
-  메뉴/수익분석/창업비용)에서 `--text-invert`(#F3EEE2)가, 라이트 섹션(경쟁력/매장위치)에서
-  `--text`(#333)가 실제로 적용되고 있는지 계산해서 확인
-- 골드 텍스트(`--gold`, `--gold-light`)는 장식성이 강하지만 정보를 담고 있다면(예: 매출 숫자,
-  중요 키워드) 배경 대비를 확인
+- 본문 텍스트와 배경의 대비가 WCAG AA(4.5:1)를 넘는가. 2026-09-04부터 `:root` 자체가 shadcn
+  dark 세트(`--background`/`--foreground` 등)라 대부분의 섹션은 재선언이 필요 없다 — 흰 카드가
+  필요한 자리(트러스트 카드, 창업비용 헤더 행, 문의 Bottom Sheet, 모바일 nav)만 그 스코프에서
+  shadcn light 세트로 로컬 재정의된다. 이 재선언이 빠진 자리에서 텍스트가 배경에 묻히는지 확인
+- 강조 색은 `--foreground`(중립) 또는 `--destructive`(위험/한정 표시)만 쓴다 — 골드 텍스트
+  토큰(`--gold`, `--gold-light`)은 2026-09-04에 전부 제거됐다. 새로 등장했다면 회귀다
 
 **모션**
-- `prefers-reduced-motion` 에서 확대·이동·깜빡임(`keywordBlink` 등)이 모두 차단되는가
+- `prefers-reduced-motion` 에서 확대·이동이 모두 차단되는가 — 무한 반복 깜빡임/샤인 애니메이션
+  (`keywordBlink` 등)은 2026-09-04에 전부 제거됐으므로, 새로 등장했다면 그 자체가 검토 대상이다
 
 **키보드**
 - 호버로만 드러나는 정보가 있는가 (있다면 키보드 사용자가 접근 불가 — `:focus-within` 필요)

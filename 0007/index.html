@@ -22,7 +22,7 @@
     <a href="#cost" data-target="cost">창업비용</a>
     <a href="#location" data-target="location">매장위치</a>
   </nav>
-  <a class="nav-cta" href="#location" data-target="location">창업 상담</a>
+  <button type="button" class="nav-cta" data-open-inquiry>창업 상담</button>
   <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
     <span></span><span></span><span></span>
   </button>
@@ -38,7 +38,7 @@
     <h1 class="hero-wordmark">고품격대패</h1>
     <p class="hero-sub2">프리미엄 냉삼과 풍성한 셀프바로 완성하는<br><b>대패삼겹의 새로운 기준</b></p>
     <div class="hero-cta-group">
-      <a class="btn-primary" href="#location" data-target="location">창업 문의하기</a>
+      <button type="button" class="btn-primary" data-open-inquiry>창업 문의하기</button>
       <a class="btn-ghost" href="#menu" data-target="menu">메뉴 보기</a>
     </div>
     <div class="hero-badge-phone">
@@ -93,8 +93,6 @@
   </div>
 </section>
 
-<div class="wave wave--from-profit"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 Q150,60 300,30 T600,30 T900,30 T1200,30 V60 H0 Z" fill="#18140F"/></svg></div>
-
 <!-- 04. 창업비용 -->
 <section class="cost" id="cost">
   <div class="wrap">
@@ -108,7 +106,7 @@
       <div class="cost-badge">전수창업 7호점 한정</div>
       <p>안정적인 브랜드 운영과 체계적인 시스템 구축을 위해 전수창업은 7호점까지만 제한적으로 운영됩니다. 브랜드의 방향성과 완성도를 충분히 갖춘 이후, 본격적인 프랜차이즈 확장을 통해 더 큰 성장을 이어갈 예정입니다.</p>
     </div>
-    <a class="btn-primary cost-cta" href="#location" data-target="location">정확한 비용 상담받기</a>
+    <button type="button" class="btn-primary cost-cta" data-open-inquiry>정확한 비용 상담받기</button>
   </div>
 </section>
 
@@ -175,6 +173,51 @@
     </div>
   </div>
 </section>
+
+<!-- 문의하기 Bottom Sheet — [data-open-inquiry] 클릭(헤더/히어로/창업비용/05 매장위치 CTA)과
+     02 메뉴 섹션에 진입할 때마다(자동, script.js initInquirySheet) 둘 다로 열린다.
+     .location 섹션 안이 아니라 형제로 둬서 그 섹션의 --text 반전 스코프 밖에 있다 —
+     시트는 항상 밝은 카드 배경이라 :root 기본값을 그대로 쓴다. -->
+<div class="inquiry-sheet-backdrop" id="inquirySheetBackdrop" hidden>
+  <div class="inquiry-sheet" id="inquirySheet" role="dialog" aria-modal="true" aria-labelledby="inquirySheetTitle">
+    <button type="button" class="inquiry-sheet-close" id="inquirySheetClose" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="inquiry-sheet-scroll">
+      <div class="inquiry-sheet-brand">
+        <img src="assets/imgs/logo_gold.png" alt="고품격대패">
+      </div>
+      <p class="inquiry-sheet-desc" id="inquirySheetTitle">창업 전문가가 직접 상담해드려요</p>
+      <form id="inquirySheetForm" class="inquiry-sheet-form">
+        <div class="field">
+          <label for="inqName">이름</label>
+          <input type="text" id="inqName" placeholder="성함을 입력해주세요" required>
+        </div>
+        <div class="field">
+          <label for="inqPhone">연락처</label>
+          <input type="tel" id="inqPhone" placeholder="010-0000-0000" required>
+        </div>
+        <div class="field">
+          <label for="inqType">문의유형</label>
+          <select id="inqType">
+            <option>방문예약</option>
+            <option>창업상담</option>
+            <option>제휴문의</option>
+            <option>기타</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="inqMsg">문의내용</label>
+          <textarea id="inqMsg" placeholder="문의하실 내용을 남겨주세요"></textarea>
+        </div>
+      </form>
+    </div>
+    <button type="submit" form="inquirySheetForm" class="inquiry-sheet-submit" id="inquirySheetSubmit">
+      문의 남기기
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</div>
 
 <footer>
   <div class="wrap footer-grid">

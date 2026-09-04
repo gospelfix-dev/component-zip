@@ -11,7 +11,7 @@ description: >
   user: "이제 다 됐어?"
   assistant: "code-reviewer 에이전트로 이번 변경이 폰트 크기 규칙과 되살리면 안 되는 요소 목록을 어기지 않았는지 먼저 검토하겠습니다."
   <commentary>
-  이 프로젝트는 세션 동안 누적된 암묵적 규칙(18~96px, 영수증 카드 함정, 세리프 폰트 금지 등)이
+  이 프로젝트는 세션 동안 누적된 암묵적 규칙(shadcn 디자인 토큰, 타입 스케일, 세리프 폰트 금지 등)이
   많아, 개별 에이전트가 놓친 규칙을 마지막에 한 번 더 걸러야 한다.
   </commentary>
   </example>
@@ -28,27 +28,33 @@ memory: project
 ## 검토 체크리스트
 
 **되살리면 안 되는 것** (CLAUDE.md 명시, 사용자가 명시적으로 제거 지시)
-- Song Myung 등 세리프 폰트가 다시 들어오지 않았는가 — Pretendard 단일 패밀리
+- Song Myung, RixYeoljeongdo 등 Pretendard 외 폰트가 다시 들어오지 않았는가 — Pretendard 단일 패밀리
 - 히어로 하단 "왕십리/천호/시흥은계 오픈일" 스트립이 되살아나지 않았는가
 - 영수증 매출 숫자 뒤에 "원" 단위가 다시 붙지 않았는가
-- `.wave` 디바이더가 근거 없이 삭제/장식 취급되지 않았는가 (사용자가 명시적으로 지목해 제거한
-  1개는 예외)
+- 골드/레드 브랜드 컬러(`--gold`, `--red` 계열)나 워드마크 팝/샤인·키워드 블링크·강조 스냅 같은
+  무한 반복 attention 애니메이션이 다시 들어오지 않았는가(2026-09-04 shadcn 재설계로 전부 제거)
+- 영수증 프린터 슬롯/스캘럽 절취선/바코드, 경쟁력 카드 펀치홀 노치, 트러스트 카드 리본 모서리
+  같은 스큐어모피즘이 되살아나지 않았는가
 
 **타이포그래피**
-- `font-size` 가 **18px 미만 또는 96px 초과**로 추가되지 않았는가 (2026-09-02 확정 규칙, 예외 없음)
+- `font-size` 가 `docs/design.md` Typography 표의 shadcn 타입 스케일(13/14/16/18~20/28~40px,
+  히어로만 `clamp(40px,7vw,64px)`)을 벗어나는 새 값으로 추가되지 않았는가 — 2026-09-04부터
+  옛 "18~96px 고정 범위" 규칙은 더 이상 유효하지 않다
   ```bash
   grep -oE 'font-size:\s*[0-9.]+px' assets/css/style.css index.html assets/js/script.js animations.css
-  grep -oE 'clamp\([^)]*\)' assets/css/style.css   # clamp 최소/최대값도 범위 안인지 확인
+  grep -oE 'clamp\([^)]*\)' assets/css/style.css
   ```
 
 **색상**
-- `:root` 토큰 11개 외의 하드코딩 헥사값이 컴포넌트에 새로 들어가지 않았는가
-- 다크 배경 섹션/카드에 `--text: var(--text-invert)` 재선언이 빠져 텍스트가 배경에 묻히지
-  않는가 (과거 실제 발생한 회귀 패턴 — 히어로/메뉴/수익분석/창업비용은 어두운 배경)
+- `:root` 의 shadcn 토큰(`--background`/`--foreground`/`--card`/`--primary`/`--secondary`/
+  `--muted`/`--accent`/`--destructive`/`--border`/`--input`/`--ring`) 외의 하드코딩 색상값이
+  컴포넌트에 새로 들어가지 않았는가(로고 이미지처럼 래스터 자산 예외는 제외)
+- 밝은 카드(트러스트/창업비용 헤더행/문의 시트/모바일 nav)에서 light 테마 로컬 재선언이 빠져
+  텍스트가 배경에 묻히지 않는가 — `docs/design.md` Colors 절 "밝은 카드로 뒤집는 자리" 참고
 
-**영수증 카드 (03 수익분석)**
-- 종이 그림자가 `box-shadow` 가 아니라 `.receipt-body` 의 `filter: drop-shadow()` 인가
-- 절취선이 `mask-image: radial-gradient` 스캘럽 방식을 유지하는가
+**수익분석 카드 (03 수익분석)**
+- 프린터 바/스캘럽/바코드 같은 스큐어모픽 마크업이 다시 들어오지 않고, 평범한 `.receipt-card`
+  구조(`assets/js/script.js` `renderProfitCards`)를 유지하는가
 
 **데이터**
 - `data/content.json` 을 건드렸다면 유효성 검사를 통과했는가

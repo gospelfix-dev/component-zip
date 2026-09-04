@@ -15,8 +15,10 @@
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-ExtraBold.woff2') format('woff2'); font-weight:800; font-style:normal; font-display:swap; }
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Black.woff2') format('woff2'); font-weight:900; font-style:normal; font-display:swap; }
 
-/* 01 경쟁력 포스터 타이틀(.comp-title) 전용 디스플레이 폰트 — 이 프로젝트에서
-   Pretendard 가 아닌 서체를 쓰는 유일한 예외다. 다른 곳으로 확장하지 않는다. */
+/* 01 경쟁력 포스터 타이틀(.comp-title) 및 섹션 타이틀(.section-head h2, .profit-head h2,
+   .inquiry-left h3) 전용 디스플레이 폰트 — 이 프로젝트에서 Pretendard 가 아닌 서체를 쓰는
+   유일한 예외다. 2026-09-04 shadcn 재설계로 잠시 제거했다가, 같은 날 사용자 요청으로
+   되살렸다(색상 토큰도 함께 골드/레드 팔레트로 되돌림). 다른 곳으로 확장하지 않는다. */
 @font-face{
   font-family:'RixYeoljeongdo';
   src:url('../fonts/RixYeoljeongdo.woff2') format('woff2');

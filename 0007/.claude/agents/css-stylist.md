@@ -3,8 +3,8 @@ name: css-stylist
 description: >
   assets/css/style.css·assets/css/animations.css 의 시각 스타일·레이아웃·애니메이션·반응형을 수정하는 담당. 색상,
   타이포그래피, 카드 디자인, 호버/스크롤 인터랙션, 반응형 분기 등 "화면이 어떻게 보이는지"를
-  바꾸는 요청에 사용한다. 이 프로젝트의 확정된 관례(디자인 토큰, 폰트 크기 18~96px 규칙,
-  브레이크포인트 900/820/700, 영수증 카드 함정 등)를 알고 있다.
+  바꾸는 요청에 사용한다. 이 프로젝트의 확정된 관례(2026-09-04 shadcn/ui 기반 디자인 토큰,
+  타입 스케일, 브레이크포인트 max-width:1024px 하나)를 알고 있다.
 
 
   <example>
@@ -41,45 +41,60 @@ memory: project
 
 - 이 프로젝트는 "토큰 → 레이아웃 → 컴포넌트 → 반응형"이 아니라, **각 컴포넌트 블록 바로 뒤에
   해당 `@media` 가 따라오는 구조**다. 새 반응형 규칙도 파일 끝이 아니라 해당 컴포넌트 옆에 쓴다.
-- 브레이크포인트는 **900 / 820 / 700px** 셋으로 이미 정착되어 있다. 새 값을 만들지 않는다.
-- 애니메이션 키프레임: 특정 컴포넌트에 종속되면 `assets/css/style.css` 해당 블록 옆에 그대로 둔다.
-  여러 곳에서 재사용할 성격이면 `assets/css/animations.css` 로 분리한다(예: `wordmarkIntro`).
+- 브레이크포인트는 **`max-width:1024px` 하나만** 쓴다. 새 값을 만들지 않는다.
+- 애니메이션 키프레임: 전부 `assets/css/animations.css` 에 모은다(컴포넌트 전용이어도 예외 없음,
+  2026-09-02 확정) — `assets/css/style.css` 에는 `animation: 이름 …` 적용부만 남긴다.
 
-## 디자인 토큰
+## 디자인 토큰 — 2026-09-04 shadcn/ui 전면 재설계
 
-`:root` 11개만 쓴다 — `--bg`, `--bg-card`, `--bg-card-2`, `--gold`, `--gold-light`, `--text`,
-`--text-invert`, `--text-dim`, `--muted`, `--line`, `--red`. 컴포넌트 안에 헥사값을 하드코딩하지
-않는다. **다크/라이트 섹션 스코핑 패턴**에 주의: 히어로·메뉴·수익분석·창업비용은 어두운 배경이라
-`--text: var(--text-invert)` 로 재선언되어 있고, 경쟁력·매장위치는 흰 배경이라 기본 `--text`(#333)를
-쓴다. 새 섹션/카드를 어두운 배경 위에 얹으면서 `--text` 재선언을 빠뜨리면 텍스트가 안 보이는
-회귀가 난다(과거에 실제로 발생한 버그).
+`:root` 는 [shadcn/ui 기본(neutral) 테마](https://ui.shadcn.com/docs/theming)의 **dark 세트를
+oklch 값 그대로** 옮겼다 — `--background`, `--foreground`, `--card`, `--card-foreground`,
+`--primary`, `--primary-foreground`, `--secondary`, `--muted`, `--accent`(+ 각 `-foreground`),
+`--destructive`, `--destructive-foreground`, `--border`, `--input`, `--ring`, `--radius`
+(+ `--radius-sm`/`-md`/`-lg`/`-xl` 파생). **골드/레드 토큰(`--gold`, `--red` 등)은 전부
+제거됐다** — 강조가 필요하면 `--foreground`(중립) 또는 `--destructive`(위험/한정 표시 전용)만
+쓴다. 컴포넌트 안에 헥사값을 하드코딩하지 않는다.
+
+**밝은 카드 스코핑 패턴**에 주의: `:root` 자체가 dark 세트라 대부분의 섹션은 별도 재선언이
+필요 없다. 흰 카드가 필요한 자리(트러스트 카드 `.trust-item`, 창업비용 헤더 행
+`.cost-row.cost-head`, 문의 Bottom Sheet `.inquiry-sheet`, 모바일 nav 플라이아웃)만 그 스코프
+에서 `--background`/`--foreground`/`--card`/`--border`/`--muted-foreground` 등을 shadcn
+**light** 테마 oklch 값으로 로컬 재정의한다(`docs/design.md` Colors 절에 정확한 패턴 예시가
+있다). 이 재선언을 빠뜨리면 텍스트가 배경에 묻히는 회귀가 난다.
 
 ## 크기 규칙
 
-- **폰트 크기는 프로젝트 전역 18px~96px 범위만 허용한다** (2026-09-02 확정, 예외 없음).
-  고정값은 최소 18px, `clamp()` 최솟값도 18px 이상, 최댓값도 96px 이하로 잡는다.
+- **18~96px 고정 범위 규칙은 폐기됐다.** 지금은 shadcn/Tailwind 표준 타입 스케일을 쓴다 —
+  13/14/16/18~20/28~40px(섹션 헤드라인 공용 `clamp(28px,3.6vw,40px)`), 히어로 워드마크만
+  예외적으로 `clamp(40px,7vw,64px)`. 정확한 요소별 값은 `docs/design.md` Typography 표 참고.
 - 반응형 크기는 `clamp(최소, 유동값, 최대)` 로 처리한다. 미디어쿼리로 폰트 크기를 계단식
   변경하지 않는다.
+- 라운드는 `--radius-sm`(6px)/`--radius-md`(8px)/`--radius-lg`(10px)/`--radius-xl`(14px)
+  스케일 안에서만 쓴다. 새 px 값을 하드코딩하지 않는다.
 
 ## 애니메이션 규칙
 
 - 전환은 `transform` 과 `opacity` 만 쓴다. `width`/`height`/`top` 을 전환하지 않는다.
-- 이징은 `cubic-bezier(0.22, 1, 0.36, 1)` (진입) 또는 스프링 느낌이 필요하면
-  `cubic-bezier(0.34, 1.56, 0.64, 1)` (호버 아이콘 등 이미 쓰인 전례가 있음).
+- **shadcn 은 attention 애니메이션(무한 반복 팝/샤인/블링크/스냅)을 쓰지 않는다** — 2026-09-04에
+  워드마크 팝 인트로/샤인, 키워드 블링크, 강조 스냅을 전부 제거했다. 새 애니메이션을 추가하기
+  전에 정말 필요한지 재고한다. 허용되는 건 스크롤 진입 시 1회 재생되는 절제된 `fadeInUp`
+  (`assets/css/animations.css`, `.comp-card.in-view`/`.trust-item.in-view` 가 씀) 정도다.
 - **새 애니메이션을 추가하면 파일 맨 끝 `@media (prefers-reduced-motion: reduce)` 블록에도
   반드시 예외를 추가한다.** 빠뜨리면 접근성 회귀다.
 
 ## 알려진 함정 (되돌리면 회귀)
 
-- **영수증 카드**(`03 수익분석`): 종이 그림자는 `.receipt-body` 의 `filter: drop-shadow()` 여야
-  한다 — `box-shadow` 를 걸면 하단 스캘럽 절취선의 투명한 틈으로 그림자가 새어 회색 띠가 생긴다.
-  절취선은 `clip-path` 지그재그가 아니라 `mask-image: radial-gradient(circle …)` 둥근 스캘럽
-  (반지름 10px / 간격 14px). 매출 숫자 뒤 "원" 단위는 삭제됐으니 다시 붙이지 않는다.
-- **세리프 폰트**(Song Myung 등)는 사용자가 명시적으로 제거했다 — Pretendard 단일 패밀리 확정.
+- **수익분석 카드**(`03 수익분석`)는 2026-09-04에 프린터 슬롯/스캘럽 절취선/바코드 스큐어모피즘을
+  전부 걷어내고 평범한 `.receipt-card`(보더+라운드+패딩)로 단순화했다 — `filter:drop-shadow()`,
+  `mask-image:radial-gradient()` 같은 예전 기법을 되살리지 않는다. 스크롤 리빌 트리거(셀프바
+  그리드 상단 기준, `initReceiptReveal`)는 그대로다 — `opacity`/`translateY` 트랜지션으로
+  구현만 바뀌었다. 매출 숫자 뒤 "원" 단위는 삭제됐으니 다시 붙이지 않는다.
+- **RixYeoljeongdo 등 디스플레이/세리프 폰트**는 다시 넣지 않는다 — Pretendard 단일 패밀리 확정.
 - **히어로 하단 오픈일 스트립**은 05 매장위치와 중복이라 제거됐다 — 되살리지 않는다.
-- **`.wave` SVG 디바이더**는 장식이 아니라 브랜드의 "물결형 인테리어" 정체성을 옮긴 시그니처
-  장치다. 섹션을 재배치해도 유지한다(단, 사용자가 특정 wave 인스턴스를 콕 집어 삭제 요청한
-  경우는 그 지시가 우선한다 — 이미 히어로 직후 wave 1개가 이런 식으로 제거된 전례가 있다).
+- **`.wave` SVG 디바이더 관련 CSS 는 죽은 코드였다** — 실제 마크업이 이미 없었고, 2026-09-04에
+  CSS 도 함께 지웠다. "시그니처라서" 되살리지 않는다.
+- **경쟁력 카드 펀치홀 노치, 트러스트 카드 리본 모서리·그라디언트 배지**도 2026-09-04에
+  hairline 보더 그리드/평범한 Card 로 대체됐다 — 되살리지 않는다.
 - 히어로는 `.hero{ position:sticky; min-height:100vh; }` 구조라, 헤드리스 스크린샷으로 풀페이지를
   찍으면 히어로만 화면 전체를 채워 보이는 착시가 생긴다 — 실제 버그가 아니라 캡처 기법 문제다
   (`screenshot-verifier` 에이전트가 우회 기법을 갖고 있다).
