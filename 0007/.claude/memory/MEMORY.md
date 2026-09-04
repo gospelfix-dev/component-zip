@@ -2,8 +2,9 @@
 원문 출처는 `0007/README.md`(고품격대패 CLI 인계문서).
 
 - [프로젝트 성격](gopumgyeok-landing-project.md) — 0007은 실클라이언트 납품용 랜딩 시안A_v2, 임의 재작성 금지
-- [디자인 시스템](gopumgyeok-design-system.md) — 골드/블랙 토큰, Pretendard(jsdelivr), 5섹션+히어로, 콘텐츠는 data/content.json
-- [히어로 sticky 패럴랙스](gopumgyeok-hero-parallax.md) — 히어로 전체 고정, 그 여파로 생긴 z-index·웨이브 투과 함정
+- [디자인 시스템](gopumgyeok-design-system.md) — 골드/레드 토큰(--bg-card는 흰색), Pretendard self-host+RixYeoljeongdo, 5섹션+히어로+문의 Bottom Sheet
+- [shadcn 재설계 후 원복](gopumgyeok-shadcn-detour-reverted.md) — 2026-09-04 shadcn 전면 재설계했다가 같은 날 골드/레드로 되돌림, CLAUDE.md 등 문서는 아직 shadcn 기준(불일치 주의)
+- [히어로 sticky 패럴랙스](gopumgyeok-hero-parallax.md) — 히어로 전체 고정, 그 여파로 생긴 z-index·웨이브 투과 함정(웨이브는 wave--from-profit 1개만 남음)
 - [헤드리스 시각 검증법](gopumgyeok-headless-verification.md) — 브라우저 확장 없음, iframe 래퍼로 찍고 숫자로 재는 법
 - [영수증 카드 구현 교훈](gopumgyeok-receipt-card.md) — 그림자는 wrapper에 drop-shadow, 절취선은 mask-image 스캘럽
 - [브랜드 원본 데이터](gopumgyeok-brand-data.md) — 슬로건·메뉴 9종·셀프바 25종·3개 매장 매출/수익률·연락처

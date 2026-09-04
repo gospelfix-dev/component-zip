@@ -13,7 +13,7 @@ metadata:
 
 **반드시 같이 지켜야 하는 것 (이걸 놓치면 화면이 깨진다):**
 - `sticky`는 위치 지정 요소라 **뒤따르는 '정적' 형제보다 위에 그려진다.** `section`은 `position:relative`라 괜찮지만 `.wave`와 `footer`는 정적이라 히어로 뒤로 숨었다 → 둘에 `position:relative; z-index:1`을 줬다. **최상위에 새 정적 블록을 추가하면 같은 처리를 해야 한다.**
-- 웨이브 SVG는 아래쪽 절반만 칠해져 윗부분이 투명하다. 전에는 그 틈으로 body 배경이 보였지만 이제 **고정된 히어로가 비친다** → 각 웨이브에 바로 위 섹션 색을 배경으로 깔았다(`.wave--from-card` = `--bg-card`, `.wave--from-profit` = `#1B0E0C` = profit 그라디언트 끝색). 웨이브를 추가/이동하면 이 배경색도 맞춰야 한다.
+- 웨이브 SVG는 아래쪽 절반만 칠해져 윗부분이 투명하다. 전에는 그 틈으로 body 배경이 보였지만 이제 **고정된 히어로가 비친다** → 웨이브에 바로 위 섹션 색을 배경으로 깔았다. **실제 남아있는 웨이브는 `.wave--from-profit`(03 수익분석 → 04 창업비용 사이, `#1B0E0C` = profit 그라디언트 끝색) 하나뿐이다** — `.wave--from-card` 클래스는 CSS에도 없다(예전엔 있었을 수 있으나 지금 기준 존재하지 않음, 2026-09-04 확인). 웨이브를 추가/이동하면 이 배경색도 맞춰야 한다.
 
 **예외 처리:** iOS Safari는 `background-attachment:fixed`를 무시하고 `cover` 계산까지 어긋난다 → `@media (max-width:820px), (hover:none)`에서 `scroll`로 되돌린다. `prefers-reduced-motion`에서도 끈다.
 

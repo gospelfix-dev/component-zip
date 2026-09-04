@@ -5,18 +5,27 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 64490a38-09ba-439e-83a5-66505594f155
-  modified: 2026-09-03T00:00:00.000Z
+  modified: 2026-09-04T00:00:00.000Z
 ---
 
 `component-zip/0007/` 랜딩([[gopumgyeok-landing-project]])의 **확정된** 디자인 규칙. 임의로 바꾸지 말 것.
+2026-09-04에 이 시스템 전체를 shadcn/ui 뉴트럴 톤으로 갈아엎었다가 같은 날 사용자가 원래
+골드/레드로 되돌렸다 — 그 경위와 "문서가 코드와 어긋나 있을 수 있다"는 경고는
+[[gopumgyeok-shadcn-detour-reverted]] 참고. 아래 내용은 **되돌린 뒤의 실제 코드 기준**이다.
 
 **컬러 토큰** (`assets/css/style.css` `:root`)
 ```
---bg:#0E0C0A  --bg-card:#18140F  --bg-card-2:#211B14
+--bg:#0E0C0A  --bg-card:#FFFFFF  --bg-card-2:#211B14
 --gold:#C9A227  --gold-light:#E8CD7A
---text:#F3EEE2  --text-dim:#B3A995  --muted:#7A7264  --line:#332C22
+--text:#333333               /* 기본값 — 라이트 섹션/카드용. 다크 섹션에서만 --text-invert 로 재선언 */
+--text-invert:#F3EEE2        /* 어두운 배경(히어로/메뉴/수익분석/창업비용/매장위치)용 밝은 본문색 */
+--text-dim:#B3A995  --muted:#7A7264  --line:#332C22
 --red:#A6291F   /* HACCP 배지·豚 태그에서 채택한 강조 레드 */
 ```
+`--bg-card`가 흰색(`#FFFFFF`)이라는 점이 헷갈리기 쉽다 — 예전 메모에 `#18140F`(어두운 카드)로
+적혀 있었다면 그건 오기다. 다크 섹션(`.menu`/`.profit`/`.cost`/`.location`)은 자체 스코프에서
+`--text: var(--text-invert)`로 뒤집어 쓰고, 트러스트 카드·창업비용 헤더 행·모바일 nav
+플라이아웃·문의 폼 입력창처럼 흰 카드가 필요한 자리만 `--bg-card`를 그대로 쓴다.
 
 **폰트**: Pretendard 단일 패밀리(100~900, 9웨이트). Song Myung 등 세리프는 **사용자가 명시적으로 요청해 완전 제거**했으므로 다시 넣지 말 것.
 2026-09-02부터 `assets/fonts/Pretendard-*.woff2` 로 **self-host** 한다(`assets/css/fonts.css`
@@ -54,10 +63,23 @@ Google Fonts에 Pretendard가 없어 **HTTP 400**이었다(2026-09-01 확인, �
 - `.hero-tag-float` (좌측 "#프리미엄 대패삼겹살 / 물결형 인테리어 시그니처")
 - `.hero-underline` (워드마크 아래 붉은 SVG 웨이브) — 이 요소가 갖고 있던 아래 여백 28px은 `.hero-wordmark`로 옮겼다
 - `.hero-callout` (골드 배지 "왕십리 · 천호 · 시흥은계 3개 매장 운영중!")
-- 히어로 직후의 `.wave` 디바이더 1개 (3개 중 첫 번째. 나머지 2개는 남아 있다)
+- 히어로 직후의 `.wave` 디바이더 1개 (3개 중 첫 번째). **남은 웨이브는 `.wave--from-profit`
+  단 하나뿐**이다(03 수익분석 → 04 창업비용 사이) — "2개 남아있다"는 옛 기록은 오기다.
+  2026-09-04 shadcn 작업 중 "실제 마크업이 없는 죽은 CSS"로 오판해 지웠다가, 같은 날
+  `git show HEAD:index.html`로 대조해 실재 마크업임을 확인하고 되살렸다
+  ([[gopumgyeok-shadcn-detour-reverted]] 참고) — 다시 죽은 코드로 오판하지 말 것.
 - "왕십리/천호/시흥은계 오픈일" 하단 스트립 (05 섹션과 중복)
 
 `.hero-badge-phone`은 **삭제가 아니라 이동**이다 — 우상단 절대배치(헤더 "창업 상담" 버튼에 가려졌었다)에서 중앙 스택 맨 아래로 옮겨 `display:inline-flex` + 부모의 `text-align:center`로 정렬한다.
+
+**문의하기 Bottom Sheet 팝업 (2026-09-04 신규)** — 헤더/히어로/창업비용/05 매장위치 CTA
+(`[data-open-inquiry]` 버튼)를 누르거나 02 메뉴 섹션(`#menu`)에 스크롤로 진입할 때마다
+자동으로 열리는 모달(`#inquirySheetBackdrop`, `assets/js/script.js` `initInquirySheet`).
+자동 오픈은 `IntersectionObserver`를 `disconnect`하지 않아 그 섹션을 드나들 때마다 반복
+재생된다(영수증 리빌과 같은 패턴). 05 섹션 맨 아래의 원래 인라인 문의 폼(`#inquiryForm`)과는
+완전히 별개 — 이 시트는 자체 `#inquirySheetForm`을 쓰고, 제출해도 버튼 텍스트만 바뀌는
+목업이다. 시트 자체는 다크 섹션 스코프 밖(body 직속)이라 `--text`의 기본값(라이트 카드용
+`#333333`)을 그대로 쓰고, 골드 포인트(제출 버튼·포커스 링)만 얹는다.
 
 **콘텐츠 데이터**: 2026-09-01부터 `data/content.json` 이 단일 진실 공급원이다(경쟁력·트러스트·고기·셀프바·수익·창업비용·매장·연락처). `index.html` 은 빈 컨테이너만 갖고 `assets/js/script.js` 가 `fetch` 로 채운다. **JS 안에 `FALLBACK` 사본을 두지 않았다** — 그래서 `file://` 더블클릭으로는 콘텐츠가 안 뜬다(안내 문구가 대신 표시됨). 로컬 서버로 볼 것.
 

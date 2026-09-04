@@ -25,12 +25,11 @@ CLI 로 인계된 것이라, 확정된 결정과 이미 제거된 요소가 그 
 정본이다 — 이 파일(CLAUDE.md)은 "왜 이렇게 짜여 있는지"를, `docs/design.md` 는 "정확히 몇 px/
 몇 hex 인지"를 다룬다.
 
-**2026-09-04, 디자인 아이덴티티를 [shadcn/ui](https://ui.shadcn.com/)와 100% 동일하게 맞추는
-방향으로 전면 재설계했다** — 사용자가 명시적으로 요청한 결정이다. 골드/레드 브랜드 컬러,
-RixYeoljeongdo 디스플레이 폰트, 영수증 프린터 슬롯 같은 스큐어모픽 장치, 무한 반복 attention
-애니메이션을 전부 걷어내고 shadcn 의 뉴트럴 그레이스케일 토큰(oklch, dark 테마 기본) + 절제된
-카드/버튼 문법으로 다시 세웠다. 이 CLAUDE.md 와 `docs/design.md` 는 전부 이 새 시스템 기준으로
-갱신됐다 — 옛 골드/레드 값을 언급하는 커밋 메시지나 기억은 이동 전 기록으로 간주할 것.
+**2026-09-04, 이 골드/레드 디자인을 하루 동안 [shadcn/ui](https://ui.shadcn.com/) 뉴트럴 톤으로
+전면 재설계했다가, 같은 날 사용자가 "이전과 똑같이" 되돌려달라고 요청해 색상·RixYeoljeongdo
+폰트·애니메이션·스큐어모픽 디테일을 전부 원복했다.** 이 CLAUDE.md 와 `docs/design.md` 는 그
+원복 이후 기준이다. 다른 문서(README.md 등)나 커밋 메시지에서 "shadcn 뉴트럴 토큰"을 보게
+되면 그 하루 동안의 이력이지 지금 상태가 아님을 감안할 것.
 
 ---
 
@@ -77,33 +76,39 @@ CSS 를 만졌으면 반드시 실제로 렌더해서 확인한다.
 JSON 에서 `desc` 로 끝나는 필드만 `<b>` 같은 인라인 태그를 그대로 쓸 수 있고(HTML 로 삽입),
 나머지 텍스트 필드는 `esc()` 로 이스케이프된다.
 
-### JS 는 렌더 1곳 + 인터랙션 5곳
+### JS 는 렌더 1곳 + 인터랙션 7곳
 
 ```
 DOMContentLoaded
- └─ boot()  data/content.json 을 fetch → renderAll() 로 8개 영역 렌더 → initReceiptReveal()
-      (데이터와 무관한 아래 4개는 fetch 전에 먼저 붙는다 — JSON 이 실패해도 동작해야 하므로)
- ├─ initReceiptReveal()   IntersectionObserver(threshold [0, 0.35]) → 35% 보이면 in-view 부여,
- │                        완전히 벗어나면 제거. 섹션에 들어올 때마다 반복 재생(unobserve 하지 않음)
+ └─ boot()  데이터 무관 인터랙션 5개 먼저 붙임(JSON 실패해도 동작해야 하므로) →
+      data/content.json 을 fetch → renderAll() 로 8개 영역 렌더 →
+      DOM 에 카드가 올라온 뒤에만 관찰 가능한 2개(initReceiptReveal/initGridReveal)와
+      initStoreSwiper() 를 붙임
  ├─ initSmoothScroll()    [data-target] 클릭 → scrollIntoView + 모바일 메뉴 닫기
  ├─ initMobileNav()       #navToggle → .nav-open 토글
  ├─ initScrollSpy()       스크롤 40px 넘으면 헤더 .scrolled / rootMargin 으로 nav active 갱신
- └─ initInquiryForm()     submit 가로채 버튼 텍스트만 교체 (전송 없음, 완전 목업)
+ ├─ initInquiryForm()     05 섹션 인라인 폼(#inquiryForm) submit 가로채 버튼 텍스트만 교체 (목업)
+ ├─ initInquirySheet()    문의하기 Bottom Sheet(#inquirySheetBackdrop) — [data-open-inquiry]
+ │                        클릭 또는 #menu 섹션 진입마다 자동으로 열림(observer 를 disconnect
+ │                        하지 않아 드나들 때마다 반복). 자체 폼(#inquirySheetForm)을 쓰며
+ │                        05 의 인라인 폼과는 별개. 2026-09-04 신규
+ ├─ initReceiptReveal()   IntersectionObserver(threshold [0, 0.35]) → 35% 보이면 in-view 부여,
+ │                        완전히 벗어나면 제거. 섹션에 들어올 때마다 반복 재생(unobserve 하지 않음)
+ ├─ initGridReveal()      경쟁력 카드(.comp-card)/트러스트 카드(.trust-item) 스크롤 리빌
+ └─ initStoreSwiper()     05 매장위치 Swiper 캐러셀 초기화 + 자동재생 타이머 링 갱신
 ```
 
 모듈 시스템(`import`/`type="module"`)을 쓰지 않는다 — 파일 하나에 전역 함수로 둔다.
 
-### 수익분석 카드 — 스큐어모피즘은 2026-09-04에 전부 걷어냈다
+### 영수증 카드는 되돌리기 쉬운 함정이 있다
 
-`03 수익분석`의 카드는 예전에 "영수증이 프린터 슬롯에서 뽑혀 나오는" 스큐어모픽 은유였다
-(금속 프린터 바, `clip-path` 슬라이드 아웃, `mask-image` 스캘럽 절취선, 바코드 무늬, 실물
-종이 색). shadcn 전면 재설계로 전부 제거하고 평범한 `.receipt-card`(보더 + 라운드 + 패딩)
-하나로 단순화했다 — `assets/js/script.js` `renderProfitCards` 참고. **이 함정을 다시 되살리지
-않는다**: drop-shadow, mask-image 스캘럽, 프린터 바 마크업은 전부 죽은 개념이다. 스크롤 리빌
-트리거(`initReceiptReveal`)와 그 로직 자체는 그대로 유지됐다 — `opacity`/`translateY`
-트랜지션으로 구현만 바뀌었다.
-- 매출 숫자 뒤 **"원" 단위는 사용자 요청으로 삭제**됐다. 다시 붙이지 않는다(이번 재설계와
-  무관하게 계속 유효).
+`03 수익분석`의 영수증 카드는 여러 차례 피드백으로 확정된 구조다. 아래를 "정리"하면 회귀다.
+
+- 종이 그림자는 `.receipt-body` 에 **`filter: drop-shadow()`**. 종이 자체에 `box-shadow` 를 걸면
+  하단 스캘럽 절취선의 투명한 틈으로 그림자가 새어 회색 띠가 생긴다.
+- 절취선은 `clip-path` 지그재그가 아니라 **`mask-image: radial-gradient(circle …)` 둥근 스캘럽**
+  (반지름 10px / 간격 14px — 원이 겹쳐야 뾰족해진다). 다른 곳에 절취선을 쓸 일이 생겨도 이 방식.
+- 매출 숫자 뒤 **"원" 단위는 사용자 요청으로 삭제**됐다. 다시 붙이지 않는다.
 
 ### CSS 는 4개 파일로 역할이 나뉘어 있고, 섹션별로 미디어쿼리가 붙어 있다
 
@@ -119,38 +124,30 @@ DOMContentLoaded
 1024px 로 통일했다). 새 값을 만들지 않는다. 맨 끝의 `@media (prefers-reduced-motion: reduce)`
 블록은 유지한다.
 
-디자인 토큰은 `assets/css/style.css` 의 `:root` — shadcn/ui 기본(neutral) 테마의 dark 세트를
-oklch 값 그대로 옮겼다(`--background`/`--foreground`/`--card`/`--primary`/`--secondary`/
-`--muted`/`--accent`/`--destructive`/`--border`/`--input`/`--ring` + `--radius` 계열).
-색을 새로 쓰지 말고 토큰에서 가져온다 — 골드/레드 토큰(`--gold`, `--red` 등)은 2026-09-04에
-전부 제거됐다. 흰 카드가 필요한 자리(트러스트 카드/창업비용 헤더행/문의 시트/모바일 nav)는
-`docs/design.md` Colors 절의 "light 테마 로컬 재선언" 패턴을 따른다.
+디자인 토큰은 `assets/css/style.css` 의 `:root` 11개(`--bg` 계열 3, `--gold` 계열 2, 텍스트 3, `--line`, `--red`).
+색을 새로 쓰지 말고 토큰에서 가져온다.
 
-**폰트 크기 18~96px 고정 규칙은 2026-09-04 shadcn 재설계로 폐기됐다.** 이제 shadcn/Tailwind
-표준 타입 스케일(13/14/16/18~20/28~40px, 히어로만 예외적으로 `clamp(40px,7vw,64px)`)을 쓴다.
-정확한 요소별 크기표는 `docs/design.md` Typography 절 참고.
+**폰트 크기는 프로젝트 전역 18px~96px 범위만 허용한다** (2026-09-02 확정). 고정값·
+`clamp()` 의 최소/최대 모두 이 범위 안에 있어야 한다. **유일한 예외는 `.hero-wordmark`
+(`clamp(72px,15vw,132px)`, 2026-09-03 사용자 요청으로 확정)** — 다른 요소에 이 예외를
+유추 확장하지 않는다. 정확한 요소별 크기표는 `docs/design.md` Typography 절 참고.
 
-### 다크/라이트 컴포넌트에서 토큰이 로컬로 뒤집힌다
+### 다크/라이트 섹션에서 텍스트 색이 뒤집힌다
 
-`:root` 는 shadcn dark 테마 값이 기본이라 전 섹션이 그 배경(`var(--background)`)을 그대로
-쓴다 — 별도 재선언이 필요 없다(예전엔 섹션마다 `--text: var(--text-invert)` 를 걸어야 했지만,
-지금은 `:root` 자체가 이미 어두운 톤이라 그 재선언 자체가 사라졌다). 재선언이 필요한 건 반대로
-**밝은 카드를 만드는 자리뿐**이다 — 트러스트 카드(`.trust-item`), 창업비용 헤더 행
-(`.cost-row.cost-head`, `--muted` 재사용이라 재선언 없음), 문의하기 Bottom Sheet
-(`.inquiry-sheet`), 모바일 nav 플라이아웃(`@media (max-width:1024px) .nav-links`) — 이 넷은
-그 셀렉터 스코프에서 `--background`/`--foreground`/`--card`/`--border`/`--muted-foreground`
-등을 shadcn **light** 테마 oklch 값으로 로컬 재정의한다. 새 밝은 카드를 추가할 때 이 재선언을
-빠뜨리면 어두운 텍스트가 어두운 배경 위에 그대로 남아 안 보이는 회귀가 난다. 정확한 패턴은
-`docs/design.md` Colors 절 "밝은 카드로 뒤집는 자리" 참고.
+히어로·경쟁력·메뉴·수익분석·창업비용·매장위치 전 섹션이 어두운 배경이라 해당 섹션에서
+`--text: var(--text-invert)` 로 재선언한다 — 이제 섹션 전체가 흰 배경인 곳은 없다(2026-09-02에
+경쟁력이 "임팩트가 약하다"는 피드백으로, 매장위치가 Swiper 캐러셀+배경사진 도입으로 각각 흰
+배경 → 어두운 배경으로 되돌아갔다). 새 섹션이나 반대 밝기의 카드를 추가하면서 이 재선언을
+빠뜨리면 텍스트가 배경에 묻혀 안 보이는 회귀가 난다 — 실제로 `--bg-card`/`--text` 토큰을 전역으로
+흰색/검정으로 바꿨을 때 이 방식으로 발생했다. 경쟁력 섹션 안의 `.trust-item` 처럼 어두운 섹션
+위에 다시 흰 카드를 올리는 경우는 그 카드 셀렉터에서 `--text`/`--text-dim` 을 한 번 더 뒤집어야
+한다(중첩 스코핑) — 반대로 매장위치의 `.store-card` 는 부모가 흰 배경이던 시절엔 이 뒤집기가
+필요했지만, 부모 자체가 어두운 배경이 된 지금은 카드와 부모 밝기가 같아져 오버라이드가 없어졌다.
 
-### 시그니처 장치는 2026-09-04 shadcn 재설계로 대부분 제거됐다
+### 시그니처 장치
 
-`.wave` SVG 디바이더는 CSS 규칙 자체가 죽어 있었다(실제 `index.html` 마크업이 이미 없었다 —
-이번 재설계 작업 중 처음 발견했다). 스큐어모픽 장치(경쟁력 카드 펀치홀 노치, 트러스트 카드
-리본 모서리, 영수증 프린터 슬롯/스캘럽/바코드)도 전부 걷어내고 평범한 shadcn Card 패턴으로
-바꿨다. 지금 남은 "시그니처"는 shadcn 자체의 절제된 문법(hairline 보더 그리드, `--radius`
-스케일 통일, Button `default`/`outline` 두 갈래)뿐이다 — `docs/design.md` Shapes/Components
-절 참고.
+`.wave` SVG 디바이더는 브랜드의 "물결형 인테리어" 정체성을 섹션 구분선으로 옮긴 것이다 —
+장식이 아니므로 섹션을 재배치해도 유지한다.
 
 ### 05 매장위치 — 이 프로젝트 유일의 외부 JS 의존성
 
@@ -160,6 +157,17 @@ oklch 값 그대로 옮겼다(`--background`/`--foreground`/`--card`/`--primary`
 사용자가 제공한 매장 개업식 사진(`assets/imgs/bg.png`)을 블러 처리해 깔고, 캐러셀 컨트롤
 아이콘은 Lucide(lucide.dev) SVG 를 그대로 인라인으로 가져다 썼다. 자세한 구성은
 `docs/design.md` Components 절 "매장위치 캐러셀" 참고.
+
+### 문의하기 Bottom Sheet (2026-09-04 신규)
+
+헤더/히어로/창업비용/05 매장위치의 CTA 버튼(`[data-open-inquiry]`, `<a href="#location">`
+대신 `<button>`으로 바뀌었다)을 누르거나 02 메뉴 섹션에 스크롤로 진입할 때마다 자동으로
+열리는 모달 팝업이다(`initInquirySheet`, `#inquirySheetBackdrop`). 05 섹션 맨 아래의 원래
+인라인 문의 폼(`#inquiryForm`)과는 완전히 별개 — 이 시트는 자체 `#inquirySheetForm`을 쓰고,
+제출해도 버튼 텍스트만 바뀌는 목업이다. 자동 오픈 관찰자는 `disconnect`하지 않아 `#menu`를
+드나들 때마다 반복 재생된다(영수증 리빌과 같은 패턴). 시트 자체는 다크 섹션 스코프 밖(body
+직속 형제)이라 `--text` 기본값을 그대로 쓴다. 정확한 색상/크기 값은 `docs/design.md`
+Components 절 "문의하기 Bottom Sheet" 참고.
 
 ---
 
@@ -188,12 +196,6 @@ oklch 값 그대로 옮겼다(`--background`/`--foreground`/`--card`/`--primary`
    `interior1~4`, `hero_food`, `black_texture` 도 백업용으로만 남아 있다. 누락이 아니라 의도된 여분이다.
 3. **에셋 44장이 전부 카탈로그 PDF 크롭본** — 저해상도다. 프로덕션에서는 클라이언트 원본 사진으로 교체.
 4. **문의폼은 목업** — 최종 프로덕션은 Next.js + Supabase 로 마이그레이션 예정(관리자모드·도메인·호스팅 포함).
-5. **`assets/imgs/generated.png`(경쟁력 섹션 배경 워터마크)와 `assets/fonts/RixYeoljeongdo.woff2`
-   (제거됨)가 더 이상 참조되지 않는다** — 전자는 2026-09-04 shadcn 재설계로 배경 워터마크
-   장식을 걷어내며 미참조 상태가 됐다(파일은 남겨뒀다, 셀프바 미사용 이미지와 같은 의도된 여분
-   취급). 후자는 폰트 자체가 삭제됐다(참고 2).
-6. **로고 이미지(`assets/imgs/logo_gold.png`)는 여전히 골드 색이다** — CSS 토큰은 전부 뉴트럴로
-   바뀌었지만 로고는 래스터 자산이라 재색상하지 못했다. 새 로고 자산이 생기면 교체를 검토한다.
 
 (과거 이슈였던 "Pretendard 가 Google Fonts 400 에러로 로드되지 않던 문제"는 2026-09-02에
 `assets/fonts/Pretendard-*.woff2` self-host + `assets/css/fonts.css` 분리로 해결됐다.)
@@ -205,12 +207,3 @@ oklch 값 그대로 옮겼다(`--background`/`--foreground`/`--card`/`--primary`
 - Song Myung 등 **세리프 폰트** — Pretendard 단일 패밀리로 확정
 - 히어로 하단 **"왕십리/천호/시흥은계 오픈일" 스트립** — 05 매장위치와 중복이라 제거
 - 영수증 매출 숫자의 **"원" 단위**
-- **골드/레드 브랜드 컬러**(`--gold`/`--gold-light`/`--red` 및 파생 hex) — 2026-09-04 shadcn
-  재설계로 전부 제거. 강조는 `--foreground`(중립) 또는 `--destructive`(위험/한정 표시 전용)만.
-- **RixYeoljeongdo 디스플레이 폰트** — 삭제됐다(파일도 지웠다). Pretendard 단일 패밀리로 재확정.
-- **워드마크 팝 인트로/샤인, 키워드 블링크, 강조 스냅 같은 무한 반복 attention 애니메이션** —
-  shadcn 의 절제된 모션 언어와 맞지 않아 제거. 스크롤 리빌(`fadeInUp`)만 허용한다.
-- **영수증 프린터 슬롯/스캘럽 절취선/바코드, 경쟁력 카드 펀치홀 노치, 트러스트 카드 리본 모서리**
-  같은 스큐어모피즘 — 평범한 shadcn Card 로 대체됐다.
-- **`font-size` 18~96px 고정 범위 규칙** — 폐기됐다. `docs/design.md` Typography 절의 새 스케일을
-  따른다.
