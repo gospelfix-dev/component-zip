@@ -1,0 +1,2 @@
+- [풀페이지 디버그 캡처의 문의시트 디밍 함정](full-page-debug-inquiry-sheet-dimming.md) — 큰 window-size 로 풀페이지 캡처 시 #inquirySheetBackdrop 이 전체를 40%로 어둡게 덮는다, 색상 검증 전 display:none 오버라이드 필요
+- [리뷰 배지-폰 겹침 실측](gopumgyeok-review-badge-overlap-gap.md) — margin-bottom:-26px 로는 폰과 안 겹침, 실측 35~45px 갭 남음, -60px 이상 필요해 보임
