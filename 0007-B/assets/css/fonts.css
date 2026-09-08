@@ -1,0 +1,15 @@
+/* 폰트 로드 전용 — @font-face 선언만 모아둔다. 실제 사용(font-family 지정)은
+   assets/css/style.css 쪽 컴포넌트 규칙에서 한다.
+
+   Pretendard 는 9웨이트 로컬 self-host 다(0007 시안A에서 그대로 재사용). 헤드라인 전용
+   세리프(Noto Serif KR)는 self-host 대상이 아니라 index.html 의 Google Fonts CDN 링크로
+   로드하므로 여기 없다. */
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Thin.woff2') format('woff2'); font-weight:100; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-ExtraLight.woff2') format('woff2'); font-weight:200; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Medium.woff2') format('woff2'); font-weight:500; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-SemiBold.woff2') format('woff2'); font-weight:600; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-ExtraBold.woff2') format('woff2'); font-weight:800; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Black.woff2') format('woff2'); font-weight:900; font-style:normal; font-display:swap; }

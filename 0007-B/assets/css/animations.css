@@ -1,0 +1,18 @@
+/* 애니메이션 키프레임 전용 — 컴포넌트 전용이어도 예외 없이 여기 모은다. B는 "절제된
+   인터랙션"이 원칙이라 A안(워드마크 팝/샤인, 키워드 블링크, 강조 스냅 등 무한 반복
+   attention 애니메이션)보다 항목 수가 훨씬 적다. 전부 1회 재생용이다. */
+
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes badgeIn{
+  from{ opacity:0; transform:scale(.9); }
+  to{ opacity:1; transform:scale(1); }
+}
+
+@keyframes sheetSlideUp{
+  from{ transform:translateY(100%); }
+  to{ transform:translateY(0); }
+}
