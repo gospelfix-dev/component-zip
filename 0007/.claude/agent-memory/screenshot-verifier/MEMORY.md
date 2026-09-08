@@ -1,3 +1,6 @@
 - [헤드리스 Chrome IntersectionObserver 검증 한계](headless-intersection-observer-limitation.md) — 프로그래매틱 scrollTo 후 IO 콜백이 재발화하지 않음. dump-dom/screenshot 모두 영향받음
 - [receipt 영수증 리빌 로직 구조](gopumgyeok-receipt-reveal-logic.md) — initReceiptReveal 의 rootMargin 트릭과 검증 결과
 - [헤드리스 Chrome 프로세스 종료 지연](headless-chrome-hang-after-screenshot.md) — --screenshot 완료 후에도 프로세스가 안 죽는 경우가 흔함, kill -9 로 강제 종료 필요
+- [헤드리스 최소 뷰포트 폭 500px 클램프](headless-min-viewport-width-500px.md) — --window-size 폭 500px 미만은 무시되고 500px로 렌더된 뒤 작은 크기로 크롭돼 가짜 텍스트 오버플로우로 보임
+- [초대형 풀페이지 캡처 시 fixed 모달 어둡게 겹침](tall-viewport-fixed-modal-confound.md) — #menu 진입으로 문의 시트가 자동 열려 그 아래 섹션 전체가 40% 밝기로 어둡게 찍힘, 색상 비교 전 백드롭 display:none 주입 필요
+- [review-phone 목업 좌표 실측값](gopumgyeok-review-phone-mockup-coords.md) — iphone.png(1622x3238) 알파 스캔으로 뽑은 정확한 홀 좌표(6.5/3.4/87.6/93.9%), 이미지 재교체 시 무효

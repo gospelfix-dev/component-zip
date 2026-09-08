@@ -345,6 +345,59 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .sb-item span{ display:block; margin-top:8px; font-size:18px; color:var(--muted); }
 @media (max-width:1024px){ .selfbar-grid{grid-template-columns:repeat(4,1fr); row-gap:24px;} }
 
+/* REVIEWS — 실제 네이버 리뷰 스크린샷(review1~3.png)을 아이폰 목업(iphone.png)에 끼워 넣은 소비자 찐후기.
+   iphone.png 는 화면 부분이 투명한 1538×3120 PNG — 2026-09-08 "고품격대패" 로고+태그라인+상태바
+   아이콘이 박힌 브랜드 헤더가 상단에 새로 그려진 버전으로 교체됐다(이전엔 일반 카메라 노치만
+   있었다). 이 헤더 밴드는 불투명이라 스크린샷과 겹치지 않고 그 아래부터 화면 구멍이 시작된다.
+   스크린샷을 뒤에 깔고 프레임을 위에 덮는 2단 레이어로 합성한다. iphone.png 를 바꿀 때마다
+   실제 픽셀(알파 채널)을 다시 분석해서 위치를 맞춰야 한다 — 임의로 조정하면 사진이 베젤 밖으로
+   삐져나오거나 브랜드 헤더 밑으로 밀려든다. 화면 구멍 실측값은 4.2%/8.5%, 92.3%×90.4%다 — 이전
+   프레임(카메라 노치만 있던 버전)에서는 "너무 꽉 찬 느낌"이라는 피드백으로 안쪽 여백을 줬었지만,
+   이 브랜드 헤더 버전에서는 반대로 "이미지가 폰 화면에 꽉 차야 한다"는 2026-09-08 피드백을 받아
+   실측치에 가깝게(안전 마진만 살짝 남기고) 채운다. */
+.reviews{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(ellipse 900px 480px at 85% -10%, rgba(232,205,122,.12), transparent 62%),
+    var(--bg);
+  --text: var(--text-invert);
+}
+.review-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin-top:16px; align-items:start; }
+.review-item{ text-align:center; opacity:0; }   /* initGridReveal 이 in-view 를 붙이기 전까지 숨겨둔다 */
+.review-item.in-view{ animation:compCardReveal .7s cubic-bezier(0.16,1,0.3,1) forwards; }
+.review-item.in-view:nth-child(2){ animation-delay:.12s; }
+.review-item.in-view:nth-child(3){ animation-delay:.24s; }
+.review-item:nth-child(2){ margin-top:-28px; }   /* 가운데 폰을 살짝 띄워 03 수익분석 영수증 열과 같은 지그재그 리듬(.receipt-col.center) */
+
+/* 배지와 폰 사이 여백 — 겹치게(음수 margin) 했더니 배지가 카메라 노치를 가려 2026-09-08 다시 띄웠다. */
+.review-badge{
+  position:relative; z-index:3;
+  display:inline-flex; align-items:center; gap:6px; margin-bottom:20px;
+  background:var(--red); color:#F7E9E4; font-size:clamp(20px,2.4vw,28px); font-weight:800;
+  padding:16px 30px; border-radius:999px; white-space:nowrap;
+  box-shadow:0 10px 24px -8px rgba(0,0,0,.5);
+}
+.review-badge b{ font-weight:800; }
+
+.review-phone{
+  position:relative; z-index:1; width:100%; max-width:300px; margin:0 auto; aspect-ratio:1538/3120;
+  transition:transform .45s cubic-bezier(0.16,1,0.3,1);
+}
+.review-item:hover .review-phone{ transform:translateY(-8px); }
+.review-phone__screen{
+  position:absolute; z-index:2; left:4.2%; top:7.5%; width:92%; height:90%;border-radius:0 0 30px 30px;
+}
+.review-phone__frame{ position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+@media (max-width:1024px){
+  .review-grid{ grid-template-columns:repeat(2,1fr); row-gap:56px; }
+  .review-item:nth-child(2){ margin-top:0; }
+  .review-item:nth-child(3){ grid-column:1 / span 2; max-width:300px; margin:0 auto; }
+  /* 2열 폭(~200px 안팎)에서 "왕십리 본점 리뷰 675+" 같은 긴 배지가 nowrap 이면 화면 밖으로 밀려난다 —
+     모바일에서만 줄바꿈을 허용하고 글자/패딩을 최소치로 줄인다. */
+  .review-badge{ font-size:18px; padding:10px 16px; white-space:normal; line-height:1.3; }
+}
+
 /* PROFIT — 영수증 롤 스타일 */
 .profit{
   background:
@@ -477,6 +530,40 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 }
 
 .profit-footnote{ margin-top:48px; font-size:18px; color:var(--muted); text-align:center; }
+
+/* PROMISE — con_bg.png 패럴랙스 배너 (03 수익분석 · 04 창업비용 사이 인터스티셜) */
+.promise{
+  min-height:60vh; display:flex; align-items:center; justify-content:center;
+  padding:96px 0; overflow:hidden; text-align:center;
+  --text: var(--text-invert);   /* 어두운 사진 배경 — kicker/promise-line/promise-sub 용 */
+}
+/* 패럴랙스 — .hero-bg 와 동일한 방식(배경만 뷰포트에 고정, 콘텐츠는 스크롤을 따라 지나간다). */
+.promise-bg{
+  position:absolute; inset:0; z-index:0;
+  background-image:url('../imgs/con_bg.png');
+  background-repeat:no-repeat;
+  background-position:50% 40%;
+  background-size:cover;
+  background-attachment:fixed;
+}
+/* iOS Safari 는 background-attachment:fixed 를 무시하고 배경이 깨져 보인다 — .hero-bg 와 동일 대응. */
+@media (max-width:1024px), (hover:none){
+  .promise-bg{ background-attachment:scroll; }
+}
+.promise-overlay{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(10,8,6,.54) 0%, rgba(10,8,6,.45) 45%, rgba(10,8,6,.58) 100%);
+}
+.promise-inner{ position:relative; z-index:2; max-width:720px; margin:0 auto; }
+.promise-line{
+  font-family:'RixYeoljeongdo','Pretendard',sans-serif; font-weight:400;
+  font-size:clamp(30px,4.5vw,56px); line-height:1.35; color:var(--text);
+}
+.promise-line em{ font-style:normal; color:var(--gold-light); }
+.promise-sub{ margin-top:24px; font-size:18px; color:var(--text-dim); line-height:1.6; }
+@media (max-width:1024px){
+  .promise{ min-height:auto; padding:80px 0; }
+}
 
 /* COST */
 .cost{ background:var(--bg); --text: var(--text-invert); }  /* 어두운 배경 — section-head h2, 금액 열(마지막 span)이 밝은 글자를 쓰도록. cost-head 흰 줄은 자체 gold 색을 써서 영향 없음 */
@@ -726,9 +813,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   html{ scroll-behavior:auto; }
   *{ transition:none !important; }
   .hero-bg{ background-attachment:scroll; }   /* 패럴랙스도 움직임이므로 함께 끈다 */
+  .promise-bg{ background-attachment:scroll; }
   .hero-wordmark{ animation:none; transform:none; opacity:1; }
-  .comp-card, .trust-item{ animation:none !important; opacity:1 !important; transform:none !important; }
-  .comp-card:hover, .trust-item:hover{ transform:none; }
+  .comp-card, .trust-item, .review-item{ animation:none !important; opacity:1 !important; transform:none !important; }
+  .comp-card:hover, .trust-item:hover, .review-item:hover .review-phone{ transform:none; }
   .comp-card:hover .comp-num, .trust-item:hover h5{ transform:none; }
   .comp-card b{ animation:none !important; opacity:1 !important; }
   .accent-impact{ animation:none !important; opacity:1 !important; transform:none !important; }

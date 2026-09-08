@@ -9,5 +9,7 @@
 - [영수증 카드 구현 교훈](gopumgyeok-receipt-card.md) — 그림자는 wrapper에 drop-shadow, 절취선은 mask-image 스캘럽
 - [브랜드 원본 데이터](gopumgyeok-brand-data.md) — 슬로건·메뉴 9종·셀프바 25종·3개 매장 매출/수익률·연락처
 - [미해결 항목](gopumgyeok-open-issues.md) — 창업비용 금액 미확보, 시각검증 미완, Next.js+Supabase 마이그레이션 대기, 메뉴 png 20MB 미최적화
+- [소비자 찐후기·창업 안내 배너](gopumgyeok-reviews-and-promise-sections.md) — 02.5/03.5 신규 섹션, 아이폰 목업 좌표 재계산 절차, 여백 피드백이 프레임 버전마다 뒤집힌 이력
+- [리뷰 이미지 축소 렌더링 버그(미해결)](gopumgyeok-review-image-scaling-bug.md) — review1.png만 브라우저 축소 시 텍스트 뭉개짐, 원인 특정 전 작업 중단됨
 - [폰트 크기 규칙 예외 처리](feedback_font-size-rule-exception.md) — "18~96px 예외 없음" 규칙을 사용자가 깨려 할 때: 이력 확인→구체적 대안 제시→규칙 문서 자체 갱신
 - ["모든 변경 파일 커밋"의 의미](feedback_commit-all-means-literal.md) — 문자 그대로 전부(디버그/스크래치 포함)이지 프로덕션 파일만 골라 커밋하는 게 아니다

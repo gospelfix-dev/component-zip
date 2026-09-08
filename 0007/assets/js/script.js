@@ -156,6 +156,7 @@ const initGridReveal = () => {
   const targets = [
     ...document.querySelectorAll('#compGrid .comp-card'),
     ...document.querySelectorAll('#trustStrip .trust-item'),
+    ...document.querySelectorAll('.review-grid .review-item'),
   ];
   if (!targets.length) return;
 
