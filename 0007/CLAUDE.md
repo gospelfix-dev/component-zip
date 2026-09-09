@@ -76,25 +76,36 @@ CSS 를 만졌으면 반드시 실제로 렌더해서 확인한다.
 JSON 에서 `desc` 로 끝나는 필드만 `<b>` 같은 인라인 태그를 그대로 쓸 수 있고(HTML 로 삽입),
 나머지 텍스트 필드는 `esc()` 로 이스케이프된다.
 
-### JS 는 렌더 1곳 + 인터랙션 7곳
+### JS 는 렌더 1곳 + 인터랙션 8곳
 
 ```
 DOMContentLoaded
  └─ boot()  데이터 무관 인터랙션 5개 먼저 붙임(JSON 실패해도 동작해야 하므로) →
       data/content.json 을 fetch → renderAll() 로 8개 영역 렌더 →
-      DOM 에 카드가 올라온 뒤에만 관찰 가능한 2개(initReceiptReveal/initGridReveal)와
-      initStoreSwiper() 를 붙임
+      DOM 에 카드가 올라온 뒤에만 관찰 가능한 3개(initReceiptReveal/initProfitCountReveal/
+      initGridReveal)와 initStoreSwiper() 를 붙임
  ├─ initSmoothScroll()    [data-target] 클릭 → scrollIntoView + 모바일 메뉴 닫기
  ├─ initMobileNav()       #navToggle → .nav-open 토글
  ├─ initScrollSpy()       스크롤 40px 넘으면 헤더 .scrolled / rootMargin 으로 nav active 갱신
  ├─ initInquiryForm()     05 섹션 인라인 폼(#inquiryForm) submit 가로채 버튼 텍스트만 교체 (목업)
  ├─ initInquirySheet()    문의하기 Bottom Sheet(#inquirySheetBackdrop) — [data-open-inquiry]
- │                        클릭 또는 #menu 섹션 진입마다 자동으로 열림(observer 를 disconnect
- │                        하지 않아 드나들 때마다 반복). 자체 폼(#inquirySheetForm)을 쓰며
- │                        05 의 인라인 폼과는 별개. 2026-09-04 신규
- ├─ initReceiptReveal()   IntersectionObserver(threshold [0, 0.35]) → 35% 보이면 in-view 부여,
- │                        완전히 벗어나면 제거. 섹션에 들어올 때마다 반복 재생(unobserve 하지 않음)
- ├─ initGridReveal()      경쟁력 카드(.comp-card)/트러스트 카드(.trust-item) 스크롤 리빌
+ │                        클릭으로만 열림(헤더/히어로/우측 스크롤바 세로 탭/창업비용/05 매장위치 CTA).
+ │                        자체 폼(#inquirySheetForm)을 쓰며 05 의 인라인 폼과는 별개.
+ │                        2026-09-04 신규, 2026-09-09에 #menu 섹션 자동 오픈을 제거하고
+ │                        우측 스크롤바에 붙는 세로형 퀵 탭(`.inquiry-fab`) 클릭 방식으로 바꿈
+ ├─ initReceiptReveal()   scroll 이벤트로 뷰포트 상단 vs #selfbarGrid(02 메뉴, 03 도착 전) 상단
+ │                        좌표를 비교해 종이(.receipt-col) 펼침/접힘만 토글. 그 지점을 지날
+ │                        때마다 반복 재생(disconnect 없음)
+ ├─ initProfitCountReveal() initReceiptReveal 과 같은 scroll 이벤트 + getBoundingClientRect
+ │                        방식(IntersectionObserver 아님 — 이 환경 헤드리스 검증에서 프로그래매틱
+ │                        scrollTo 뒤 IO 콜백이 재발화하지 않는 한계가 확인돼 일관되게 피함)으로
+ │                        영수증 카드(.receipt-col)가 40% 이상 보일 때 매출 숫자(.r-sales)를
+ │                        0→실제값 카운트업, 벗어나면 0으로 리셋. initReceiptReveal 과 트리거를
+ │                        일부러 분리했다(2026-09-09) — 종이는 03 섹션 도착 전에 미리 펼쳐지므로
+ │                        같은 트리거를 쓰면 사용자가 눈으로 보기도 전에 카운트업이 끝나버려
+ │                        인터랙션이 없는 것처럼 느껴졌다
+ ├─ initGridReveal()      경쟁력 카드(.comp-card)/트러스트 카드(.trust-item)/고기 카드
+ │                        (.meat-card)/후기 카드(.review-item) 스크롤 리빌, 한 번 보이면 unobserve
  └─ initStoreSwiper()     05 매장위치 Swiper 캐러셀 초기화 + 자동재생 타이머 링 갱신
 ```
 
@@ -158,16 +169,18 @@ DOMContentLoaded
 아이콘은 Lucide(lucide.dev) SVG 를 그대로 인라인으로 가져다 썼다. 자세한 구성은
 `docs/design.md` Components 절 "매장위치 캐러셀" 참고.
 
-### 문의하기 Bottom Sheet (2026-09-04 신규)
+### 문의하기 Bottom Sheet (2026-09-04 신규, 2026-09-09 오픈 트리거 변경)
 
 헤더/히어로/창업비용/05 매장위치의 CTA 버튼(`[data-open-inquiry]`, `<a href="#location">`
-대신 `<button>`으로 바뀌었다)을 누르거나 02 메뉴 섹션에 스크롤로 진입할 때마다 자동으로
+대신 `<button>`으로 바뀌었다)과 우측 스크롤바에 붙는 세로형 퀵 탭(`.inquiry-fab`, "창업 문의")을 누르면
 열리는 모달 팝업이다(`initInquirySheet`, `#inquirySheetBackdrop`). 05 섹션 맨 아래의 원래
 인라인 문의 폼(`#inquiryForm`)과는 완전히 별개 — 이 시트는 자체 `#inquirySheetForm`을 쓰고,
-제출해도 버튼 텍스트만 바뀌는 목업이다. 자동 오픈 관찰자는 `disconnect`하지 않아 `#menu`를
-드나들 때마다 반복 재생된다(영수증 리빌과 같은 패턴). 시트 자체는 다크 섹션 스코프 밖(body
-직속 형제)이라 `--text` 기본값을 그대로 쓴다. 정확한 색상/크기 값은 `docs/design.md`
-Components 절 "문의하기 Bottom Sheet" 참고.
+제출해도 버튼 텍스트만 바뀌는 목업이다. 시트 자체는 다크 섹션 스코프 밖(body 직속 형제)이라
+`--text` 기본값을 그대로 쓴다. **2026-09-09, 02 메뉴 섹션에 스크롤로 진입할 때마다 자동으로
+열리던 동작(`IntersectionObserver` 기반)을 사용자 요청으로 제거하고, 그 자리를 우측
+스크롤바에 붙는 세로형 퀵 탭으로 대체했다** — 이제는 오직 클릭으로만 열린다. 옛 문서나 커밋 메시지에서
+"#menu 진입 시 자동으로 열린다"는 서술을 보면 이 변경 이전 기록임을 감안할 것. 정확한
+색상/크기 값은 `docs/design.md` Components 절 "문의하기 Bottom Sheet" 참고.
 
 ---
 

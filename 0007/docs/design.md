@@ -308,20 +308,35 @@ CTA 버튼 + 모바일 햄버거(≤1024px 에서 흰 배경 풀스크린 플라
 경쟁력 카드와 같은 `compCardReveal` 진입 애니메이션을 공유하고, 호버 시 카드가 떠오르며 리본
 색이 밝아지고 제목이 확대+ 진한 골드로 바뀐다.
 
-### 메뉴 카드 (`.meat-card`)
-이미지 카드, 하단 그라디언트 오버레이 위에 라벨. 호버 시 이미지만 `scale(1.05)`.
+### 메뉴 카드 (`.meat-card`, 2026-09-09 원형으로 전면 교체)
+사각형 사진 + 하단 그라디언트 오버레이 라벨 구조였다가, 사용자가 참고 이미지(동그란 틀 안에
+담긴 고기 사진)를 보여주며 요청해 `.meat-card__circle`(4px 다크 보더 + drop-shadow, 원형
+`border-radius:50%`, `object-fit:cover`) + 원 아래 `.meat-card__label` 캡션 구조로 바뀌었다.
+02 메뉴 섹션에 스크롤로 진입하면 아래→위 페이드인(`compCardReveal` 키프레임 재사용,
+`initGridReveal` 이 `#meatGrid .meat-card` 를 관찰 대상에 포함) — 경쟁력 카드와 같은 리빌
+패턴을 그대로 가져다 썼다. 호버 시 원 안 이미지만 `scale(1.15)`.
 
 ### 수익분석 영수증 (`.receipt-*`)
-프린터 슬롯에서 영수증이 뽑혀 나오는 은유. `initReceiptReveal` 은 `#profit` 섹션 상단이 뷰포트
-상단에 닿는 순간(`rootMargin:'0px 0px -100% 0px'` 로 관찰 영역을 뷰포트 최상단 한 줄로 좁힌
-IntersectionObserver) 모든 `.receipt-col` 에 한꺼번에 `.in-view` 를 주고, 섹션이 다시 그 지점
-위로 스크롤되면 제거한다(반복 재생). 2026-09-03부터 종이가 펼쳐지는 실제 애니메이션은
-`.receipt-mask` 의 `clip-path`(`inset(0 0 100% 0)` → `inset(0 0 0% 0)`)로 처리한다 — 이전에는
+프린터 슬롯에서 영수증이 뽑혀 나오는 은유. `initReceiptReveal` 은 IntersectionObserver 가
+아니라 **`scroll` 이벤트 리스너**로 구현돼 있다 — 뷰포트 상단(`window.scrollY`)이 `#profit`
+자체가 아니라 그 앞 02 메뉴 섹션의 `#selfbarGrid` 상단 좌표를 지나는 순간 모든 `.receipt-col`
+에 한꺼번에 `.in-view` 를 주고, 다시 그 지점 위로 스크롤을 올리면 제거한다(그 지점을 지날
+때마다 반복 재생). 2026-09-03부터 종이가 펼쳐지는 실제 애니메이션은 `.receipt-mask` 의
+`clip-path`(`inset(0 0 100% 0)` → `inset(0 0 0% 0)`)로 처리한다 — 이전에는
 `max-height:0→760px` 를 움직였는데, 그 방식은 `.receipt-mask` 의 문서 흐름 높이 자체가 접힘/
 펼침마다 바뀌어 `03 수익분석` 섹션 전체 높이가 스크롤 도중 출렁이는 문제가 있었다. `clip-path`
 는 레이아웃 높이(항상 실제 콘텐츠 높이)에 영향을 주지 않고 보이는 영역만 위→아래로 드러내므로
 섹션 높이가 접힘/펼침 상태와 무관하게 고정된다.
 **"원" 단위는 사용자 요청으로 삭제됨 — 되살리지 않는다.**
+
+**매출 숫자 카운트업 (`.r-sales`, 2026-09-09 신규, 같은 날 트리거 분리)** — 처음엔 종이 펼침과
+같은 트리거(`initReceiptReveal`)에 얹었으나, 종이는 `#selfbarGrid`를 지나자마자(03 섹션에
+도착하기 한참 전에) 미리 펼쳐지는 구조라 사용자가 실제로 03 섹션을 보기도 전에 카운트업이
+끝나버려 "인터랙션이 없다"는 피드백을 받았다. 그래서 `.r-sales` 자신을 관찰하는 별도
+`initProfitCountReveal`(IntersectionObserver, `threshold:0.4`)로 분리했다 — 숫자가 실제로
+40% 이상 화면에 들어올 때 0→실제값으로 카운트업(`animateSalesCount`, ease-out cubic, 1.1초)
+하고, 화면에서 벗어나면 다시 0으로 리셋한다. `unobserve` 하지 않아 드나들 때마다 반복 재생된다.
+`prefers-reduced-motion: reduce` 에서는 애니메이션 없이 바로 최종 값을 표시한다.
 
 ### 창업비용 표 (`.cost-table` / `.cost-row`)
 3열 그리드 표. 헤더 행(`.cost-head`)만 흰 배경 + 골드 라벨. 현재 모든 금액이 "상담 시 안내" —
@@ -396,12 +411,39 @@ Swiper 설정(`assets/js/script.js` `initStoreSwiper`): `slidesPerView:1.08`(102
 완전 목업 — `initInquiryForm` 이 `submit` 을 가로채 버튼 텍스트만 바꾼다. 실제 전송 없음(추후
 Next.js + Supabase 마이그레이션 예정).
 
-### 문의하기 Bottom Sheet (`.inquiry-sheet-*`, 2026-09-04 신규)
-헤더/히어로/창업비용/05 매장위치의 `[data-open-inquiry]` 버튼 클릭, 또는 02 메뉴 섹션
-진입 시 자동으로 뜨는 모달(`initInquirySheet`, `#inquirySheetBackdrop`). 05 섹션 맨 아래의
-원래 인라인 문의 폼(`.inquiry-grid`)과는 완전히 별개 — 이 시트는 자체 `#inquirySheetForm`
-을 쓰고, 제출해도 버튼 텍스트만 바뀌는 목업이다. 자동 오픈은 `IntersectionObserver` 를
-`disconnect` 하지 않아 `#menu` 를 드나들 때마다 반복 재생된다(영수증 리빌과 같은 패턴).
+### 우측 스크롤바 세로형 문의 퀵 탭 (`.inquiry-fab`, 2026-09-09 신규, 같은 날 네 차례 형태 변경)
+화면 우측 가장자리(스크롤바 자리)에 딱 붙어 세로 중앙에 고정된 탭. 우측 하단 원형 플로팅
+버튼 → 다크 배경 세로 탭(서브라벨 "QUICK CONTACT" 포함) → 골드 그라디언트 + `wordmarkIntro`
+팝 인트로 → `wordmarkShine` 흐름 반짝임 → **애니메이션 완전 제거 + 단색 `--gold-light`
+배경**, 이 순서로 같은 날 다섯 번 바뀌었다. 마지막 변경은 사용자가 "애니메이션 없애고
+배경을 `--gold-light`(#E8CD7A)로 고정해달라"고 요청해 반영했다 — 지금은 정적인 단색 탭이다.
+`[data-open-inquiry]` 속성을 가지므로 헤더/히어로/창업비용/05 매장위치 CTA 와 같은 트리거
+목록에 자동으로 포함되어 클릭 시 문의하기 Bottom Sheet 를 연다 — 별도 JS 없이 기존
+`initInquirySheet` 의 `querySelectorAll('[data-open-inquiry]')` 로 잡힌다.
+
+- `position:fixed; right:0; top:50%; transform:translateY(-50%); z-index:90` — 화면 우측
+  가장자리에 완전히 밀착(오른쪽 여백 없음). Bottom Sheet 오버레이(`z-index:300`)보다는
+  낮고 헤더(`z-index:100`)보다도 낮게 둬서, 시트가 열리면 자연스럽게 덮인다.
+- 배경은 `background:var(--gold-light)`(#E8CD7A) 단색 — 애니메이션 없음.
+  `border-radius:14px 0 0 14px`(왼쪽 모서리만 둥글게, 오른쪽은 화면 끝에 붙으므로 각짐),
+  `box-shadow:-8px 0 24px rgba(0,0,0,.4)`(왼쪽으로만 그림자를 던져 화면에서 튀어나온
+  탭처럼 보이게 한다).
+- 라벨(`.inquiry-fab__label`, "창업 문의" 하나만 — 서브라벨 "QUICK CONTACT" 는 제거됨)은
+  `writing-mode:vertical-rl; text-orientation:upright`로 글자를 회전시키지 않고 위→아래로
+  쌓는다. 골드 배경 위라 텍스트는 `color:#1B1608`(어두운 잉크색, `.btn-primary` 와 같은 대비 문법).
+- hover 시에는 `translateX(-6px)` 로 왼쪽으로 밀려나오며 그림자를 키운다.
+- `max-width:1024px`: 패딩/간격만 축소, 위치·형태는 동일하게 유지.
+- `wordmarkShine` 키프레임(`assets/css/animations.css`)은 더 이상 이 탭에 쓰이지 않고
+  `.hero-wordmark` 전용으로 남는다 — `prefers-reduced-motion` 예외도 애니메이션 자체가
+  없어졌으므로 `.inquiry-fab` 에는 더 이상 필요 없다.
+
+### 문의하기 Bottom Sheet (`.inquiry-sheet-*`, 2026-09-04 신규, 2026-09-09 오픈 트리거 변경)
+헤더/히어로/우측 하단 FAB/창업비용/05 매장위치의 `[data-open-inquiry]` 버튼 클릭으로 여는
+모달(`initInquirySheet`, `#inquirySheetBackdrop`). 05 섹션 맨 아래의 원래 인라인 문의 폼
+(`.inquiry-grid`)과는 완전히 별개 — 이 시트는 자체 `#inquirySheetForm` 을 쓰고, 제출해도
+버튼 텍스트만 바뀌는 목업이다. **2026-09-09, 02 메뉴 섹션 진입 시 `IntersectionObserver` 로
+자동으로 뜨던 동작을 제거하고 위 FAB 클릭으로만 열리도록 바꿨다** — 옛 문서에서 "`#menu`
+진입 시 자동으로 뜬다"는 서술을 보면 이 변경 이전 기록이다.
 
 - 오버레이: `background:rgba(0,0,0,.6)`, `opacity`/`visibility` 트랜지션(.2s).
 - 카드: `max-width:480px`, `max-height:85vh`, `background:var(--bg-card)`(흰색),

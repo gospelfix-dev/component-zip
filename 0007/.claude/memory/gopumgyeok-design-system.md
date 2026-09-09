@@ -72,14 +72,24 @@ Google Fonts에 Pretendard가 없어 **HTTP 400**이었다(2026-09-01 확인, �
 
 `.hero-badge-phone`은 **삭제가 아니라 이동**이다 — 우상단 절대배치(헤더 "창업 상담" 버튼에 가려졌었다)에서 중앙 스택 맨 아래로 옮겨 `display:inline-flex` + 부모의 `text-align:center`로 정렬한다.
 
-**문의하기 Bottom Sheet 팝업 (2026-09-04 신규)** — 헤더/히어로/창업비용/05 매장위치 CTA
-(`[data-open-inquiry]` 버튼)를 누르거나 02 메뉴 섹션(`#menu`)에 스크롤로 진입할 때마다
-자동으로 열리는 모달(`#inquirySheetBackdrop`, `assets/js/script.js` `initInquirySheet`).
-자동 오픈은 `IntersectionObserver`를 `disconnect`하지 않아 그 섹션을 드나들 때마다 반복
-재생된다(영수증 리빌과 같은 패턴). 05 섹션 맨 아래의 원래 인라인 문의 폼(`#inquiryForm`)과는
-완전히 별개 — 이 시트는 자체 `#inquirySheetForm`을 쓰고, 제출해도 버튼 텍스트만 바뀌는
-목업이다. 시트 자체는 다크 섹션 스코프 밖(body 직속)이라 `--text`의 기본값(라이트 카드용
-`#333333`)을 그대로 쓰고, 골드 포인트(제출 버튼·포커스 링)만 얹는다.
+**문의하기 Bottom Sheet 팝업 (2026-09-04 신규, 2026-09-09 오픈 트리거 전면 교체)** —
+헤더/히어로/창업비용/05 매장위치 CTA(`[data-open-inquiry]` 버튼)를 누르면 열리는 모달
+(`#inquirySheetBackdrop`, `assets/js/script.js` `initInquirySheet`). **2026-09-09, "02 메뉴
+섹션(`#menu`)에 스크롤로 진입할 때마다 자동으로 열리는" 동작은 사용자 요청으로 완전히
+제거됐다** — 옛 기록(이 메모리의 예전 버전 포함)에서 "자동으로 열린다"는 서술을 보면 이
+날짜 이전 기록이다. 대신 화면 우측 가장자리에 딱 붙는 세로형 퀵 탭(`.inquiry-fab`,
+`position:fixed; right:0; top:50%; transform:translateY(-50%)`)이 새로 생겨 `[data-open-
+inquiry]` 트리거 목록에 자동 포함됐고, 이제는 오직 클릭으로만 연다. 이 탭은 같은 세션 안에서
+원형 플로팅 버튼 → 다크 세로 탭(서브라벨 "QUICK CONTACT" 포함) → 골드 그라디언트+
+`wordmarkIntro` 팝 인트로 → 골드 그라디언트+`wordmarkShine` 흐름 반짝임 순으로 다섯 번
+바뀌었다가, 최종적으로 **애니메이션 전혀 없는 단색 `background:var(--gold-light)`
+배경 + "창업 문의" 라벨 하나**(`writing-mode:vertical-rl; text-orientation:upright`로
+회전 없이 글자를 위→아래로 쌓음)로 정착했다 — 화려한 버전들을 다 시도해본 뒤 가장 단순한
+정적 형태로 되돌아간 것이니, 다음에 이 탭을 만지게 되면 애니메이션을 다시 제안하지 말고
+이 단색 정적 상태가 최종 기준임을 전제할 것. 05 섹션 맨 아래의 원래 인라인 문의 폼
+(`#inquiryForm`)과는 완전히 별개 — 이 시트는 자체 `#inquirySheetForm`을 쓰고, 제출해도
+버튼 텍스트만 바뀌는 목업이다. 시트 자체는 다크 섹션 스코프 밖(body 직속)이라 `--text`의
+기본값(라이트 카드용 `#333333`)을 그대로 쓰고, 골드 포인트(제출 버튼·포커스 링)만 얹는다.
 
 **콘텐츠 데이터**: 2026-09-01부터 `data/content.json` 이 단일 진실 공급원이다(경쟁력·트러스트·고기·셀프바·수익·창업비용·매장·연락처). `index.html` 은 빈 컨테이너만 갖고 `assets/js/script.js` 가 `fetch` 로 채운다. **JS 안에 `FALLBACK` 사본을 두지 않았다** — 그래서 `file://` 더블클릭으로는 콘텐츠가 안 뜬다(안내 문구가 대신 표시됨). 로컬 서버로 볼 것.
 

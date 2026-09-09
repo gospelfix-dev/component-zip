@@ -1,28 +1,37 @@
 ---
 name: gopumgyeok-receipt-reveal-logic
-description: 0007 assets/js/script.js 의 initReceiptReveal() 구조 — 섹션 단위 IntersectionObserver + rootMargin 트릭으로 03 수익분석 영수증 전체를 동시에 리빌하는 방식. 2026-09-03 이전 개별 .receipt-col 옵저버 방식에서 변경됨
+description: 0007 assets/js/script.js 의 initReceiptReveal() 구조 — 2026-09-09 기준 IntersectionObserver 가 아니라 window scroll 리스너 + getBoundingClientRect 비교 방식. 예전엔 IO 기반이었으나 바뀜
 metadata:
   type: project
 ---
 
-`assets/js/script.js` 의 `initReceiptReveal()`(2026-09-03 기준 122~140행 부근)은 `#profit`
-섹션 하나를 대상으로 `new IntersectionObserver(cb, {threshold:0, rootMargin:'0px 0px -100% 0px'})`
-를 만들고, 콜백에서 모든 `.receipt-col` 에 `classList.toggle('in-view', entry.isIntersecting)`
-를 건다. 이전엔 `.receipt-col` 마다 각각 옵저버를 붙여 35% 이상 보이면 개별적으로 열리는
-방식이었는데, "스크롤이 섹션 상단에 닿는 순간 3장이 한꺼번에 열려야 한다"는 요구로 바뀌었다.
+**2026-09-09 기준으로 구조가 다시 바뀌었다.** 이 메모리는 원래 2026-09-03 의 IntersectionObserver
+버전을 설명했으나, `assets/js/script.js`(147~176행 부근)를 다시 읽어보니 더 이상 IO 를 쓰지 않는다
+— `window.addEventListener('scroll', update)` + `trigger.getBoundingClientRect().top + window.scrollY`
+로 직접 스크롤 위치를 비교하는 방식이다. IO 관련 서술(rootMargin 트릭 등)은 지금 코드와 맞지
+않으니 참고하지 말 것 — 코드가 또 바뀌었을 수 있으니 항상 먼저 grep 으로 재확인한다.
 
-**rootMargin `'0px 0px -100% 0px'` 의 의미**: bottom margin 이 뷰포트 높이의 -100% 이므로
-유효 root 사각형의 bottom 이 top 과 같아져(뷰포트 높이만큼 아래에서 올려붙임) 사실상 "뷰포트
-최상단의 높이 0 인 선"이 된다. 타겟(`#profit`)이 이 선과 겹치는 동안(= 섹션의 top 이 0 이하이고
-bottom 이 아직 0 이상인 동안)만 `isIntersecting=true`. 섹션 상단이 뷰포트 상단을 지나는 순간
-켜지고, 섹션이 통째로 스크롤을 다 지나가면(=매우 많이 스크롤해야 함, 섹션이 900px 뷰포트보다
-훨씬 크므로 실사용 스크롤 범위 안에서는 꺼지지 않음) 꺼진다. 위로 다시 스크롤해 섹션 상단이
-뷰포트 상단 위로 올라가면(=아직 안 닿은 상태로 되돌아가면) 즉시 꺼진다 — `.toggle()` 을 쓰고
-`unobserve()` 를 호출하지 않으므로 반복 재생(양방향 토글)이 코드 구조상 보장된다.
+**현재 로직 요약**: `trigger`(`#selfbarGrid`, 없으면 `#profit` 자체)의 문서 좌표 top 을 구해
+`revealed = window.scrollY >= triggerTop` 을 매 스크롤마다 계산하고, `revealed !== wasRevealed`
+(rising/falling edge)일 때만 모든 `.receipt-col` 에 `in-view` 를 토글하고 `.r-sales` 카운트업
+(`animateSalesCount`, ease-out cubic 1.1s)을 트리거하거나 0으로 리셋한다. `unobserve` 개념 자체가
+없고 매번 조건 재계산이라 반복 재생(양방향)이 자연히 보장된다.
 
-**검증 상태(2026-09-03)**: 정적 코드 분석으로 위 로직이 요구사항과 정확히 일치함을 확인했고,
-스크롤 0 상태에서 `.receipt-mask` 가 `max-height:0` 으로 접혀 있는 초기 상태는 스크린샷으로 실제
-확인했다. 다만 **"스크롤이 섹션 상단에 정확히 닿는 라이브 순간 in-view 가 켜지는지"는 헤드리스
-환경의 한계로 자동 스크린샷/dump-dom 증거를 얻지 못했다** — [[headless-intersection-observer-limitation]]
-참고. 실제 브라우저(사용자가 직접 스크롤)에서는 정상 동작할 것으로 코드상 강하게 신뢰하지만,
-"확인함"이라고 단정하지 않고 이 한계를 사용자에게 그대로 보고했다.
+**중요한 차이 — [[headless-intersection-observer-limitation]] 이 이 함수엔 적용되지 않는다**:
+그 메모리는 IntersectionObserver 콜백이 헤드리스에서 프로그래매틱 `scrollTo` 후 재발화하지
+않는다는 한계인데, 이 함수는 IO 가 아니라 순수 `scroll` 이벤트 리스너다. 2026-09-09 검증에서
+`_debug_*.html`에 `window.scrollTo(0, triggerTop+50)` 후 `window.dispatchEvent(new Event('scroll'))`
+를 주입하고 1.6초 뒤 `--dump-dom` 으로 `.r-sales` textContent 를 읽었더니, 초기 `"0|0|0"` →
+정확히 목표값 `"47,000,000|67,000,000|39,000,000"` (콤마 포맷까지 정확)로 카운트업이 완료된 것을
+**실제로 자동 검증했다** — "코드상 신뢰"가 아니라 라이브 증거를 확보한 사례. `scroll` 이벤트는
+IO 와 달리 컴포지터 프레임에 의존하지 않고 스크롤 위치 변경 시 동기적으로 디스패치되는 것으로
+보인다.
+
+**시각 레이아웃 검증(카운트업 완료 후 영수증 카드가 안 깨지는지)은 실제 스크롤 대신 클래스를
+직접 주입하는 우회가 안전하다** — `document.querySelectorAll('.receipt-col').forEach(el=>
+el.classList.add('in-view'))` + `.r-sales` textContent 를 목표값으로 직접 설정한 뒤 스크린샷.
+5000px 이상 되는 실제 프로그래매틱 스크롤 점프는 [[headless-large-scroll-screenshot-black-frame]]
+버그를 유발해 `--screenshot` 결과가 완전히 깨지므로, 레이아웃 확인엔 이 클래스 주입 방식 +
+[[tall-viewport-fixed-modal-confound]]에서 쓰던 초대형 window-size 풀페이지 기법을 함께 쓰는 게
+더 안전하다. 숫자 카운트업의 "정확성"은 dump-dom(작은 스크롤)으로, "레이아웃 안 깨짐"은 클래스
+주입 스크린샷(스크롤 없음)으로 역할을 나눠 검증했다.

@@ -55,6 +55,9 @@ section{ padding:120px 0; }
   line-height:1.25; color:var(--ink); margin-bottom:18px;
 }
 .section-head p{ font-size:16px; color:var(--ink-dim); line-height:1.8; }
+/* 01 경쟁력 h2 는 .section-head 의 640px 리딩 컬럼 폭을 넘어가도 한 줄로 유지한다(요청 사항).
+   .feature 에는 overflow:hidden 이 없어 넘치는 폭은 오른쪽 여백으로 자연스럽게 흘러간다. */
+#competitiveness .section-head h2{ white-space:nowrap; }
 
 /* ---- 금박 그라디언트 텍스트 (구 .ink-accent) ---- */
 .gold-text{
@@ -198,12 +201,23 @@ section{ padding:120px 0; }
 .hero-contact .k{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze-tint); }
 .hero-contact .v{ font-size:16px; font-weight:700; color:var(--paper); }
 
-/* 텍스트 블록(.hero-left) 위에 겹쳐 얹는 단일 제품 사진. 참고 배너처럼 이미지가 헤드라인
+/* 텍스트 블록(.hero-left) 위에 겹쳐 얹는 제품 사진. 참고 배너처럼 이미지가 헤드라인
    오른쪽 끝을 가리도록 절대 배치한다 — .hero-inner 는 높이를 .hero-left 콘텐츠 흐름에
-   맡기고, .hero-right 는 그 위에 겹치는 레이어로만 존재한다(문서 흐름에 관여하지 않음). */
+   맡기고, .hero-right 는 그 위에 겹치는 레이어로만 존재한다(문서 흐름에 관여하지 않음).
+   내부의 .hero-swiper 가 05 매장위치와 같은 Swiper 인스턴스로 사진을 자동 크로스페이드한다
+   (assets/js/script.js 의 initHeroSwiper, effect:'fade'). pointer-events:none 이라 수동
+   스와이프는 없다 —
+   장식용 자동재생 전용이라 "절제된 인터랙션" 원칙과 상충하지 않는다. */
 .hero-right{
   position:absolute; top:-30px; left:470px; z-index:2; width:650px; max-width:60vw;
   pointer-events:none; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) .15s both;
+}
+.hero-swiper{ width:100%; }
+/* Swiper 컨테이너의 overflow:hidden 이 .hero-meat-main 의 drop-shadow 블러를 사각형으로
+   잘라내 테두리 박스처럼 보이는 클리핑 아티팩트가 생긴다 — 패딩을 그림자 번짐 반경보다
+   넉넉히 키워, 그림자가 클리핑 경계에 닿기 전에 다 사그라들도록 한다. */
+.hero-swiper .swiper-slide{
+  aspect-ratio:975/825; padding:48px; display:flex; align-items:center; justify-content:center;
 }
 .hero-photo-badge{
   position:absolute; top:24px; right:32px; z-index:3; display:inline-flex; align-items:center; gap:8px;
@@ -211,7 +225,8 @@ section{ padding:120px 0; }
   font-family:var(--font-sans); font-weight:800; font-size:13px; color:var(--ink);
 }
 .hero-meat-main{
-  width:100%; display:block; filter:drop-shadow(0 30px 50px rgba(0,0,0,.55));
+  width:100%; height:100%; display:block; object-fit:contain;
+  filter:drop-shadow(0 14px 20px rgba(0,0,0,.5));
 }
 
 @media (max-width:1024px){
@@ -222,6 +237,67 @@ section{ padding:120px 0; }
     position:relative; top:auto; left:auto; right:auto; width:78%; max-width:360px; margin:0 auto 24px;
     display:block; z-index:1; order:-1; pointer-events:auto;
   }
+}
+
+/* ============================================================
+   맛집랭킹1위 배너 (.ranking-*, 2026-09-09 신규)
+   히어로·푸터에 이어 세 번째 다크 반전 존 — 사용자가 다크 레퍼런스 배너를 제시하며
+   명시적으로 요청한 예외다(CLAUDE.md 다크 반전 존 절 참고). 새 다크 토큰을 만들지 않고
+   히어로와 같은 --hero-ink/--paper 를 그대로 재사용한다. 배경은 기존 보유 에셋
+   generated_bg.png(고기 플레이팅 스프레드 사진)를 재사용한다 — 새 배경 이미지를 만들지
+   않았다.
+   ============================================================ */
+.ranking{ position:relative; overflow:hidden; padding:120px 0; background:var(--hero-ink); }
+.ranking-bg-frame{ position:absolute; inset:0; overflow:hidden; }
+.ranking-bg{ position:absolute; inset:0; background:url('../imgs/generated_bg.png') center/cover; }
+.ranking-overlay{ position:absolute; inset:0; background:rgba(0,0,0,.7); }
+.ranking .wrap{ position:relative; z-index:1; }
+.ranking-inner{ display:flex; align-items:center; justify-content:center; gap:40px; flex-wrap:wrap; }
+
+/* 폰 목업 — 0007(시안A)의 .review-phone 구조를 그대로 차용: Swiper 캐러셀(.ranking-phone__screen,
+   assets/js/script.js 의 initRankingSwiper)을 프레임 이미지(.ranking-phone__frame)의 투명
+   화면 구멍 자리에 절대 배치로 정확히 겹친다. 프레임은 정적 이미지로 그대로 두고 화면 영역만
+   3장(매장별 네이버 리뷰 캡처)을 자동 슬라이드한다. 좌표(left/top/width/height %)는 프레임
+   에셋(assets/imgs/ranking_iphone.png)의 화면 컷아웃 위치에 실측으로 맞춘 값이라 프레임을
+   바꾸면 함께 다시 맞춰야 한다. */
+.ranking-phone{
+  position:relative; flex-shrink:0; width:270px; aspect-ratio:1538/3120;
+  filter:drop-shadow(0 20px 30px rgba(0,0,0,.45));
+}
+.ranking-phone__screen{
+  position:absolute; z-index:2; left:4.2%; top:7.5%; width:92%; height:90%;
+  border-radius:0 0 30px 30px; overflow:hidden;
+}
+.ranking-phone__screen img{ width:100%; height:100%; object-fit:cover; display:block; }
+.ranking-phone__frame{ position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+.ranking-content{ flex:1 1 360px; max-width:480px; text-align:center; }
+/* 별 5개를 반달(무지개) 모양 호로 배치 — 가운데 별이 가장 높고 양 끝으로 갈수록 낮아지며
+   살짝 벌어지는 부채꼴 회전을 준다(레퍼런스 이미지 기준). */
+.ranking-stars{ color:var(--bronze-tint); font-size:26px; margin-bottom:22px; }
+.ranking-stars span{ display:inline-block; margin:0 2px; }
+.ranking-stars span:nth-child(1){ transform:translateY(9px) rotate(-24deg); }
+.ranking-stars span:nth-child(2){ transform:translateY(2px) rotate(-12deg); }
+.ranking-stars span:nth-child(3){ transform:translateY(-3px); }
+.ranking-stars span:nth-child(4){ transform:translateY(2px) rotate(12deg); }
+.ranking-stars span:nth-child(5){ transform:translateY(9px) rotate(24deg); }
+.ranking .running-head{ color:var(--bronze-tint); font-size:15px; }
+.ranking-content h2{
+  font-family:var(--font-sans); font-weight:900; font-size:clamp(48px,6.5vw,88px);
+  line-height:1.06; color:var(--paper); margin:16px 0 28px;
+}
+/* "맛집 랭킹" 한 곳만 예외적으로 RixYeoljeongdo(붓글씨체) — 산세리프 단일 통일 규칙의
+   범위 제한 예외다(fonts.css 상단 주석 참고). 굵기 지정을 h2 의 900 대신 폰트 자체
+   웨이트(400)로 되돌린다 — 브러시체는 웨이트 축이 아니라 서체 자체가 임팩트를 낸다. */
+.ranking-brush{ font-family:'RixYeoljeongdo', var(--font-sans); font-weight:400; }
+.ranking-rule{ border:none; border-top:1px solid rgba(255,255,254,.2); max-width:320px; margin:0 auto 24px; }
+.ranking-sub{ font-size:20px; color:rgba(255,255,254,.75); }
+.ranking-sub b{ color:var(--paper); font-weight:800; }
+
+@media (max-width:1024px){
+  .ranking{ padding:80px 0; }
+  .ranking-inner{ flex-direction:column; }
+  .ranking-phone{ width:200px; }
 }
 
 /* ============================================================
@@ -257,6 +333,7 @@ section{ padding:120px 0; }
 @media (max-width:1024px){
   .feature-row{ grid-template-columns:1fr; gap:12px; padding:28px 0; }
   .trust-grid{ grid-template-columns:repeat(2,1fr); gap:24px 16px; margin-top:8px; }
+  #competitiveness .section-head h2{ white-space:normal; }
 }
 
 /* ============================================================

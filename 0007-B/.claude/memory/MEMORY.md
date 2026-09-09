@@ -12,6 +12,7 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 - [폰트 크기 규칙 예외 처리](feedback_font-size-rule-exception.md) — 확정 규칙을 사용자가 깨려 할 때: 이력 확인→구체적 대안 제시→규칙 문서 자체 갱신 (절차 자체가 유효, 0007-B는 12~120px로 별도 확정)
 - ["모든 변경 파일 커밋"의 의미](feedback_commit-all-means-literal.md) — 문자 그대로 전부(디버그/스크래치 포함)이지 프로덕션 파일만 골라 커밋하는 게 아니다
 - [design.md 전체 동기화](feedback_design-doc-full-sync.md) — 같은 값이 토큰블록·표·prose·컴포넌트 절 등 여러 곳에 중복 기술돼 있어, 값 변경 시 옛 값을 grep으로 전체 검색해 모든 위치를 고쳐야 한다
+- [drop-shadow + overflow:hidden 클리핑 함정](feedback_dropshadow-overflow-clip-trap.md) — Swiper 등 overflow:hidden 컨테이너 안에서 filter:drop-shadow 쓰면 그림자가 사각형으로 잘려 보인다
 
 `archive/`(A 전용, 참고만 — B의 규칙으로 인용 금지): 디자인 시스템(골드/레드), shadcn 재설계 원복 경위,
 히어로 sticky 패럴랙스, 영수증 카드 구현, 2026-09-01 시점 미해결 이슈 목록.

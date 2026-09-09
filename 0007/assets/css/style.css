@@ -329,11 +329,26 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 
 /* MENU */
 .menu{ background:var(--bg); --text: var(--text-invert); }  /* 어두운 배경 — section-head h2, meat-label 이 밝은 글자를 쓰도록 */
-.meat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:16px; }
-.meat-card{ position:relative; background:var(--bg-card); overflow:hidden; aspect-ratio:5/3.4; }
-.meat-card img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.05); transition:transform .5s ease; }
-.meat-card:hover img{ transform:scale(1.15); }
-.meat-label{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px 12px; background:linear-gradient(to top, rgba(0,0,0,0.75), transparent); font-size:18px; color:var(--text); font-weight:600; letter-spacing:0.01em; }
+.meat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:40px 24px; margin-top:16px; }
+.meat-card{ text-align:center; opacity:0; }   /* initGridReveal 이 in-view 를 붙이기 전까지 숨겨둔다 */
+.meat-card__circle{
+  width:100%; aspect-ratio:1; border-radius:50%; overflow:hidden;
+  background:var(--bg-card); border:4px solid #140F0A;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+}
+.meat-card__circle img{ width:100%; height:100%; object-fit:cover; filter:saturate(1.05); transition:transform .5s ease; }
+.meat-card:hover .meat-card__circle img{ transform:scale(1.15); }
+.meat-card__label{ margin-top:16px; font-size:18px; color:var(--text); font-weight:600; letter-spacing:0.01em; }
+.meat-card.in-view{ animation:compCardReveal .7s cubic-bezier(0.16,1,0.3,1) forwards; }
+.meat-card.in-view:nth-child(1){ animation-delay:0s; }
+.meat-card.in-view:nth-child(2){ animation-delay:.08s; }
+.meat-card.in-view:nth-child(3){ animation-delay:.16s; }
+.meat-card.in-view:nth-child(4){ animation-delay:.24s; }
+.meat-card.in-view:nth-child(5){ animation-delay:.32s; }
+.meat-card.in-view:nth-child(6){ animation-delay:.4s; }
+.meat-card.in-view:nth-child(7){ animation-delay:.48s; }
+.meat-card.in-view:nth-child(8){ animation-delay:.56s; }
+.meat-card.in-view:nth-child(9){ animation-delay:.64s; }
 @media (max-width:1024px){ .meat-grid{grid-template-columns:repeat(2,1fr);} }
 
 .selfbar-note{ display:flex; align-items:baseline; gap:14px; margin:56px 0 20px; color:var(--text-dim); font-size:18px; flex-wrap:wrap;}
@@ -720,6 +735,35 @@ textarea{ resize:vertical; min-height:110px; }
 .submit-btn:hover{ background:var(--gold-light); }
 @media (max-width:1024px){ .inquiry-grid{grid-template-columns:1fr;} .field-row{grid-template-columns:1fr;} }
 
+/* 우측 스크롤바에 붙는 세로형 문의 퀵 탭 — 2026-09-09, 우측 하단 원형 플로팅 버튼 →
+   다크 배경 세로 탭(QUICK CONTACT 서브라벨 포함) → 골드 그라디언트 + wordmarkIntro 팝
+   인트로 → wordmarkShine 흐름 반짝임, 이 순서로 바꾸다가 같은 날 사용자가 애니메이션을
+   완전히 빼고 배경을 단색 --gold-light(#E8CD7A)로 고정해달라 요청해 최종적으로 정적인
+   단색 탭이 됐다. body 직속 형제라 :root 기본 --text 대신 명시적으로 배색을 지정한다.
+   글자는 writing-mode:vertical-rl + text-orientation:upright 로 눕히지 않고 위→아래로
+   쌓는다. */
+.inquiry-fab{
+  position:fixed; right:0; top:50%; z-index:90;
+  transform:translateY(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+  padding:28px 14px; border:none; border-radius:14px 0 0 14px; cursor:pointer;
+  font-family:inherit;
+  background:var(--gold-light);
+  box-shadow:-8px 0 24px rgba(0,0,0,.4);
+  transition:box-shadow .25s ease;
+}
+.inquiry-fab:hover{
+  transform:translateY(-50%) translateX(-6px);
+  box-shadow:-10px 0 28px rgba(0,0,0,.5);
+}
+.inquiry-fab__label{
+  writing-mode:vertical-rl; text-orientation:upright;
+  font-weight:700; font-size:18px; letter-spacing:0.1em; color:#1B1608;
+}
+@media (max-width:1024px){
+  .inquiry-fab{ padding:22px 10px; gap:12px; }
+}
+
 /* 문의하기 Bottom Sheet — 2026-09-04에 추가된 팝업 모달(오버레이 딤 + 카드, PC 는 중앙
    모달/모바일은 하단 고정 시트). RixYeoljeongdo/골드 팔레트 복원과 별개로 계속 유지한다.
    트리거 클릭 시 initInquirySheet() 가 hidden 을 떼고 다음 프레임에 .is-open 을 붙인다
@@ -815,7 +859,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .hero-bg{ background-attachment:scroll; }   /* 패럴랙스도 움직임이므로 함께 끈다 */
   .promise-bg{ background-attachment:scroll; }
   .hero-wordmark{ animation:none; transform:none; opacity:1; }
-  .comp-card, .trust-item, .review-item{ animation:none !important; opacity:1 !important; transform:none !important; }
+  .comp-card, .trust-item, .review-item, .meat-card{ animation:none !important; opacity:1 !important; transform:none !important; }
   .comp-card:hover, .trust-item:hover, .review-item:hover .review-phone{ transform:none; }
   .comp-card:hover .comp-num, .trust-item:hover h5{ transform:none; }
   .comp-card b{ animation:none !important; opacity:1 !important; }

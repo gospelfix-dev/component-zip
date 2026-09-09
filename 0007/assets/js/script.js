@@ -45,8 +45,8 @@ const renderTrust = (list = []) => fill('trustStrip', list.map(({ label, desc },
 /** 02 메뉴 — 고기 그리드 */
 const renderMeat = (list = []) => fill('meatGrid', list.map(({ image, name }) => `
   <div class="meat-card">
-    <img src="${esc(image)}" alt="${esc(name)}">
-    <div class="meat-label">${esc(name)}</div>
+    <div class="meat-card__circle"><img src="${esc(image)}" alt="${esc(name)}"></div>
+    <div class="meat-card__label">${esc(name)}</div>
   </div>`).join(''));
 
 /** 02 메뉴 — 셀프바 원형 그리드 */
@@ -67,7 +67,7 @@ const renderProfitCards = (list = []) => fill('profitCards', list.map(({ name, o
         <div class="receipt-paper">
           <div class="r-label">운영형태 [ 홀 / 셀프바 ]</div>
           <div class="r-store">${esc(name)}</div>
-          <div class="r-sales">${formatWon(salesWon)}</div>
+          <div class="r-sales" data-value="${salesWon}">${formatWon(0)}</div>
           <div class="r-divider"></div>
           <div class="r-sub">순수익률 <b>${esc(rate)}%</b></div>
           <div class="r-divider"></div>
@@ -129,6 +129,21 @@ const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contact
  * 그리드를 지나자마자(03 섹션 도달 전에) 다시 false 가 되어버려 이 요건을 표현할
  * 수 없다 — 대신 스크롤 위치와 셀프바 그리드의 문서 좌표를 직접 비교한다.
  */
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** .r-sales 매출 숫자를 0 → 실제값으로 카운트업한다 (ease-out cubic, 1.1s) */
+const animateSalesCount = (el, target, duration = 1100) => {
+  if (prefersReducedMotion()) { el.textContent = formatWon(target); return; }
+  const start = performance.now();
+  const step = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = formatWon(Math.round(target * eased));
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+};
+
 const initReceiptReveal = () => {
   const section = document.getElementById('profit');
   if (!section) return;
@@ -136,11 +151,56 @@ const initReceiptReveal = () => {
   if (!cols.length) return;
 
   const trigger = document.getElementById('selfbarGrid') || section;
+  let wasRevealed = false;
 
   const update = () => {
     const triggerTop = trigger.getBoundingClientRect().top + window.scrollY;
     const revealed = window.scrollY >= triggerTop;
+    if (revealed === wasRevealed) return;
+    wasRevealed = revealed;
     cols.forEach((col) => col.classList.toggle('in-view', revealed));
+  };
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+};
+
+/**
+ * 매출 숫자 카운트업은 종이 펼침(initReceiptReveal)과 트리거를 일부러 분리한다.
+ * 종이는 셀프바 그리드 상단을 지나자마자(03 섹션에 도착하기 한참 전에) 미리 펼쳐지므로,
+ * 같은 트리거에 숫자 카운트업을 묶으면 사용자가 실제로 03 섹션에 눈을 두기도 전에
+ * 애니메이션이 끝나버려 "인터랙션이 아예 없다"고 느껴진다(2026-09-09, 실제로 보고된 문제).
+ * 그래서 숫자 카드(.receipt-col) 자신이 뷰포트에 40% 이상 보일 때를 기준으로 카운트업/리셋을
+ * 토글한다. IntersectionObserver 가 아니라 initReceiptReveal 과 같은 scroll 리스너 +
+ * getBoundingClientRect 방식을 쓴다 — 이 프로젝트 헤드리스 검증 환경에서 프로그래매틱
+ * scrollTo 뒤에는 IntersectionObserver 콜백이 재발화하지 않는 한계가 확인됐고
+ * (`.claude/agent-memory/screenshot-verifier/headless-intersection-observer-limitation.md`),
+ * 실제 브라우저에서도 scroll 리스너 쪽이 이 코드베이스에서 이미 검증된 패턴이라 일관되게
+ * 맞춘다. unobserve 없이 계속 관찰해 드나들 때마다 반복 재생된다.
+ */
+const initProfitCountReveal = () => {
+  const cols = [...document.querySelectorAll('#profit .receipt-col')];
+  if (!cols.length) return;
+
+  const wasInView = new WeakMap();
+
+  const update = () => {
+    const vh = window.innerHeight;
+    cols.forEach((col) => {
+      const salesEl = col.querySelector('.r-sales');
+      if (!salesEl) return;
+      const rect = col.getBoundingClientRect();
+      const visible = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
+      const inView = rect.height > 0 && visible / rect.height >= 0.4;
+      if (inView === (wasInView.get(salesEl) || false)) return;
+      wasInView.set(salesEl, inView);
+      if (inView) {
+        animateSalesCount(salesEl, Number(salesEl.dataset.value));
+      } else {
+        salesEl.textContent = formatWon(0);
+      }
+    });
   };
 
   window.addEventListener('scroll', update, { passive: true });
@@ -157,6 +217,7 @@ const initGridReveal = () => {
     ...document.querySelectorAll('#compGrid .comp-card'),
     ...document.querySelectorAll('#trustStrip .trust-item'),
     ...document.querySelectorAll('.review-grid .review-item'),
+    ...document.querySelectorAll('#meatGrid .meat-card'),
   ];
   if (!targets.length) return;
 
@@ -317,11 +378,10 @@ const initScrollSpy = () => {
 };
 
 /**
- * 문의하기 Bottom Sheet — [data-open-inquiry] 트리거(헤더/히어로/창업비용/05 매장위치 CTA)
- * 클릭으로도 열리고, 02 메뉴 섹션에 진입할 때마다 자동으로 열린다 — 03 수익분석의 영수증
- * 리빌(initReceiptReveal)과 같은 반복 재생 패턴으로, observer 를 disconnect 하지 않는다.
- * 사용자가 닫아도 그 섹션을 벗어났다 다시 들어오면 또 뜬다. hidden 을 뗀 다음 프레임에
- * .is-open 을 붙여야 CSS transition 이 시작값을 인식한다 — 같은 프레임에 같이
+ * 문의하기 Bottom Sheet — [data-open-inquiry] 트리거(헤더/히어로/우측 하단 FAB/창업비용/
+ * 05 매장위치 CTA) 클릭으로만 열린다(2026-09-09, 02 메뉴 섹션 진입 시 자동으로 뜨던
+ * 동작은 사용자 요청으로 제거하고 우측 하단 고정 버튼으로 바꿨다). hidden 을 뗀 다음
+ * 프레임에 .is-open 을 붙여야 CSS transition 이 시작값을 인식한다 — 같은 프레임에 같이
  * 붙이면 애니메이션 없이 바로 최종 상태로 뛴다. 목업 제출은 기존 인라인 폼과 동일하게 버튼
  * 텍스트만 바꾸고 끝낸다(실제 전송 없음). 05 섹션 맨 아래의 원래 문의 폼(#inquiryForm)과는
  * 별개 — 이 시트는 자체 폼(#inquirySheetForm)을 쓴다.
@@ -366,18 +426,6 @@ const initInquirySheet = () => {
     btn.textContent = '접수되었습니다 (시안 예시)';
     btn.disabled = true;
   });
-
-  const menuSection = document.getElementById('menu');
-  if (!menuSection) return;
-  const autoOpenObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) open();
-      });
-    },
-    { threshold: 0.3 }
-  );
-  autoOpenObserver.observe(menuSection);
 };
 
 /** 05 매장위치 맨 아래 문의 폼 (목업 제출) */
@@ -438,6 +486,7 @@ const boot = async () => {
 
   // 카드가 DOM 에 올라온 뒤에 관찰을 시작해야 한다
   initReceiptReveal();
+  initProfitCountReveal();
   initGridReveal();
   initStoreSwiper();
 };

@@ -1,9 +1,12 @@
 /* 폰트 로드 전용 — @font-face 선언만 모아둔다. 실제 사용(font-family 지정)은
    assets/css/style.css 쪽 컴포넌트 규칙에서 한다.
 
-   Pretendard 는 9웨이트 로컬 self-host 다(0007 시안A에서 그대로 재사용). 헤드라인 전용
-   세리프(Noto Serif KR)는 self-host 대상이 아니라 index.html 의 Google Fonts CDN 링크로
-   로드하므로 여기 없다. */
+   Pretendard 는 9웨이트 로컬 self-host 다(0007 시안A에서 그대로 재사용) — 본문/헤드라인
+   전부 이 하나로 통일하는 것이 확정 규칙이다(CLAUDE.md "산세리프 단일 통일" 절 참고).
+   RixYeoljeongdo 는 원래 A안 전용 붓글씨 스타일 폰트였으나, 2026-09-09 사용자가
+   맛집랭킹1위 배너의 "맛집 랭킹" 텍스트 한 곳에 한해 명시적으로 요청해 예외로 추가됐다
+   (`.ranking-brush`, style.css). 폰트 파일은 프로젝트 스캐폴딩 시점부터 assets/fonts/에
+   이미 있었지만 이번까지 미사용 상태였다. 이 한 곳 밖으로 확장하지 않는다. */
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Thin.woff2') format('woff2'); font-weight:100; font-style:normal; font-display:swap; }
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-ExtraLight.woff2') format('woff2'); font-weight:200; font-style:normal; font-display:swap; }
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
@@ -13,3 +16,4 @@
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-ExtraBold.woff2') format('woff2'); font-weight:800; font-style:normal; font-display:swap; }
 @font-face{ font-family:'Pretendard'; src:url('../fonts/Pretendard-Black.woff2') format('woff2'); font-weight:900; font-style:normal; font-display:swap; }
+@font-face{ font-family:'RixYeoljeongdo'; src:url('../fonts/RixYeoljeongdo.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }

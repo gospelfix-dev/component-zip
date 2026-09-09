@@ -10,6 +10,52 @@
 <!-- 05 매장위치 캐러셀에 쓰는 Swiper.js 번들 CSS 이 프로젝트 최초의 외부 CDN 라이브러리다. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
+
+<script>
+(function(){
+  function ready(cb){
+    var tries=0;
+    var iv=setInterval(function(){
+      var els = document.querySelectorAll(".r-sales");
+      tries++;
+      if((els.length && els[0].dataset.value) || tries>150){ clearInterval(iv); cb(); }
+    },100);
+  }
+  ready(function(){
+    var log = [];
+    var els = document.querySelectorAll(".r-sales");
+    function snap(label){
+      var vals = Array.prototype.map.call(els, function(e){return e.textContent;});
+      log.push(label+": "+vals.join(" | "));
+    }
+    var target = document.getElementById("profit");
+    var top = target.getBoundingClientRect().top + window.scrollY;
+    snap("t0-before-scroll(should be 0)");
+    // scroll so #profit itself is centered in viewport (actually visible, not just past the earlier selfbar trigger)
+    window.scrollTo(0, top + 200);
+    window.dispatchEvent(new Event("scroll"));
+    setTimeout(function(){
+      snap("t1-300ms-after-entering-profit(mid count)");
+      setTimeout(function(){
+        snap("t2-1600ms-settled(should be final values)");
+        // scroll back up far above, should reset to 0
+        window.scrollTo(0, 0);
+        window.dispatchEvent(new Event("scroll"));
+        setTimeout(function(){
+          snap("t3-scrolled-away(should reset to 0)");
+          // scroll down again - repeat check
+          window.scrollTo(0, top + 200);
+          window.dispatchEvent(new Event("scroll"));
+          setTimeout(function(){
+            snap("t4-re-entered(should count up again)");
+            document.title = "DONE::" + log.join(" ||| ");
+          }, 1500);
+        }, 200);
+      }, 1300);
+    }, 300);
+  });
+})();
+</script>
 </head>
 <body>
 

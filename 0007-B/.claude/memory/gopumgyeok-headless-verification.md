@@ -29,4 +29,15 @@ python3 -m http.server 8765 &
 
 **픽셀 대신 숫자로 검증하면 훨씬 정확하다.** 텍스트 잘림·정렬 같은 건 래퍼에서 `getBoundingClientRect()`나 `Range.getBoundingClientRect()`로 재서 `document.title`에 적고 `--dump-dom | grep '<title>'`로 뽑는다. 실제로 이 방법으로 "매출 숫자 글자폭 = 폰트 크기의 5.83배"를 구해 `16cqw`라는 상한을 계산했고, 슬롯과 종이 폭이 0.0px 차이로 일치하는 것도 확인했다.
 
+**`--screenshot`은 `setTimeout`/`setInterval` 기반 타이머 상태(예: Swiper `autoplay`)에는
+`--virtual-time-budget`을 반영하지 않는다.** 히어로 Swiper 자동재생을 검증할 때
+`--virtual-time-budget`을 6000/9500/13000ms로 늘려가며 `--screenshot`을 찍어도 매번 로드 직후의
+첫 슬라이드만 캡처됐다(autoplay delay 3200ms가 몇 바퀴 돌 시간을 줘도 안 넘어감). 반면 같은
+budget으로 `--dump-dom`을 찍으면 `swiper-wrapper`의 `transform:translate3d(...)`가 실제로
+이동해 있고, JS가 매 틱마다 갱신하는 CSS 커스텀 프로퍼티(`style="--progress: 0.3..."`)도
+정확한 값으로 찍혀 나온다 — 즉 타이머 자체는 정상 진행되지만 `--screenshot`의 캡처 시점만
+그 진행을 반영하지 않는다. **타이머/자동재생/카운트업처럼 시간에 따라 바뀌는 상태를
+검증할 때는 스크린샷 대신 `--dump-dom`으로 해당 요소의 인라인 style/class를 확인할 것.**
+스크린샷은 정적 레이아웃·색상·타이포그래피 검증에만 신뢰한다.
+
 **Why:** 인계문서에 "모든 CSS가 시각 검증되지 않았다"고 적혀 있을 만큼 이 폴더는 눈으로 확인하는 게 중요한데, 위 함정들 때문에 순진하게 찍으면 검은 화면이나 접힌 카드만 나온다.

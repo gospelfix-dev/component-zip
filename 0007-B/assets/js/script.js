@@ -159,8 +159,8 @@ const animateCount = (el, target, duration = 1100) => {
 };
 
 /**
- * 01/02/03/04 공용 1회성 스크롤 리빌. A안의 initGridReveal/initReceiptReveal 을 하나로
- * 통합했다 — B는 "절제된 인터랙션"이 원칙이라 반복 재생되는 리빌을 쓰지 않는다. 진입 시
+ * 맛집랭킹1위 배너·01/02/03/04 공용 1회성 스크롤 리빌. A안의 initGridReveal/initReceiptReveal 을
+ * 하나로 통합했다 — B는 "절제된 인터랙션"이 원칙이라 반복 재생되는 리빌을 쓰지 않는다. 진입 시
  * .in-view 를 한 번만 붙이고 바로 unobserve 한다. 03 수익분석 행에는 같은 콜백 안에서
  * 매출 숫자 카운트업도 함께 시작한다(새 옵저버를 만들지 않는다).
  */
@@ -375,6 +375,50 @@ const initInquirySheet = () => {
   });
 };
 
+/**
+ * 히어로 우측 제품 사진 — Swiper 로 자동 크로스페이드시킨다(05 매장위치와 같은 Swiper
+ * 인스턴스 재사용, effect 만 slide 대신 fade). pointer-events:none 인 장식 레이어라
+ * allowTouchMove 를 꺼서 수동 스와이프는 만들지 않는다("절제된 인터랙션" 원칙 — 자동재생
+ * 자체는 05 와 동일 로직이라 원칙과 상충하지 않는다). prefers-reduced-motion 에서는
+ * 자동재생을 켜지 않는다.
+ */
+const initHeroSwiper = () => {
+  const el = document.querySelector('.hero-swiper');
+  if (!el || typeof Swiper === 'undefined') return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  new Swiper(el, {
+    loop: true,
+    effect: 'fade',
+    fadeEffect: { crossFade: true },
+    speed: reduceMotion ? 0 : 900,
+    allowTouchMove: false,
+    autoplay: reduceMotion ? false : { delay: 3200, disableOnInteraction: false },
+    a11y: { enabled: true },
+  });
+};
+
+/**
+ * 맛집랭킹1위 배너 — 폰 목업 화면 자리(.ranking-phone__screen)에 매장별 네이버 리뷰 캡처
+ * 3장을 Swiper 로 자동 슬라이드시킨다. 프레임(.ranking-phone__frame)은 정적 이미지로 그대로
+ * 두고 화면 영역만 캐러셀이다. 리뷰 내용을 직접 넘겨보고 싶을 수 있어 히어로와 달리 수동
+ * 스와이프(allowTouchMove)를 막지 않는다. prefers-reduced-motion 에서는 자동재생을 켜지 않는다.
+ */
+const initRankingSwiper = () => {
+  const el = document.querySelector('.ranking-phone__screen');
+  if (!el || typeof Swiper === 'undefined') return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  new Swiper(el, {
+    loop: true,
+    speed: reduceMotion ? 0 : 600,
+    autoplay: reduceMotion ? false : { delay: 3500, disableOnInteraction: false },
+    a11y: { enabled: true },
+  });
+};
+
 /** 05 매장위치 맨 아래 문의 폼 (목업 제출) */
 const initInquiryForm = () => {
   const form = document.getElementById('inquiryForm');
@@ -422,6 +466,8 @@ const boot = async () => {
   initScrollSpy();
   initInquiryForm();
   initInquirySheet();
+  initHeroSwiper();
+  initRankingSwiper();
 
   try {
     const res = await fetch(DATA_URL, { cache: 'no-cache' });

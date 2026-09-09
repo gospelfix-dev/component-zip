@@ -20,6 +20,7 @@
     <span class="seal-badge" aria-hidden="true">豚</span>
   </div>
   <nav class="nav-links" id="navLinks">
+    <a href="#ranking" data-target="ranking">소비자 찐후기</a>
     <a href="#competitiveness" data-target="competitiveness">경쟁력</a>
     <a href="#menu" data-target="menu">메뉴</a>
     <a href="#profit" data-target="profit">수익분석</a>
@@ -33,7 +34,8 @@
 </header>
 
 <!-- HERO — 다크 배너 + 텍스트에 겹쳐 얹는 단일 제품 사진(2026-09-08 재작업, 참고 이미지 기반).
-     A안의 position:sticky 패럴랙스는 쓰지 않는다. 다크 배경은 이 섹션과 푸터, 두 곳만 쓴다. -->
+     A안의 position:sticky 패럴랙스는 쓰지 않는다. 다크 배경은 이 섹션·맛집랭킹 배너·푸터
+     세 곳에 쓴다(2026-09-09부터 — CLAUDE.md 다크 반전 존 절 참고). -->
 <section class="hero" id="hero">
   <div class="wrap hero-inner">
     <div class="hero-left">
@@ -50,8 +52,43 @@
       </div>
     </div>
     <div class="hero-right">
+      <div class="swiper hero-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img class="hero-meat-main" src="assets/imgs/herd_meat_1.png" alt="대패삼겹 슬라이스"></div>
+          <div class="swiper-slide"><img class="hero-meat-main" src="assets/imgs/herd_meat_2.png" alt="대패삼겹 슬라이스"></div>
+          <div class="swiper-slide"><img class="hero-meat-main" src="assets/imgs/herd_meat_3.png" alt="대패삼겹 슬라이스"></div>
+        </div>
+      </div>
       <span class="hero-photo-badge"><span class="seal-badge" aria-hidden="true">豚</span>대패 전문</span>
-      <img class="hero-meat-main" src="assets/imgs/meat_1.png" alt="대패삼겹 슬라이스">
+    </div>
+  </div>
+</section>
+
+<!-- 맛집랭킹1위 배너 — 히어로·푸터에 이어 세 번째 다크 반전 존(2026-09-09, 사용자가 참고
+     배너 이미지를 제시하며 명시적으로 요청, CLAUDE.md 다크 반전 존 절 참고). 배경은 기존
+     보유 에셋 generated_bg.png 를 재사용해 새 에셋을 만들지 않았다. 폰 목업은 0007(시안A)의
+     .review-phone 구조(스크린샷 이미지 + 프레임 이미지를 겹치는 기법)를 그대로 차용하되
+     에셋은 0007-B 소유로 복사해 넣었다(형제 폴더 경로를 직접 참조하지 않는다). -->
+<section class="ranking" id="ranking">
+  <div class="ranking-bg-frame" aria-hidden="true"><div class="ranking-bg"></div></div>
+  <div class="ranking-overlay" aria-hidden="true"></div>
+  <div class="wrap ranking-inner">
+    <div class="ranking-phone">
+      <div class="swiper ranking-phone__screen">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="assets/imgs/ranking_review1.png" alt="고품격대패 시흥 은계점 네이버 리뷰 캡처"></div>
+          <div class="swiper-slide"><img src="assets/imgs/ranking_review2.png" alt="고품격대패 왕십리 본점 네이버 리뷰 캡처"></div>
+          <div class="swiper-slide"><img src="assets/imgs/ranking_review3.png" alt="고품격대패 천호 직영점 네이버 리뷰 캡처"></div>
+        </div>
+      </div>
+      <img class="ranking-phone__frame" src="assets/imgs/ranking_iphone.png" alt="" aria-hidden="true">
+    </div>
+    <div class="ranking-content">
+      <div class="ranking-stars" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <div class="running-head">네이버 리뷰</div>
+      <h2><span class="ranking-brush">맛집 랭킹</span><br><span class="gold-text">1위</span></h2>
+      <hr class="ranking-rule">
+      <p class="ranking-sub">리뷰가 증명하는 <b>고품격대패</b>!</p>
     </div>
   </div>
 </section>
