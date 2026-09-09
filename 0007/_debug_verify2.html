@@ -30,29 +30,23 @@
     }
     var target = document.getElementById("profit");
     var top = target.getBoundingClientRect().top + window.scrollY;
-    snap("t0-before-scroll(should be 0)");
-    // scroll so #profit itself is centered in viewport (actually visible, not just past the earlier selfbar trigger)
+    snap("t0-before(0 expected)");
     window.scrollTo(0, top + 200);
     window.dispatchEvent(new Event("scroll"));
     setTimeout(function(){
-      snap("t1-300ms-after-entering-profit(mid count)");
+      snap("t1-1600ms-in-profit(final values expected)");
+      window.scrollTo(0, 0);
+      window.dispatchEvent(new Event("scroll"));
       setTimeout(function(){
-        snap("t2-1600ms-settled(should be final values)");
-        // scroll back up far above, should reset to 0
-        window.scrollTo(0, 0);
+        snap("t2-scrolled-away(0 expected, repeat reset)");
+        window.scrollTo(0, top + 200);
         window.dispatchEvent(new Event("scroll"));
         setTimeout(function(){
-          snap("t3-scrolled-away(should reset to 0)");
-          // scroll down again - repeat check
-          window.scrollTo(0, top + 200);
-          window.dispatchEvent(new Event("scroll"));
-          setTimeout(function(){
-            snap("t4-re-entered(should count up again)");
-            document.title = "DONE::" + log.join(" ||| ");
-          }, 1500);
-        }, 200);
-      }, 1300);
-    }, 300);
+          snap("t3-re-entered(final values again, repeat works)");
+          document.title = "DONE::" + log.join(" ||| ");
+        }, 1500);
+      }, 200);
+    }, 1600);
   });
 })();
 </script>

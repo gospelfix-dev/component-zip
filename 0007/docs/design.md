@@ -332,10 +332,13 @@ CTA 버튼 + 모바일 햄버거(≤1024px 에서 흰 배경 풀스크린 플라
 **매출 숫자 카운트업 (`.r-sales`, 2026-09-09 신규, 같은 날 트리거 분리)** — 처음엔 종이 펼침과
 같은 트리거(`initReceiptReveal`)에 얹었으나, 종이는 `#selfbarGrid`를 지나자마자(03 섹션에
 도착하기 한참 전에) 미리 펼쳐지는 구조라 사용자가 실제로 03 섹션을 보기도 전에 카운트업이
-끝나버려 "인터랙션이 없다"는 피드백을 받았다. 그래서 `.r-sales` 자신을 관찰하는 별도
-`initProfitCountReveal`(IntersectionObserver, `threshold:0.4`)로 분리했다 — 숫자가 실제로
-40% 이상 화면에 들어올 때 0→실제값으로 카운트업(`animateSalesCount`, ease-out cubic, 1.1초)
-하고, 화면에서 벗어나면 다시 0으로 리셋한다. `unobserve` 하지 않아 드나들 때마다 반복 재생된다.
+끝나버려 "인터랙션이 없다"는 피드백을 받았다. 그래서 영수증 카드(`.receipt-col`) 자신이 화면에
+얼마나 보이는지를 관찰하는 별도 `initProfitCountReveal`로 분리했다 — `initReceiptReveal` 과
+같은 `scroll` 이벤트 + `getBoundingClientRect` 방식(IntersectionObserver 가 아님: 이 프로젝트
+헤드리스 검증 환경에서 프로그래매틱 `scrollTo` 뒤 IO 콜백이 재발화하지 않는 한계가 확인돼,
+반복 리빌 계열은 전부 scroll 리스너로 통일한다). 카드가 40% 이상 보이면 0→실제값으로
+카운트업(`animateSalesCount`, ease-out cubic, 1.1초)하고, 40% 미만으로 벗어나면 다시 0으로
+리셋한다. `unobserve`/`disconnect` 없이 계속 관찰해 드나들 때마다 반복 재생된다.
 `prefers-reduced-motion: reduce` 에서는 애니메이션 없이 바로 최종 값을 표시한다.
 
 ### 창업비용 표 (`.cost-table` / `.cost-row`)
