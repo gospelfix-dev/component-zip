@@ -131,17 +131,23 @@ const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contact
  */
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** .r-sales 매출 숫자를 0 → 실제값으로 카운트업한다 (ease-out cubic, 1.1s) */
+/**
+ * .r-sales 매출 숫자를 0 → 실제값으로 카운트업한다 (ease-out cubic, 1.1s).
+ * 빠르게 스크롤을 들락날락하면 이전 rAF 루프가 끝나기 전에 다시 호출될 수 있어, 시작할 때
+ * 그 요소에 걸려 있던 이전 루프를 반드시 취소한다 — 안 그러면 두 루프가 같은 textContent를
+ * 번갈아 덮어써 숫자가 널뛰는 것처럼 보인다.
+ */
 const animateSalesCount = (el, target, duration = 1100) => {
+  if (el.__salesRaf) cancelAnimationFrame(el.__salesRaf);
   if (prefersReducedMotion()) { el.textContent = formatWon(target); return; }
   const start = performance.now();
   const step = (now) => {
     const progress = Math.min((now - start) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
     el.textContent = formatWon(Math.round(target * eased));
-    if (progress < 1) requestAnimationFrame(step);
+    el.__salesRaf = progress < 1 ? requestAnimationFrame(step) : null;
   };
-  requestAnimationFrame(step);
+  el.__salesRaf = requestAnimationFrame(step);
 };
 
 const initReceiptReveal = () => {
@@ -198,6 +204,7 @@ const initProfitCountReveal = () => {
       if (inView) {
         animateSalesCount(salesEl, Number(salesEl.dataset.value));
       } else {
+        if (salesEl.__salesRaf) cancelAnimationFrame(salesEl.__salesRaf);
         salesEl.textContent = formatWon(0);
       }
     });

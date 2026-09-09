@@ -41,3 +41,21 @@ budget으로 `--dump-dom`을 찍으면 `swiper-wrapper`의 `transform:translate3
 스크린샷은 정적 레이아웃·색상·타이포그래피 검증에만 신뢰한다.
 
 **Why:** 인계문서에 "모든 CSS가 시각 검증되지 않았다"고 적혀 있을 만큼 이 폴더는 눈으로 확인하는 게 중요한데, 위 함정들 때문에 순진하게 찍으면 검은 화면이나 접힌 카드만 나온다.
+
+**서버를 새로 띄우기 전엔 항상 기존 프로세스를 죽일 것.** `python3 -m http.server 8765`를
+매번 새로 띄우다가, 이전 세션이 남긴 프로세스가 포트를 물고 있어 스크린샷에 **다른(형제)
+프로젝트**의 페이지가 찍힌 적이 있다(`0007-B` 작업 중인데 `0007`의 히어로가 나옴 — 두
+프로젝트가 같은 포트 8765를 관례적으로 쓰기 때문). `lsof -ti:8765 | xargs kill -9`로 죽인
+뒤 새로 띄우고, `curl -s http://localhost:8765/index.html | grep <현재-작업-중인-고유
+클래스명>`으로 지금 고치는 파일이 실제로 서빙되는지 확인한 뒤에만 스크린샷을 찍는다.
+
+**특정 섹션이 정적 HTML에 이미 존재하면(= JS `fetch` 렌더를 안 거치는 섹션 껍데기), iframe
+없이 URL 해시(`index.html#섹션id`)만으로도 헤드리스가 그 위치로 점프해 스크린샷에 잡힌다.**
+위 "iframe 래퍼가 필요하다" 항목은 `#profit`처럼 스크롤 위치가 애매하거나 실패했던
+과거 경험 기준이었는데, `#ranking`(정적 `<section id="ranking">`가 히어로 바로 다음이라
+JS 렌더를 기다릴 필요가 없는 섹션)에는 그냥
+`"...Chrome" --headless=new --window-size=1440,1900 --virtual-time-budget=9000
+--screenshot=out.png "http://localhost:8765/index.html#ranking"` 만으로 원하는 위치가 바로
+찍혔다. 반면 이번 세션에서 iframe + `contentWindow.scrollTo` 방식은 이유 불명으로 두 번
+연속 실패(항상 페이지 맨 위만 찍힘)했다. **먼저 해시+충분히 큰 `--window-size`로 시도해보고,
+안 되면 그때 iframe 래퍼로 폴백할 것** — iframe을 기본값으로 먼저 시도하지 않는다.
