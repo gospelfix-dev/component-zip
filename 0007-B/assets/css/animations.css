@@ -16,3 +16,44 @@
   from{ transform:translateY(100%); }
   to{ transform:translateY(0); }
 }
+
+/* 01 경쟁력 특집 리스트 강조어(.feature-body p b) 밑줄 — 1회성, .feature-row.in-view 훅에 얹음 */
+@keyframes highlightSweep{
+  from{ background-size:0% 2px; }
+  to{ background-size:100% 2px; }
+}
+
+/* wordmarkIntro/wordmarkShine — 사용자 명시적 요청으로 절제된 인터랙션 원칙(1회 재생)의
+   예외로 추가된 무한 반복 팝+샤인. .gold-text/.ranking-stars span 전용.
+   28.3% = 0.85s/3s — 팝 동작만 0.85초 안에 끝내고 나머지 구간은 scale(1)/opacity:1 유지. */
+@keyframes wordmarkIntro{
+  0%{ transform:scale(4.4); opacity:0; }
+  15.6%{ opacity:1; }
+  28.3%, 100%{ transform:scale(1); opacity:1; }
+}
+
+/* accentSnap — 0007(A안) assets/css/animations.css 원본 그대로 가져옴(사용자 지시,
+   2026-09-10). 전환 구간을 0.01% 로 razor-thin 하게 둬서 이징이 걸려 있어도 보간 시간이
+   사실상 없어 "턱" 하고 끊어지는 인상을 준다. 01~05 섹션 타이틀 강조어
+   (.section-head h2 .gold-text) 전용 — 절제된 인터랙션 원칙(무한 반복 attention 애니메이션
+   금지, "섹션 타이틀 스냅"은 CLAUDE.md 가 A안 전용으로 못박은 패턴이었다)의 예외. */
+@keyframes accentSnap{
+  0%, 15%{ opacity:.0; transform:scale(.82); }
+  15.01%, 100%{ opacity:1; transform:scale(1); }
+}
+
+@keyframes wordmarkShine{
+  0%{ background-position:0% 50%; }
+  100%{ background-position:-260% 50%; }
+}
+
+/* proofShine — 01 경쟁력 .proof-circle--center 전용(사용자 명시적 요청, 2026-09-10).
+   wordmarkShine 은 한 방향으로 무한히 흘러가며 260% 타일을 반복하는데, 115deg 대각선
+   그라디언트를 큰 원형 단색 면에 그대로 쓰면 타일이 다시 이어지는 지점에서 대각선 이음선이
+   보여 사용자 요청으로 뺐었다. 이 키프레임은 타일을 반복하지 않고 하나의 그라디언트 안에서
+   background-position 을 0%→100%→0% 로 왕복(ping-pong)시켜 이음선이 생길 지점 자체를
+   없앤다 — .proof-circle--center 의 background-size:180% 100% 와 함께 쓴다. */
+@keyframes proofShine{
+  0%, 100%{ background-position:0% 50%; }
+  50%{ background-position:100% 50%; }
+}

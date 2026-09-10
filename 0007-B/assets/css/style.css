@@ -39,7 +39,7 @@
   --radius-badge:  6px;    /* 豚 배지·소형 태그 */
   --radius-card:   14px;   /* 사진 프레임·카드 */
   --radius-pill:   999px;  /* 버튼·가격 칩 */
-  --radius-circle: 50%;    /* 셀프바·고기 원형 크롭 전용 */
+  --radius-circle: 50%;    /* 셀프바·고기 원형 크롭 + 01 경쟁력 증빙 통계(.proof-circle) 전용. .form-agree-check(동의 배지)는 2026-09-10 참고 이미지 요청으로 원형에서 --radius-badge(둥근 사각) 로 바뀌어 더 이상 이 토큰을 쓰지 않는다 */
   --rule: 1px;
 }
 
@@ -50,8 +50,11 @@ section{ padding:120px 0; }
   font-size:13px; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
   color:var(--ink-faint); margin-bottom:14px;
 }
+/* 01~05 섹션 타이틀 전체에 RixYeoljeongdo(붓글씨체) 적용(2026-09-10, 사용자 명시적 요청 —
+   기존엔 맛집랭킹1위 배너의 "맛집 랭킹" 한 곳에만 한정된 예외였으나 이번에 확장했다).
+   브러시체는 폰트 자체 웨이트(400)로 임팩트를 내므로 h2 의 800 웨이트를 덮어쓴다. */
 .section-head h2{
-  font-family:var(--font-sans); font-weight:800; font-size:clamp(32px,4.5vw,56px);
+  font-family:'RixYeoljeongdo', var(--font-sans); font-weight:400; font-size:clamp(32px,4.5vw,56px);
   line-height:1.25; color:var(--ink); margin-bottom:18px;
 }
 .section-head p{ font-size:16px; color:var(--ink-dim); line-height:1.8; }
@@ -62,8 +65,22 @@ section{ padding:120px 0; }
 /* ---- 금박 그라디언트 텍스트 (구 .ink-accent) ---- */
 .gold-text{
   color:var(--bronze); /* background-clip:text 미지원 브라우저 fallback */
-  background:linear-gradient(135deg,#8F6A3B 0%,#E3C692 50%,#AC824C 100%);
+  background:linear-gradient(115deg, #8E6E1E 0%, #C9A227 20%, #E8CD7A 38%, #FFF6DA 48%, #E8CD7A 58%, #C9A227 76%, #8E6E1E 100%);
+  background-size:260% 100%;
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:
+    wordmarkIntro 3s cubic-bezier(0.16,1,0.3,1) infinite,
+    wordmarkShine 5s linear infinite;
+}
+/* 01~05 섹션 타이틀 강조어만 accentSnap 으로 교체(사용자 명시적 요청) — wordmarkIntro 와
+   같은 transform 슬롯을 쓰므로 같이 걸면 마지막 것만 적용된다. wordmarkShine(배경 흐름)은
+   그대로 유지한다. 히어로 카피·맛집랭킹1위 "1위"는 이 범위에서 제외 — 기존 wordmarkIntro
+   그대로 유지된다. */
+.section-head h2 .gold-text{
+  display:inline-block;
+  animation:
+    accentSnap 1.5s infinite,
+    wordmarkShine 5s linear infinite;
 }
 
 /* ---- 豚 스탬프 배지 (신규, CSS만으로 그린다) ---- */
@@ -74,21 +91,6 @@ section{ padding:120px 0; }
   font-family:var(--font-sans); font-weight:900; font-size:15px; line-height:1;
 }
 
-/* ---- 웨이브 헤어라인 (신규) — A안의 풀블리드 SVG 곡선과 다른, 얇은 반복 리본 ---- */
-.wave-rule{
-  height:14px; margin:56px 0; background-repeat:repeat-x; background-position:center;
-  background-size:40px 14px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='14' viewBox='0 0 40 14'%3E%3Cpath d='M0 7 Q10 1 20 7 T40 7' fill='none' stroke='%23AC824C' stroke-width='2'/%3E%3C/svg%3E");
-}
-.wave-rule--invert{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='14' viewBox='0 0 40 14'%3E%3Cpath d='M0 7 Q10 1 20 7 T40 7' fill='none' stroke='%23C3A783' stroke-width='2'/%3E%3C/svg%3E");
-}
-
-/* ---- 다이아몬드 점선 구분자 (신규) — 소제목 장식용, 과다 사용 금지(2곳만) ---- */
-.diamond-divider{
-  text-align:center; color:var(--paper-line); font-size:14px; letter-spacing:.4em;
-  margin:48px 0; user-select:none;
-}
 
 /* ---- 버튼 ---- */
 .btn-primary, .btn-ghost, .nav-cta, .submit-btn{
@@ -177,6 +179,107 @@ section{ padding:120px 0; }
 }
 
 /* ============================================================
+   하단 고정 문의 폼 바(.sticky-inquiry-bar, 2026-09-10 신규) — 사용자가 제시한 참고
+   이미지의 "가맹 문의 전화번호 + 이름/연락처/창업유형/창업희망지역 인풋 + 동의 체크박스 +
+   문의하기" 한 줄 바를 재현했다. 데스크톱 전용 — 4개 입력 필드가 한 줄에 들어가려면
+   폭이 필요해 ≤1024px 에서는 숨기고 기존 .sticky-cta(전화+버튼)로 대체한다. 자동으로
+   열리거나 애니메이션되지 않는 상시 정적 바라 "절제된 인터랙션" 원칙과 충돌하지 않는다.
+   ⚠ 배경은 참고 이미지의 다크 마룬을 그대로 가져오지 않고, 새 다크 존을 늘리는 대신
+   푸터와 동일한 --coffee/--on-coffee 토큰을 재사용한다 — 히어로·맛집랭킹1위·푸터에 이은
+   4번째 다크 반전 존 지정 예외(사용자 명시적 요청, CLAUDE.md 동시 갱신).
+   ============================================================ */
+.sticky-inquiry-bar{
+  display:flex; position:fixed; left:0; right:0; bottom:0; z-index:40;
+  align-items:center; gap:20px;
+  background:var(--coffee); color:var(--on-coffee);
+  padding:14px 32px; box-shadow:0 -4px 20px rgba(27,23,18,.18);
+}
+.sticky-inquiry-brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; white-space:nowrap; }
+.sticky-inquiry-brand .seal-badge{ background:var(--on-coffee); color:var(--coffee); }
+.sticky-inquiry-brand strong{ font-size:16px; font-weight:800; color:var(--on-coffee); }
+.sticky-inquiry-form{ display:flex; align-items:center; gap:12px; flex:1; min-width:0; }
+.sticky-inquiry-form input{
+  height:40px; padding:0 14px; border-radius:var(--radius-badge); border:none;
+  font-size:14px; color:var(--ink); background:var(--paper); min-width:0; flex:1 1 130px;
+}
+
+/* shadcn/ui Select 참고 커스텀 드롭다운(.select-field, 2026-09-10 신규) — 네이티브 <select>는
+   브라우저마다 화살표/패널 스타일을 못 건드려 참고 이미지처럼 통일된 외형을 못 낸다.
+   처음엔 하단 고정 문의 폼 바 전용으로 만들었으나, 사용자 요청으로 사이트의 모든 select를
+   이 컴포넌트로 통일했다 — 05 인라인 문의 폼(#inquiryForm)·문의 모달(.inquiry-sheet-form)
+   ·하단 고정 문의 폼 바(.sticky-inquiry-bar) 세 곳에서 재사용한다.
+   initCustomSelects(script.js)가 열기/닫기·키보드 탐색·선택 상태를 관리한다.
+   기본값은 트리거 아래로 펼치는 일반적인 드롭다운이다. 하단 고정 문의 폼 바만 화면 맨
+   아래 붙어 있어 아래로 펼치면 뷰포트 밖으로 나가므로 위쪽으로 펼치게 따로 덮어쓴다
+   (아래 .sticky-inquiry-bar 전용 오버라이드 참고). */
+.select-field{ position:relative; flex:1 1 130px; min-width:0; }
+.select-field-trigger{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  width:100%; height:40px; padding:0 14px; border-radius:var(--radius-badge);
+  border:1px solid transparent; background:var(--paper); color:var(--ink-faint);
+  font-family:var(--font-sans); font-size:14px; text-align:left; cursor:pointer;
+  transition:border-color .15s ease;
+}
+.select-field-trigger:hover{ border-color:var(--bronze-tint); }
+.select-field-trigger:focus{ outline:none; box-shadow:0 0 0 2px var(--bronze-tint); }
+.select-field.open .select-field-trigger{ border-color:var(--bronze); }
+.select-field.has-value .select-field-value{ color:var(--ink); font-weight:600; }
+.select-field-chevron{
+  width:16px; height:16px; color:var(--ink-faint); flex-shrink:0;
+  transition:transform .15s ease;
+}
+.select-field.open .select-field-chevron{ transform:rotate(180deg); }
+.select-field-list{
+  list-style:none; position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:10;
+  margin:0; padding:4px; max-height:240px; overflow-y:auto;
+  background:var(--paper); border:1px solid var(--paper-line); border-radius:var(--radius-badge);
+  box-shadow:0 8px 24px rgba(27,23,18,.18);
+  opacity:0; transform:translateY(-4px); visibility:hidden; pointer-events:none;
+  transition:opacity .15s ease, transform .15s ease;
+}
+.select-field.open .select-field-list{
+  opacity:1; transform:translateY(0); visibility:visible; pointer-events:auto;
+}
+.select-field-item{
+  display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:var(--radius-badge);
+  font-size:14px; color:var(--ink); cursor:pointer;
+}
+.select-field-item:hover, .select-field-item:focus{ background:var(--paper-2); outline:none; }
+.select-field-item.selected{ font-weight:700; }
+.select-field-check{ width:14px; height:14px; color:var(--bronze); flex-shrink:0; visibility:hidden; }
+.select-field-item.selected .select-field-check{ visibility:visible; }
+
+/* 05 인라인 문의 폼 · 문의 모달 — 라이트 배경 위라 형제 input/textarea 와 같은 보더·패딩을
+   맞춘다(하단 고정 문의 폼 바는 이미 흰 알약이라 보더가 필요 없어 기본값을 투명으로 둔다). */
+#inquiryForm .select-field-trigger, .inquiry-sheet-form .select-field-trigger{
+  height:auto; padding:12px 14px; border-color:var(--paper-line);
+}
+
+/* 하단 고정 문의 폼 바만 화면 맨 아래 붙어 있어, 패널이 기본값(아래로 펼침)대로면
+   뷰포트 밖으로 나간다 — 이 컨텍스트에서만 위쪽으로 펼치게 뒤집는다. */
+.sticky-inquiry-bar .select-field-list{
+  top:auto; bottom:calc(100% + 6px);
+  transform:translateY(4px);
+}
+.sticky-inquiry-bar .select-field.open .select-field-list{ transform:translateY(0); }
+
+.sticky-inquiry-agree{
+  display:flex; align-items:center; gap:6px; font-size:13px; white-space:nowrap; flex-shrink:0;
+}
+.sticky-inquiry-agree input{ width:16px; height:16px; accent-color:var(--bronze); }
+.sticky-inquiry-submit{
+  flex-shrink:0; height:40px; padding:0 24px; border:none; cursor:pointer;
+  border-radius:var(--radius-pill); background:var(--bronze); color:var(--paper);
+  font-size:14px; font-weight:800; transition:background .2s;
+}
+.sticky-inquiry-submit:hover{ background:var(--bronze-dark); }
+.sticky-inquiry-submit:disabled{ opacity:.7; cursor:default; }
+
+@media (max-width:1024px){
+  .sticky-inquiry-bar{ display:none; }
+}
+
+/* ============================================================
    Hero — 다크 배너 + 커팅된 제품 사진 (2026-09-08 재작업, 참고 배너 이미지 기반)
    다크 배경은 이 섹션과 푸터 두 곳만 쓴다. 배경은 히어로 전용 --hero-ink 토큰(#373332),
    텍스트는 --paper 를 반전 사용한다 — 전역 텍스트 색 --ink(#1B1712)와 값이 달라
@@ -185,9 +288,9 @@ section{ padding:120px 0; }
    ============================================================ */
 .hero{ position:relative; padding:160px 0 100px; overflow:hidden; background:var(--hero-ink); }
 .hero-inner{ position:relative; }
-.hero .running-head{ color:var(--bronze-tint); }
+.hero .running-head{ color:var(--bronze-tint); font-size:18px; }
 .hero-left{ position:relative; z-index:1; max-width:560px; animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both; }
-.hero-kicker{ font-size:18px; font-weight:700; color:rgba(255,255,254,.78); margin-bottom:20px; max-width:420px; line-height:1.6; }
+.hero-kicker{ font-size:26px; font-weight:700; color:rgba(255,255,254,.78); margin-bottom:20px; max-width:520px; line-height:1.5; }
 .hero-headline{
   font-family:var(--font-sans); font-weight:900; font-size:clamp(48px,8.5vw,120px);
   letter-spacing:-.02em; line-height:1; color:var(--paper); margin-bottom:8px;
@@ -205,12 +308,15 @@ section{ padding:120px 0; }
    오른쪽 끝을 가리도록 절대 배치한다 — .hero-inner 는 높이를 .hero-left 콘텐츠 흐름에
    맡기고, .hero-right 는 그 위에 겹치는 레이어로만 존재한다(문서 흐름에 관여하지 않음).
    내부의 .hero-swiper 가 05 매장위치와 같은 Swiper 인스턴스로 사진을 자동 크로스페이드한다
-   (assets/js/script.js 의 initHeroSwiper, effect:'fade'). pointer-events:none 이라 수동
-   스와이프는 없다 —
-   장식용 자동재생 전용이라 "절제된 인터랙션" 원칙과 상충하지 않는다. */
+   (assets/js/script.js 의 initHeroSwiper, effect:'fade'). 2026-09-10 사용자 요청으로
+   pointer-events:auto 로 바꿔 마우스 드래그/스와이프로도 직접 넘길 수 있게 했다(자동재생은
+   유지 — disableOnInteraction:false 라 손으로 넘겨도 자동재생이 멈추지 않는다). 자동재생
+   자체는 여전히 1개 인스턴스만 도는 장식용 크로스페이드라 "절제된 인터랙션" 원칙(무한 반복
+   attention 애니메이션 금지)과 상충하지 않는다 — 이 원칙은 사용자 조작을 막는 규칙이
+   아니다. */
 .hero-right{
   position:absolute; top:-30px; left:470px; z-index:2; width:650px; max-width:60vw;
-  pointer-events:none; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) .15s both;
+  pointer-events:auto; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) .15s both;
 }
 .hero-swiper{ width:100%; }
 /* Swiper 컨테이너의 overflow:hidden 이 .hero-meat-main 의 drop-shadow 블러를 사각형으로
@@ -274,8 +380,14 @@ section{ padding:120px 0; }
 .ranking-content{ flex:1 1 360px; max-width:480px; text-align:center; }
 /* 별 5개를 반달(무지개) 모양 호로 배치 — 가운데 별이 가장 높고 양 끝으로 갈수록 낮아지며
    살짝 벌어지는 부채꼴 회전을 준다(레퍼런스 이미지 기준). */
-.ranking-stars{ color:var(--bronze-tint); font-size:26px; margin-bottom:22px; }
-.ranking-stars span{ display:inline-block; margin:0 2px; }
+.ranking-stars{ font-size:26px; margin-bottom:22px; }
+.ranking-stars span{
+  display:inline-block; margin:0 2px; color:var(--bronze-tint); /* background-clip:text 미지원 fallback */
+  background:linear-gradient(115deg, #8E6E1E 0%, #C9A227 20%, #E8CD7A 38%, #FFF6DA 48%, #E8CD7A 58%, #C9A227 76%, #8E6E1E 100%);
+  background-size:260% 100%;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:wordmarkShine 5s linear infinite;
+}
 .ranking-stars span:nth-child(1){ transform:translateY(9px) rotate(-24deg); }
 .ranking-stars span:nth-child(2){ transform:translateY(2px) rotate(-12deg); }
 .ranking-stars span:nth-child(3){ transform:translateY(-3px); }
@@ -285,6 +397,7 @@ section{ padding:120px 0; }
 .ranking-content h2{
   font-family:var(--font-sans); font-weight:900; font-size:clamp(48px,6.5vw,88px);
   line-height:1.06; color:var(--paper); margin:16px 0 28px;
+  animation:wordmarkIntro 3s cubic-bezier(0.16,1,0.3,1) infinite;
 }
 /* "맛집 랭킹" 한 곳만 예외적으로 RixYeoljeongdo(붓글씨체) — 산세리프 단일 통일 규칙의
    범위 제한 예외다(fonts.css 상단 주석 참고). 굵기 지정을 h2 의 900 대신 폰트 자체
@@ -311,29 +424,114 @@ section{ padding:120px 0; }
 }
 .feature-row.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
 .feature-num{ font-family:var(--font-sans); font-weight:900; font-size:clamp(40px,6vw,72px); color:var(--paper-line); line-height:1; }
-.feature-eyebrow{ font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); margin-bottom:10px; font-weight:700; }
-.feature-body h3{ font-family:var(--font-sans); font-weight:800; font-size:24px; color:var(--ink); margin-bottom:12px; }
-.feature-body p{ font-size:16px; color:var(--ink-dim); line-height:1.8; max-width:600px; }
-.feature-body p b{ color:var(--bronze); font-weight:700; }
+.feature-eyebrow{ font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); margin-bottom:10px; font-weight:700; }
+.feature-body h3{ font-family:var(--font-sans); font-weight:800; font-size:28px; color:var(--ink); margin-bottom:12px; }
+.feature-body p{ font-size:18px; color:var(--ink-dim); line-height:1.8; max-width:600px; }
+/* 스크롤 진입 시 강조어 아래 밑줄이 한 번 그려지는 1회성 하이라이트 — 새 옵저버 없이
+   .feature-row 가 이미 갖고 있는 in-view 훅에 얹는다(initScrollReveal, script.js). */
+.feature-body p b{
+  color:var(--bronze); font-weight:700; background-repeat:no-repeat; background-position:0 100%;
+  background-image:linear-gradient(var(--bronze-tint), var(--bronze-tint)); background-size:0% 2px;
+}
+.feature-row.in-view .feature-body p b{ animation:highlightSweep .5s cubic-bezier(.22,1,.36,1) .35s both; }
 
-.trust-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:32px; margin-top:16px; }
+.trust-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:16px; }
+/* 카드 확대 + 순서 번호 + 우상단 리본 코너(2026-09-10, 사용자 명시적 요청 — 리본 코너는
+   원래 "되살리면 안 되는 것"(A안 영수증/티켓 스큐어모피즘)에 속했으나 이 컴포넌트에 한해
+   예외로 승인됨). 배경은 라이트(--paper) 유지 — 다크 반전 존을 네 번째로 늘리지 않는다. */
 .trust-badge{
-  display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px;
+  position:relative; overflow:hidden; text-align:left;
+  padding:28px 24px 26px; border-radius:var(--radius-card); border:1px solid var(--paper-line);
+  background:var(--paper); box-shadow:0 4px 20px rgba(27,23,18,.07);
   opacity:0; transform:scale(.9);
 }
 .trust-badge.in-view{ animation:badgeIn .45s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
-.trust-badge-icon{
-  width:104px; height:104px; border-radius:var(--radius-card); border:1px solid var(--paper-line);
-  background:var(--paper-2); display:flex; align-items:center; justify-content:center;
-  color:var(--bronze); font-family:var(--font-sans); font-weight:900; font-size:16px; line-height:1.25;
-  text-align:center; padding:8px;
+.trust-badge::after{
+  content:''; position:absolute; top:0; right:0; width:0; height:0;
+  border-style:solid; border-width:0 34px 34px 0; border-color:transparent var(--bronze) transparent transparent;
 }
-.trust-badge p{ font-size:13px; color:var(--ink-dim); line-height:1.6; max-width:180px; }
+.trust-badge-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.trust-badge-num{
+  display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px;
+  border-radius:var(--radius-badge); background:var(--bronze); color:var(--paper);
+  font-family:var(--font-sans); font-weight:900; font-size:13px; flex-shrink:0;
+}
+.trust-badge-icon{ width:30px; height:30px; color:var(--bronze); flex-shrink:0; }
+.trust-badge-icon svg{ width:100%; height:100%; }
+.trust-badge-label{ font-family:var(--font-sans); font-weight:800; font-size:20px; color:var(--ink); margin-bottom:10px; }
+.trust-badge p{ font-size:14px; color:var(--ink-dim); line-height:1.7; }
+
+/* 01 경쟁력 — 매장 실측 데이터 증빙 통계 (.proof-*, 신규). data/content.json 의 기존
+   profit 배열을 그대로 재사용한다(새 필드 없음, script.js 의 renderProof 가 평균/라벨
+   계산). ⚠ .proof-circle 은 --radius-circle 을 셀프바·고기 사진 크롭 밖에 처음 쓰는
+   예외다(사용자 승인 — CLAUDE.md/docs/design.md 의 "원형 크롭 전용" 문구도 함께 갱신). */
+.proof-stat{ border-top:1px solid var(--paper-line); margin-top:64px; padding-top:64px; }
+
+.proof-headline{
+  max-width:640px; margin:0 auto 56px; text-align:center;
+  opacity:0; transform:translateY(16px);
+}
+.proof-headline.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both; }
+.proof-number{
+  font-family:var(--font-sans); font-weight:900; font-size:clamp(64px,10vw,120px);
+  line-height:1; color:var(--bronze); margin:8px 0 16px;
+}
+.proof-lede{ font-family:var(--font-sans); font-weight:700; font-size:22px; color:var(--ink); }
+.proof-lede b{ color:var(--bronze); font-weight:800; }
+
+.proof-circles{ display:flex; align-items:center; justify-content:center; }
+.proof-circle{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  width:240px; height:240px; border-radius:var(--radius-circle); border:1px solid var(--paper-line);
+  background:var(--paper-2); padding:20px; text-align:center; flex-shrink:0;
+  opacity:0; transform:scale(.9);
+}
+.proof-circle.in-view{ animation:badgeIn .45s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
+.proof-circle + .proof-circle{ margin-left:-40px; }
+/* 중앙(천호 직영점) 원만 금박 그라디언트 배경(사용자 명시적 요청, 2026-09-10) — .gold-text
+   와 동일한 그라디언트 hex를 재사용한다(새 골드 토큰 추가 안 함). wordmarkShine(배경 위치
+   이동)과 wordmarkIntro(무한 팝)는 둘 다 넣었다가 순서대로 제거됐었다 — wordmarkShine 은
+   한 방향 무한 이동이라 260% 타일이 다시 이어지는 지점에서 대각선 이음선이 보였고,
+   wordmarkIntro 는 사용자 요청으로 빠졌다. 이후 사용자가 "배경이 움직이는 애니메이션"을
+   다시 요청해, 타일 반복 없이 하나의 그라디언트 안에서만 왕복하는 전용 키프레임
+   `proofShine`(animations.css)으로 대체했다 — 이음선 없이 좌우로 은은하게 흐르기만 한다.
+   ⚠ .proof-circle.in-view 가 이미 animation:badgeIn 축약형을 걸어 두므로, 여기서만 걸면
+   in-view 진입 즉시 더 높은 특이성에 덮여 proofShine 이 조용히 사라진다(실제로 겪은 회귀 —
+   getAnimations() 로 확인). 그래서 .proof-circle--center.in-view 에서 badgeIn 과 proofShine
+   을 한 선언에 함께 걸어 둘 다 살아있게 한다. */
+.proof-circle--center{
+  width:320px; height:320px; z-index:1;
+  background:linear-gradient(115deg, #8E6E1E 0%, #C9A227 20%, #E8CD7A 38%, #FFF6DA 48%, #E8CD7A 58%, #C9A227 76%, #8E6E1E 100%);
+  background-size:180% 100%;
+  border-color:#C9A227;
+}
+.proof-circle--center.in-view{
+  animation:
+    badgeIn .45s cubic-bezier(.22,1,.36,1) var(--d,0ms) both,
+    proofShine 6s ease-in-out infinite;
+}
+.proof-circle-label{
+  font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);
+}
+.proof-circle--center .proof-circle-label{ color:rgba(255,255,254,.75); }
+.proof-circle-rate{
+  display:block; font-family:var(--font-sans); font-weight:900; font-size:clamp(32px,3.8vw,46px);
+  color:var(--ink); line-height:1;
+}
+.proof-circle--center .proof-circle-rate{ color:var(--paper); font-size:clamp(36px,4.2vw,54px); }
+.proof-circle-name{ font-size:14px; font-weight:700; color:var(--ink-dim); }
+.proof-circle--center .proof-circle-name{ color:var(--paper); }
 
 @media (max-width:1024px){
   .feature-row{ grid-template-columns:1fr; gap:12px; padding:28px 0; }
   .trust-grid{ grid-template-columns:repeat(2,1fr); gap:24px 16px; margin-top:8px; }
   #competitiveness .section-head h2{ white-space:normal; }
+  .proof-stat{ margin-top:40px; padding-top:40px; }
+  .proof-number{ font-size:clamp(56px,16vw,88px); }
+  .proof-circles{ flex-direction:column; gap:24px; }
+  .proof-circle + .proof-circle{ margin-left:0; }
+  .proof-circle{ width:260px; height:260px; }
+  .proof-circle--center{ width:290px; height:290px; }
 }
 
 /* ============================================================
@@ -396,6 +594,7 @@ section{ padding:120px 0; }
 .revenue-figure{
   display:block; font-family:var(--font-sans); font-weight:900; color:var(--red); line-height:1;
   font-size:clamp(26px,2.8vw,40px); white-space:nowrap;
+  animation:accentSnap 1.5s infinite;
 }
 .revenue-rate{ display:block; font-size:13px; color:var(--ink-dim); margin-top:8px; }
 .revenue-rate b{ color:var(--ink); }
@@ -481,7 +680,7 @@ section{ padding:120px 0; }
 .store-swiper{ overflow:hidden; }
 .swiper-slide{ height:auto; }
 .store-card{
-  position:relative; aspect-ratio:8/9; border-radius:var(--radius-card);
+  position:relative; aspect-ratio:4/3; border-radius:var(--radius-card);
   border:1px solid var(--paper-line); overflow:hidden; background:var(--paper);
 }
 .store-card .photo{ position:absolute; inset:8px; overflow:hidden; border-radius:calc(var(--radius-card) - 6px); }
@@ -492,31 +691,11 @@ section{ padding:120px 0; }
   .location-right{ margin-right:0; }
 }
 
-/* ---- 확장 타임라인 (.store-timeline) — stores[].date/name 재사용, 원형 대신
-   --radius-badge 사각 마커를 쓴다(원형은 셀프바·고기 크롭 전용으로 범위가 제한돼 있다). ---- */
-.store-timeline{ margin-top:64px; position:relative; z-index:1; }
-.timeline-track{ position:relative; display:flex; justify-content:space-between; padding-top:6px; }
-.timeline-track::before{
-  content:''; position:absolute; top:11px; left:0; right:0; height:1px; background:var(--paper-line);
-}
-.timeline-node{
-  position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px;
-  flex:1; text-align:center; opacity:0; transform:translateY(12px);
-}
-.timeline-node.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
-.timeline-dot{ width:10px; height:10px; border-radius:var(--radius-badge); background:var(--bronze); border:2px solid var(--paper); }
-.timeline-date{ font-size:12px; letter-spacing:.08em; color:var(--ink-faint); }
-.timeline-name{ font-size:14px; font-weight:700; color:var(--ink); }
-
-@media (max-width:1024px){
-  .timeline-track{ flex-direction:column; align-items:flex-start; gap:24px; padding-left:5px; }
-  .timeline-track::before{ top:0; bottom:0; left:4px; right:auto; width:1px; height:auto; }
-  .timeline-node{ flex-direction:row; text-align:left; gap:12px; }
-}
-
 /* ---- 하단 문의 폼 (.inquiry-grid) ---- */
 .inquiry-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; margin-top:100px; position:relative; z-index:1; }
-.inquiry-left h3{ font-family:var(--font-sans); font-weight:800; font-size:clamp(28px,3.5vw,40px); color:var(--ink); margin-bottom:16px; }
+/* 문의 모달 h3 도 섹션 타이틀과 동일하게 RixYeoljeongdo 적용(2026-09-10, 사용자 명시적 요청) —
+   브러시체는 웨이트 축이 아니라 서체 자체가 임팩트를 내므로 800 대신 400 웨이트로 덮어쓴다. */
+.inquiry-left h3{ font-family:'RixYeoljeongdo', var(--font-sans); font-weight:400; font-size:clamp(32px,4.5vw,56px); color:var(--ink); margin-bottom:16px; }
 .inquiry-left p{ font-size:15px; color:var(--ink-dim); line-height:1.8; margin-bottom:32px; }
 .contact-line{ display:flex; gap:16px; padding:10px 0; border-bottom:1px solid var(--paper-line); font-size:14px; }
 .contact-line .k{ color:var(--ink-faint); width:100px; }
@@ -524,19 +703,46 @@ section{ padding:120px 0; }
 .contact-line .v a{ color:var(--bronze); }
 
 #inquiryForm{ display:flex; flex-direction:column; gap:16px; }
-.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 #inquiryForm label{ display:block; font-size:13px; color:var(--ink-faint); margin-bottom:6px; }
 #inquiryForm input, #inquiryForm select, #inquiryForm textarea{
   width:100%; padding:12px 14px; font-size:14px; font-family:var(--font-sans);
   border:1px solid var(--paper-line); background:var(--paper); color:var(--ink); border-radius:var(--radius-badge);
 }
 #inquiryForm textarea{ min-height:96px; resize:vertical; }
+.form-agree-row{ display:flex; align-items:center; gap:12px; }
+/* #inquiryForm label{ display:block; ... } 이 일반 <label> 규칙이라, 같은 요소인
+   <label class="form-agree"> 에 특이성으로 이긴다(ID+element vs class) — 원형 배지와
+   문구가 두 줄로 쪼개져 보이던 버그의 원인이었다. #inquiryForm 을 함께 걸어 특이성을
+   ID+class 로 올려 확실히 이기게 한다. 문의 모달(.inquiry-sheet-form)에는 동일한 문제를
+   일으키는 일반 label 규칙이 없지만(.inquiry-sheet-form .field label 은 .field 안에만
+   적용돼 .form-agree 와 충돌하지 않는다), 2026-09-10 동의 체크박스가 모달에도 추가되며
+   동일 셀렉터 패턴으로 맞춰뒀다. */
+#inquiryForm .form-agree, .inquiry-sheet-form .form-agree{
+  display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700;
+  color:var(--ink); cursor:pointer; margin-bottom:0;
+}
+/* #inquiryForm input, .inquiry-sheet-form input{ width:100%; ... } 이 둘 다 .form-agree-input
+   (숨김 체크박스)에도 걸려 width:1px 을 width:100% 로 덮어썼다 — position:absolute 인 채로
+   폭만 컨테이너 전체가 되며 뷰포트 밖으로 삐져나가 가로 스크롤을 만들던 버그였다(실제로
+   겪은 회귀). 위 .form-agree 특이성 버그와 같은 원인 — 여기서도 #inquiryForm/.inquiry-sheet-form
+   을 함께 걸어 특이성으로 이기게 한다. */
+#inquiryForm .form-agree-input, .inquiry-sheet-form .form-agree-input{
+  position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;
+}
+.form-agree-check{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:22px; height:22px; border-radius:var(--radius-badge); border:2px solid var(--paper-line);
+  color:transparent; transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.form-agree-check svg{ width:12px; height:12px; }
+.form-agree-input:checked + .form-agree-check{ background:var(--bronze); border-color:var(--bronze); color:var(--paper); }
+.form-agree-input:focus-visible + .form-agree-check{ box-shadow:0 0 0 2px var(--bronze-tint); }
+.form-agree-more{ font-size:13px; color:var(--ink-dim); text-decoration:underline; text-underline-offset:2px; flex-shrink:0; }
 .submit-btn{ padding:16px; background:var(--bronze); color:var(--paper); border:none; }
 .submit-btn:hover{ background:var(--bronze-dark); }
 
 @media (max-width:1024px){
   .inquiry-grid{ grid-template-columns:1fr; gap:40px; margin-top:64px; }
-  .field-row{ grid-template-columns:1fr; }
 }
 
 /* ============================================================
@@ -586,10 +792,11 @@ section{ padding:120px 0; }
 }
 
 /* ============================================================
-   Footer — 유일한 다크 반전 존 (커피브라운)
+   Footer — 커피브라운 다크 반전 존 (.sticky-inquiry-bar 가 같은 토큰을 재사용한다)
    ============================================================ */
-.footer{ background:var(--coffee); color:var(--on-coffee); padding:0 0 56px; }
-.footer .wave-rule--invert{ margin:0 0 40px; }
+.footer{ background:var(--coffee); color:var(--on-coffee); padding:0 0 calc(56px + 84px); }
+/* 84px = 데스크톱 .sticky-inquiry-bar 실측 높이 여유분. ≤1024px 에서는 그 바가 숨고
+   대신 .sticky-cta(76px)가 뜨므로 아래 미디어쿼리가 이 값을 76px 기준으로 덮어쓴다. */
 .footer-grid{ display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
 .footer-logo{ display:flex; align-items:center; gap:12px; }
 .footer-logo img{ height:36px; }
@@ -608,9 +815,14 @@ section{ padding:120px 0; }
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
   .hero-left, .hero-right,
-  .feature-row, .trust-badge, .meat-card, .selfbar-card, .revenue-card, .price-row, .timeline-node{
+  .feature-row, .trust-badge, .proof-headline, .proof-circle, .meat-card, .selfbar-card, .revenue-card, .price-row{
     animation:none !important; opacity:1 !important; transform:none !important;
   }
+  .gold-text, .ranking-stars span{ animation:none !important; background-position:0% 50% !important; transform:none !important; }
+  .feature-body p b{ animation:none !important; background-size:100% 2px !important; }
+  .revenue-figure{ animation:none !important; opacity:1 !important; transform:none !important; }
+  .ranking-content h2{ animation:none !important; transform:none !important; opacity:1 !important; }
   .btn-primary:hover, .btn-ghost:hover, .store-nav-btn:hover{ transform:none !important; }
   .inquiry-sheet, .inquiry-sheet-backdrop{ transition:none !important; }
+  .select-field-list, .select-field-chevron{ transition:none !important; }
 }

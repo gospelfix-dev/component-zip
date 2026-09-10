@@ -20,9 +20,9 @@
     <span class="seal-badge" aria-hidden="true">豚</span>
   </div>
   <nav class="nav-links" id="navLinks">
-    <a href="#ranking" data-target="ranking">소비자 찐후기</a>
     <a href="#competitiveness" data-target="competitiveness">경쟁력</a>
-    <a href="#menu" data-target="menu">메뉴</a>
+    <a href="#ranking" data-target="ranking">소비자 찐후기</a>
+    <a href="#menu" data-target="menu">메뉴소개</a>
     <a href="#profit" data-target="profit">수익분석</a>
     <a href="#cost" data-target="cost">창업비용</a>
     <a href="#location" data-target="location">매장위치</a>
@@ -64,11 +64,29 @@
   </div>
 </section>
 
+<!-- 01. 경쟁력 — 특집 리스트 (드롭캡 넘버 + 헤어라인 룰). 2026-09-10 사용자 요청으로
+     맛집랭킹1위 배너보다 앞으로 순서 이동(히어로 바로 다음, 첫 번째 콘텐츠 섹션). -->
+<section class="feature" id="competitiveness">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="running-head">01 · COMPETITIVENESS</div>
+      <h2>이름값을 증명하는 <span class="gold-text">세 가지 기준</span></h2>
+      <p>단순히 유행을 따르는 브랜드가 아닌, 오랫동안 사랑받을 수 있는 브랜드 — 고품격대패가 추구하는 가치입니다.</p>
+    </div>
+    <div class="feature-list" id="featureList" data-content><!-- data/content.json → competency --></div>
+    <div class="trust-grid" id="trustGrid" data-content><!-- data/content.json → trust --></div>
+    <!-- 01 경쟁력 — 매장 실측 데이터 기반 자체 통계 (신규). profit 배열을 그대로 재사용하고
+         (새 필드 없음), 평균 순수익률·원형 라벨은 script.js 의 renderProof 가 계산한다. -->
+    <div class="proof-stat" id="proofStat" data-content><!-- data/content.json → profit (평균 재계산) --></div>
+  </div>
+</section>
+
 <!-- 맛집랭킹1위 배너 — 히어로·푸터에 이어 세 번째 다크 반전 존(2026-09-09, 사용자가 참고
      배너 이미지를 제시하며 명시적으로 요청, CLAUDE.md 다크 반전 존 절 참고). 배경은 기존
      보유 에셋 generated_bg.png 를 재사용해 새 에셋을 만들지 않았다. 폰 목업은 0007(시안A)의
      .review-phone 구조(스크린샷 이미지 + 프레임 이미지를 겹치는 기법)를 그대로 차용하되
-     에셋은 0007-B 소유로 복사해 넣었다(형제 폴더 경로를 직접 참조하지 않는다). -->
+     에셋은 0007-B 소유로 복사해 넣었다(형제 폴더 경로를 직접 참조하지 않는다). 2026-09-10
+     사용자 요청으로 01 경쟁력 다음, 두 번째 콘텐츠 섹션으로 순서 이동. -->
 <section class="ranking" id="ranking">
   <div class="ranking-bg-frame" aria-hidden="true"><div class="ranking-bg"></div></div>
   <div class="ranking-overlay" aria-hidden="true"></div>
@@ -90,22 +108,6 @@
       <hr class="ranking-rule">
       <p class="ranking-sub">리뷰가 증명하는 <b>고품격대패</b>!</p>
     </div>
-  </div>
-</section>
-
-<!-- 01. 경쟁력 — 특집 리스트 (드롭캡 넘버 + 헤어라인 룰) -->
-<section class="feature" id="competitiveness">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="running-head">01 · COMPETITIVENESS</div>
-      <h2>이름값을 증명하는 <span class="gold-text">세 가지 기준</span></h2>
-      <p>단순히 유행을 따르는 브랜드가 아닌, 오랫동안 사랑받을 수 있는 브랜드 — 고품격대패가 추구하는 가치입니다.</p>
-    </div>
-    <div class="feature-list" id="featureList" data-content><!-- data/content.json → competency --></div>
-    <!-- 세 번째 항목("물결형 인테리어")이 실제로 물결 모티프를 언급하므로 그 아래 웨이브 헤어라인을 붙인다 -->
-    <div class="wave-rule" aria-hidden="true"></div>
-    <div class="diamond-divider" aria-hidden="true">◇┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄◇</div>
-    <div class="trust-grid" id="trustGrid" data-content><!-- data/content.json → trust --></div>
   </div>
 </section>
 
@@ -149,7 +151,6 @@
       <p>정확한 창업비용은 상권·평수·업종변경 여부에 따라 달라지므로, 상담을 통해 정확히 안내드립니다.</p>
     </div>
     <div class="price-list" id="costTable" data-content><!-- data/content.json → cost --></div>
-    <div class="diamond-divider" aria-hidden="true">◇┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄◇</div>
     <div class="cost-note">
       <div class="seal-tag"><span class="seal-badge" aria-hidden="true">豚</span><span>7호점<br>한정</span></div>
       <p>안정적인 브랜드 운영과 체계적인 시스템 구축을 위해 전수창업은 7호점까지만 제한적으로 운영됩니다. 브랜드의 방향성과 완성도를 충분히 갖춘 이후, 본격적인 프랜차이즈 확장을 통해 더 큰 성장을 이어갈 예정입니다.</p>
@@ -189,30 +190,67 @@
   </div>
 
   <div class="wrap">
-    <div class="store-timeline" id="storeTimeline" data-content><!-- data/content.json → stores --></div>
-  </div>
-
-  <div class="wrap">
     <div class="inquiry-grid">
       <div class="inquiry-left">
         <h3>지금, 고품격대패와 <span class="gold-text">함께하세요</span></h3>
         <p>방문 예약, 창업 상담, 제휴 문의까지 — 남겨주시면 담당자가 순차적으로 연락드립니다.</p>
         <div id="contactLines" data-content><!-- data/content.json → contact --></div>
       </div>
+      <!-- 2026-09-10 사용자 요청으로 이름/연락처/창업유형/창업희망지역 4개 필드를 2열
+           그리드(.field-row)가 아니라 한 줄에 하나씩, 세로 한 블록으로 쌓는다. -->
       <form id="inquiryForm">
-        <div class="field-row">
-          <div><label for="name">이름</label><input type="text" id="name" placeholder="성함을 입력해주세요" required></div>
-          <div><label for="phone">연락처</label><input type="tel" id="phone" placeholder="010-0000-0000" required></div>
+        <div><label for="name">이름</label><input type="text" id="name" placeholder="이름" required></div>
+        <div><label for="phone">연락처</label><input type="tel" id="phone" placeholder="연락처" required></div>
+        <!-- 창업유형/창업희망지역 — 하단 고정 문의 폼 바에만 있던 두 필드를 2026-09-10
+             사용자 요청으로 05 인라인 폼에도 추가했다. 마크업·옵션·컴포넌트는 하단 바의
+             #sibType/#sibRegion과 동일하게 맞춘다 — 창업희망지역은 자유 텍스트다(고정
+             목록 select 아님, 앞서 하단 바에서와 같은 이유). 같은 날 사용자 요청으로
+             문의유형·문의내용 필드는 이 폼에서 삭제됐다(모달에는 남아 있다). -->
+        <div><label for="franchiseType">창업유형</label>
+            <div class="select-field" id="franchiseTypeField">
+              <button type="button" id="franchiseType" class="select-field-trigger" aria-haspopup="listbox" aria-expanded="false">
+                <span class="select-field-value">창업유형</span>
+                <svg class="select-field-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="select-field-list" role="listbox" tabindex="-1" aria-label="창업유형">
+                <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="신규 창업">
+                  <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>신규 창업</span>
+                </li>
+                <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="기존 매장 전환">
+                  <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>기존 매장 전환</span>
+                </li>
+                <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="다점포 확장">
+                  <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>다점포 확장</span>
+                </li>
+                <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="상담 후 결정">
+                  <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>상담 후 결정</span>
+                </li>
+              </ul>
+              <input type="hidden" name="franchiseType">
+            </div>
         </div>
-        <div><label for="type">문의유형</label>
-          <select id="type">
-            <option>방문예약</option>
-            <option>창업상담</option>
-            <option>제휴문의</option>
-            <option>기타</option>
-          </select>
+        <div><label for="franchiseRegion">창업희망지역</label><input type="text" id="franchiseRegion" placeholder="창업 희망 지역을 '시/도'로 알려주세요."></div>
+        <!-- 개인정보처리방침 동의 — 사용자가 제시한 참고 이미지(원형 체크 배지 + "전문보기"
+             링크)를 참고해 재현했다(2026-09-10). 네이티브 체크박스는 시각적으로 숨기고
+             (position:absolute, opacity:0 — 접근성 트리·포커스·유효성 검사는 그대로 유지)
+             .form-agree-check 원형 배지로 대체한다. "전문보기"는 <label> 바깥의 형제
+             요소로 둬서 클릭 시 체크박스가 함께 토글되지 않게 한다. ⚠ 원형 배지는
+             --radius-circle(셀프바·고기 사진·01 proof-circle) 밖의 새 예외다 — CLAUDE.md
+             참고. -->
+        <div class="form-agree-row">
+          <label class="form-agree">
+            <input type="checkbox" id="agree" required class="form-agree-input">
+            <span class="form-agree-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>개인정보처리방침 동의</span>
+          </label>
+          <a href="#" class="form-agree-more">전문보기</a>
         </div>
-        <div><label for="msg">문의내용</label><textarea id="msg" placeholder="문의하실 내용을 남겨주세요"></textarea></div>
         <button class="submit-btn" type="submit">문의 남기기</button>
       </form>
     </div>
@@ -235,24 +273,59 @@
       <form id="inquirySheetForm" class="inquiry-sheet-form">
         <div class="field">
           <label for="inqName">이름</label>
-          <input type="text" id="inqName" placeholder="성함을 입력해주세요" required>
+          <input type="text" id="inqName" placeholder="이름" required>
         </div>
         <div class="field">
           <label for="inqPhone">연락처</label>
-          <input type="tel" id="inqPhone" placeholder="010-0000-0000" required>
+          <input type="tel" id="inqPhone" placeholder="연락처" required>
+        </div>
+        <!-- 창업유형/창업희망지역 — 하단 고정 문의 폼 바에만 있던 두 필드를 2026-09-10
+             사용자 요청으로 문의 모달에도 추가했다(05 인라인 폼도 동일). 창업희망지역은
+             자유 텍스트다(고정 목록 select 아님). 같은 날 후속 요청으로 문의유형·문의내용은
+             05 폼에 이어 이 모달에서도 삭제됐다. -->
+        <div class="field">
+          <label for="inqFranchiseType">창업유형</label>
+          <div class="select-field" id="inqFranchiseTypeField">
+            <button type="button" id="inqFranchiseType" class="select-field-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <span class="select-field-value">창업유형</span>
+              <svg class="select-field-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <ul class="select-field-list" role="listbox" tabindex="-1" aria-label="창업유형">
+              <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="신규 창업">
+                <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>신규 창업</span>
+              </li>
+              <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="기존 매장 전환">
+                <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>기존 매장 전환</span>
+              </li>
+              <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="다점포 확장">
+                <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>다점포 확장</span>
+              </li>
+              <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="상담 후 결정">
+                <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>상담 후 결정</span>
+              </li>
+            </ul>
+            <input type="hidden" name="franchiseType">
+          </div>
         </div>
         <div class="field">
-          <label for="inqType">문의유형</label>
-          <select id="inqType">
-            <option>방문예약</option>
-            <option>창업상담</option>
-            <option>제휴문의</option>
-            <option>기타</option>
-          </select>
+          <label for="inqFranchiseRegion">창업희망지역</label>
+          <input type="text" id="inqFranchiseRegion" placeholder="창업 희망 지역을 '시/도'로 알려주세요.">
         </div>
-        <div class="field">
-          <label for="inqMsg">문의내용</label>
-          <textarea id="inqMsg" placeholder="문의하실 내용을 남겨주세요"></textarea>
+        <!-- 개인정보처리방침 동의 — 05 인라인 폼(#inquiryForm)의 .form-agree 를 그대로
+             재사용한다(2026-09-10, 모달에도 동일하게 요청됨). id 만 inqAgree 로 분리한다. -->
+        <div class="form-agree-row">
+          <label class="form-agree">
+            <input type="checkbox" id="inqAgree" required class="form-agree-input">
+            <span class="form-agree-check" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span>개인정보처리방침 동의</span>
+          </label>
+          <a href="#" class="form-agree-more">전문보기</a>
         </div>
       </form>
     </div>
@@ -264,7 +337,6 @@
 </div>
 
 <footer class="footer">
-  <div class="wave-rule wave-rule--invert" aria-hidden="true"></div>
   <div class="wrap footer-grid">
     <div class="footer-logo">
       <img src="assets/imgs/logo_gold.png" alt="고품격대패">
@@ -284,6 +356,57 @@
     <span class="k">창업문의</span><span class="v">1877-1960</span>
   </a>
   <button type="button" class="sticky-cta-btn" data-open-inquiry>창업 상담</button>
+</div>
+
+<!-- 하단 고정 문의 폼 바 — 참고 이미지(가맹 문의 전화번호 + 인라인 입력폼) 기반 데스크톱
+     전용 전역 UI. 모바일(≤1024px)은 폭이 부족해 위 .sticky-cta 로 대체한다. 목업 폼이라
+     실제 전송은 없다(initStickyInquiryForm 이 버튼 텍스트만 바꾼다). -->
+<div class="sticky-inquiry-bar" id="stickyInquiryBar" role="complementary" aria-label="가맹 문의">
+  <a class="sticky-inquiry-brand" href="tel:18771960">
+    <span class="seal-badge" aria-hidden="true">豚</span>
+    <strong>가맹 문의 1877-1960</strong>
+  </a>
+  <form id="stickyInquiryForm" class="sticky-inquiry-form">
+    <input type="text" id="sibName" placeholder="이름" required>
+    <input type="tel" id="sibPhone" placeholder="연락처" required>
+    <!-- shadcn/ui Select 참고 커스텀 드롭다운(2026-09-10 신규) — 네이티브 <select> 대신
+         트리거 버튼 + role="listbox" 패널로 재현했다. initCustomSelects(script.js)가
+         열기/닫기·키보드 탐색·선택 상태를 관리한다. 이 바가 화면 맨 아래 고정이라 패널은
+         트리거 위쪽으로 펼쳐진다(shadcn 기본값인 아래쪽 펼침과 다른 점 — 아래로 펼치면
+         뷰포트 밖으로 나간다). -->
+    <div class="select-field" id="sibType">
+      <button type="button" class="select-field-trigger" aria-haspopup="listbox" aria-expanded="false">
+        <span class="select-field-value">창업유형</span>
+        <svg class="select-field-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <ul class="select-field-list" role="listbox" tabindex="-1" aria-label="창업유형">
+        <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="신규 창업">
+          <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>신규 창업</span>
+        </li>
+        <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="기존 매장 전환">
+          <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>기존 매장 전환</span>
+        </li>
+        <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="다점포 확장">
+          <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>다점포 확장</span>
+        </li>
+        <li class="select-field-item" role="option" aria-selected="false" tabindex="-1" data-value="상담 후 결정">
+          <svg class="select-field-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>상담 후 결정</span>
+        </li>
+      </ul>
+      <input type="hidden" name="type">
+    </div>
+    <!-- 창업희망지역은 셀렉트가 아니라 자유 텍스트다(2026-09-10 사용자 요청) — 실제 희망
+         지역은 "시/도" 조합이 다양해 고정 목록(서울/경기·인천/...)으로는 다 못 담는다. -->
+    <input type="text" id="sibRegion" name="region" placeholder="창업 희망 지역을 '시/도'로 알려주세요.">
+    <label class="sticky-inquiry-agree">
+      <input type="checkbox" id="sibAgree" required>개인정보수집 동의
+    </label>
+    <button type="submit" class="sticky-inquiry-submit">문의하기</button>
+  </form>
 </div>
 
 <!-- Swiper.js 번들 — 05 매장위치 캐러셀 전용, A안(0007)에서 그대로 재사용한다. -->

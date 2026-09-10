@@ -27,9 +27,8 @@ BEM이 아니라 **의미 기반 클래스명**을 쓴다 (`.feature-row`, `.sea
   ```bash
   grep -n "var(--red)" assets/css/style.css   # 위 두 셀렉터 블록 외에 나오면 위반
   ```
-  단, `.wave-rule`/`.wave-rule--invert`의 인라인 SVG data-URI `stroke` 값은 `var()`를 쓸 수
-  없는 리소스 컨텍스트라 hex를 직접 적는 유일한 예외다 — `:root`의 `--bronze`/`--bronze-tint`
-  값과 반드시 수동으로 동기화한다.
+  단, `.proof-circle--center`(01 경쟁력 증빙 통계 중앙 원)는 `.gold-text`의 기존 금박
+  그라디언트 hex를 재사용하는 승인된 예외다 — 새 `--gold` 토큰을 만들지 않았다.
 - **크기는 `clamp()`로 반응형 처리한다.** 미디어쿼리로 폰트 크기를 계단식 변경하지 않는다.
 - **`font-size`는 12px 이상 120px 이하만 허용한다.** 러닝헤드 라벨("01 ·
   COMPETITIVENESS")·소형 태그류는 12~13px + `letter-spacing`이 카탈로그 장르 문법이라
@@ -38,7 +37,11 @@ BEM이 아니라 **의미 기반 클래스명**을 쓴다 (`.feature-row`, `.sea
   - `--radius-badge`(6px) — 豚 배지, 트러스트 배지, 인풋, 04 헤더 행
   - `--radius-card`(14px) — 사진 프레임, 카드, 문의 모달
   - `--radius-pill`(999px) — 버튼
-  - `--radius-circle`(50%) — **셀프바·고기 사진 원형 크롭 전용**. 배지·버튼에 쓰지 않는다.
+  - `--radius-circle`(50%) — **셀프바·고기 사진 원형 크롭 + 01 경쟁력 `.proof-circle`
+    (증빙 통계, 2026-09-10 예외 추가) 전용**. 그 외 배지·버튼에 쓰지 않는다. 05 인라인
+    폼·문의 모달의 동의 배지(`.form-agree-check`)는 한때 이 토큰의 예외였으나, 2026-09-10
+    사용자가 실제 체크 UI 참고 이미지를 제시하며 원형이 아닌 둥근 사각형으로 재요청해
+    `--radius-badge`로 바뀌었다 — 더 이상 `--radius-circle` 예외가 아니다.
 - **이탤릭을 쓰지 않는다.** 산세리프 이탤릭은 이 프로젝트의 레퍼런스 어디에도 없는 관습이다.
 
 ## 애니메이션

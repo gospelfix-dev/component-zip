@@ -41,11 +41,47 @@ const renderCompetency = (list = []) => fill('featureList', list.map(({ num, tit
   </div>`).join(''));
 
 /** 01 경쟁력 — 하단 트러스트 배지 (사각/라운드사각, HACCP 인증배지 문법) */
-const renderTrust = (list = []) => fill('trustGrid', list.map(({ label, desc }) => `
+/* trust 배열은 4개 고정이라(HACCP/7호점/25종+/ECO) 인덱스로 순서 번호와 아이콘을 매긴다.
+ * 새 JSON 필드 없음 — 아이콘은 여기서만 순수 프레젠테이션 목적으로 매핑한다. */
+const TRUST_ICONS = [
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 21l5-3 5 3-1.5-8.5"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10v10h16V10"/><path d="M2 10l2-6h16l2 6"/><path d="M9 20v-6h6v6"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11h18a9 6 0 0 1-18 0Z"/><path d="M12 11V5"/><path d="M9 5a3 3 0 0 1 6 0"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21c8 0 14-6 14-14V5h-2C9 5 3 11 3 19v2Z"/><path d="M5 21c3-6 7-10 13-13"/></svg>',
+];
+const renderTrust = (list = []) => fill('trustGrid', list.map(({ label, desc }, i) => `
   <div class="trust-badge">
-    <div class="trust-badge-icon"><span>${esc(label)}</span></div>
+    <div class="trust-badge-top">
+      <span class="trust-badge-num">0${i + 1}</span>
+      <span class="trust-badge-icon">${TRUST_ICONS[i] ?? ''}</span>
+    </div>
+    <h3 class="trust-badge-label">${esc(label)}</h3>
     <p>${esc(desc)}</p>
   </div>`).join(''));
+
+/** 01 경쟁력 — 매장 실측 데이터 기반 자체 통계. profit 배열을 그대로 재사용해 평균
+ *  순수익률(헤드라인)과 3개 원형 콜아웃을 렌더링한다. 새 JSON 필드 없음 — 평균값과 라벨은
+ *  여기서 계산한다. profit 배열이 정확히 3개, [왼쪽, 가운데(tall:true, 강조), 오른쪽]
+ *  순서라고 가정한다 — 매장 수·순서가 바뀌면 CIRCLE_LABELS 와 함께 재검토할 것. */
+const CIRCLE_LABELS = ['1호점', '직영 매장', '최신 오픈'];
+const renderProof = (list = []) => {
+  if (!list.length) return;
+  const avgRate = (list.reduce((sum, s) => sum + s.rate, 0) / list.length).toFixed(1);
+  fill('proofStat', `
+    <div class="proof-headline">
+      <div class="running-head">3개 매장 실측 데이터</div>
+      <div class="proof-number" data-count-to="${avgRate}">0%</div>
+      <p class="proof-lede">3개 매장 평균 <b>순수익률</b></p>
+    </div>
+    <div class="proof-circles">
+      ${list.map(({ name, rate, tall }, i) => `
+        <div class="proof-circle${tall ? ' proof-circle--center' : ''}">
+          <span class="proof-circle-label">${esc(CIRCLE_LABELS[i] ?? '')}</span>
+          <span class="proof-circle-rate" data-count-to="${rate}">0%</span>
+          <span class="proof-circle-name">${esc(name)}</span>
+        </div>`).join('')}
+    </div>`);
+};
 
 /** 02 메뉴 — 원형 크롭 + 검정 링 ("검정 원형 접시" 실측 재현) */
 const renderMeat = (list = []) => fill('meatGrid', list.map(({ image, name }) => `
@@ -117,18 +153,6 @@ const renderStores = (list = []) => {
   if (track) track.dataset.count = String(list.length);
 };
 
-/** 05 매장위치 — 오픈일 확장 타임라인. stores[].date/name 을 그대로 재사용한다(신규 필드 없음).
- *  h2 카피("확장을 증명하는 기록")를 뒷받침하는 시각 요소가 없던 공백을 메운다. */
-const renderStoreTimeline = (list = []) => fill('storeTimeline', `
-  <div class="timeline-track">
-    ${list.map(({ name, date }) => `
-      <div class="timeline-node">
-        <span class="timeline-dot" aria-hidden="true"></span>
-        <span class="timeline-date">${esc(date).replace(' OPEN', '')}</span>
-        <span class="timeline-name">${esc(name)}</span>
-      </div>`).join('')}
-  </div>`);
-
 /** 05 매장위치 — 연락처 라인 */
 const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contactLines', `
   <div class="contact-line"><span class="k">창업문의</span><span class="v">${esc(phone)}</span></div>
@@ -143,16 +167,16 @@ const renderContact = ({ phone, instagram, instagramUrl } = {}) => fill('contact
  * 플립카드 대신 채택한 장치라, 정보(target 값)는 시작부터 data-count-to 로 DOM 에
  * 존재하고 시각적 카운팅만 진행된다. prefers-reduced-motion 이면 즉시 최종값을 넣는다.
  */
-const animateCount = (el, target, duration = 1100) => {
+const animateCount = (el, target, duration = 1100, format = (n) => formatWon(Math.round(n))) => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    el.textContent = formatWon(target);
+    el.textContent = format(target);
     return;
   }
   const start = performance.now();
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
   const step = (now) => {
     const p = Math.min((now - start) / duration, 1);
-    el.textContent = formatWon(Math.round(target * easeOutCubic(p)));
+    el.textContent = format(target * easeOutCubic(p));
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -168,11 +192,12 @@ const initScrollReveal = () => {
   const targets = [
     ...document.querySelectorAll('#featureList .feature-row'),
     ...document.querySelectorAll('#trustGrid .trust-badge'),
+    ...document.querySelectorAll('#proofStat .proof-headline'),
+    ...document.querySelectorAll('#proofStat .proof-circle'),
     ...document.querySelectorAll('#meatGrid .meat-card'),
     ...document.querySelectorAll('#selfbarGrid .selfbar-card'),
     ...document.querySelectorAll('#revenueList .revenue-card'),
     ...document.querySelectorAll('#costTable .price-row'),
-    ...document.querySelectorAll('#storeTimeline .timeline-node'),
   ];
   if (!targets.length) return;
 
@@ -184,6 +209,8 @@ const initScrollReveal = () => {
         entry.target.classList.add('in-view');
         const figure = entry.target.querySelector('.revenue-figure[data-count-to]');
         if (figure) animateCount(figure, Number(figure.dataset.countTo));
+        const percent = entry.target.querySelector('.proof-number[data-count-to], .proof-circle-rate[data-count-to]');
+        if (percent) animateCount(percent, Number(percent.dataset.countTo), 1100, (n) => `${n.toFixed(1)}%`);
         obs.unobserve(entry.target);
       });
     },
@@ -393,7 +420,7 @@ const initHeroSwiper = () => {
     effect: 'fade',
     fadeEffect: { crossFade: true },
     speed: reduceMotion ? 0 : 900,
-    allowTouchMove: false,
+    grabCursor: true,
     autoplay: reduceMotion ? false : { delay: 3200, disableOnInteraction: false },
     a11y: { enabled: true },
   });
@@ -432,6 +459,95 @@ const initInquiryForm = () => {
   });
 };
 
+/** shadcn/ui Select 참고 커스텀 드롭다운(.select-field, 하단 고정 문의 폼 바 전용) — 열기/
+ *  닫기, 방향키 탐색, 선택 상태를 관리한다. 이 바가 화면 맨 아래 고정이라 패널은 CSS 에서
+ *  트리거 위쪽으로 펼쳐지도록 이미 잡혀 있다(여기서는 열림/선택 상태만 다룬다). */
+const initCustomSelects = () => {
+  const selects = document.querySelectorAll('.select-field');
+  if (!selects.length) return;
+
+  const closeAll = () => {
+    selects.forEach((el) => {
+      el.classList.remove('open');
+      el.querySelector('.select-field-trigger')?.setAttribute('aria-expanded', 'false');
+    });
+  };
+
+  selects.forEach((el) => {
+    const trigger = el.querySelector('.select-field-trigger');
+    const valueEl = el.querySelector('.select-field-value');
+    const list = el.querySelector('.select-field-list');
+    const hidden = el.querySelector('input[type="hidden"]');
+    const items = Array.from(el.querySelectorAll('.select-field-item'));
+
+    const selectItem = (item) => {
+      items.forEach((i) => { i.classList.remove('selected'); i.setAttribute('aria-selected', 'false'); });
+      item.classList.add('selected');
+      item.setAttribute('aria-selected', 'true');
+      valueEl.textContent = item.dataset.value;
+      el.classList.add('has-value');
+      if (hidden) hidden.value = item.dataset.value;
+    };
+
+    const open = () => {
+      closeAll();
+      el.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      (el.querySelector('.select-field-item.selected') || items[0])?.focus();
+    };
+
+    const close = (refocusTrigger) => {
+      el.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (refocusTrigger) trigger.focus();
+    };
+
+    trigger.addEventListener('click', () => {
+      el.classList.contains('open') ? close(false) : open();
+    });
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(); }
+    });
+
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => { selectItem(item); close(true); });
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); selectItem(item); close(true);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault(); items[Math.min(i + 1, items.length - 1)].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault(); items[Math.max(i - 1, 0)].focus();
+        } else if (e.key === 'Escape') {
+          e.preventDefault(); close(true);
+        } else if (e.key === 'Tab') {
+          close(false);
+        }
+      });
+    });
+
+    list.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(true); });
+  });
+
+  document.addEventListener('click', (e) => {
+    selects.forEach((el) => { if (!el.contains(e.target)) el.classList.remove('open'); });
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+};
+
+/** 하단 고정 문의 폼 바 (목업 제출) */
+const initStickyInquiryForm = () => {
+  const form = document.getElementById('stickyInquiryForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.sticky-inquiry-submit');
+    btn.textContent = '접수되었습니다';
+    btn.disabled = true;
+  });
+};
+
 // ---- 부팅 ----
 
 /** JSON 을 못 읽었을 때(대개 file:// 로 연 경우) 화면에 이유를 남긴다 */
@@ -450,12 +566,12 @@ const showDataError = (err) => {
 const renderAll = (data) => {
   renderCompetency(data.competency);
   renderTrust(data.trust);
+  renderProof(data.profit);
   renderMeat(data.meat);
   renderSelfbar(data.selfbar);
   renderProfitCards(data.profit);
   renderCost(data.cost);
   renderStores(data.stores);
-  renderStoreTimeline(data.stores);
   renderContact(data.contact);
 };
 
@@ -465,6 +581,8 @@ const boot = async () => {
   initMobileNav();
   initScrollSpy();
   initInquiryForm();
+  initCustomSelects();
+  initStickyInquiryForm();
   initInquirySheet();
   initHeroSwiper();
   initRankingSwiper();
