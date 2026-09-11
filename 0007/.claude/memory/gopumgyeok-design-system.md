@@ -91,6 +91,38 @@ inquiry]` 트리거 목록에 자동 포함됐고, 이제는 오직 클릭으로
 버튼 텍스트만 바뀌는 목업이다. 시트 자체는 다크 섹션 스코프 밖(body 직속)이라 `--text`의
 기본값(라이트 카드용 `#333333`)을 그대로 쓰고, 골드 포인트(제출 버튼·포커스 링)만 얹는다.
 
+**⚠ `.inquiry-fab`은 더 이상 "항상 보이는" 정적 탭이 아니다(2026-09-11 변경).** 위 문단은
+그 전까지의 상태를 서술한 것 — 형제 시안 0007-B의 `.sticky-inquiry-bar`(하단 고정 문의
+폼 바, 아래 문단 참고)가 0007에도 이식되며 데스크톱(>1024px)에 같은 역할의 CTA가 두 개
+뜨게 됐고, 사용자 요청으로 `.inquiry-fab`은 **PC에서 `display:none`, 모바일(≤1024px)
+에서만 `display:flex`**로 뒤집혔다. `.sticky-inquiry-bar`는 반대로 데스크톱 전용(≤1024px
+에서 숨음)이라 두 CTA가 겹치지 않고 폭에 따라 정확히 하나씩만 보인다.
+
+**하단 고정 문의 폼 바 + shadcn Select + 통일 동의 체크박스 (2026-09-11 신규, 0007-B 이식)**
+— 0007-B에서 먼저 만들어진 세 컴포넌트를 0007의 골드/레드 아이덴티티로 재현해 05 인라인
+폼(`#inquiryForm`)·문의 모달(`.inquiry-sheet-form`)·하단 고정 바(`.sticky-inquiry-bar`)
+세 곳에 공통 적용했다:
+- `.sticky-inquiry-bar` — 화면 하단에 고정된 데스크톱 전용 인라인 폼(로고+전화번호, 이름/
+  연락처/창업유형/창업희망지역 입력, 동의 체크박스, 제출 버튼 한 줄). 다크 배경(`--bg-card-2`)
+  이라 body 직속 스코프 밖에서 `--text-invert`/밝은 테두리(`rgba(243,238,226,.35)`)로
+  직접 재반전해야 한다 — 섹션 기반 자동 반전(`--text:var(--text-invert)`)이 적용되는
+  범위가 아니다. footer의 `padding-bottom`에 이 바의 실측 높이(약 80px)만큼 여유를
+  더해뒀다(안 그러면 데스크톱에서 바가 footer 마지막 줄을 덮는다).
+- `.select-field` — 네이티브 `<select>` 대신 트리거 버튼 + `role="listbox"` 패널로 만든
+  shadcn 스타일 커스텀 드롭다운(`initCustomSelects`, script.js). `.sticky-inquiry-bar`
+  안에서만 패널이 트리거 **위쪽**으로 펼쳐지게 뒤집혀 있다(화면 맨 아래 고정이라 아래로
+  펼치면 뷰포트 밖으로 나간다).
+- `.form-agree`/`.form-agree-check`/`.form-agree-more` — 동의 체크박스는 네이티브
+  input을 시각적으로만 숨기고(`position:absolute;opacity:0`) 둥근 사각 배지로 대체한
+  컴포넌트. 세 곳 모두 "개인정보처리방침 동의 · 전문보기" 형태로 통일했다. 글꼴 크기
+  16px는 18~96px 규칙의 **두 번째** 예외([[feedback_font-size-rule-exception]] 참고).
+- "문의유형"(select)/"문의내용"(textarea) 필드는 세 폼 전부에서 "창업유형"(select: 신규
+  창업/기존 매장 전환/다점포 확장/상담 후 결정)/"창업희망지역"(자유 텍스트)으로 바뀌었다 —
+  옛 스크린샷이나 커밋 메시지에서 "문의유형/문의내용"을 보면 이 변경 이전 기록이다.
+- `#inquiryForm`/`.inquiry-sheet-form` 안에서 이 공용 컴포넌트를 쓸 때 겪은 CSS 특이성
+  함정은 [[feedback_css-specificity-scoped-vs-global]] 참고 — 같은 함정이 반복해서
+  발생했다.
+
 **콘텐츠 데이터**: 2026-09-01부터 `data/content.json` 이 단일 진실 공급원이다(경쟁력·트러스트·고기·셀프바·수익·창업비용·매장·연락처). `index.html` 은 빈 컨테이너만 갖고 `assets/js/script.js` 가 `fetch` 로 채운다. **JS 안에 `FALLBACK` 사본을 두지 않았다** — 그래서 `file://` 더블클릭으로는 콘텐츠가 안 뜬다(안내 문구가 대신 표시됨). 로컬 서버로 볼 것.
 
 **JS 구조** (`assets/js/script.js`, `defer`): `boot()` 가 JSON 을 읽어 `renderAll()` 로 8개 영역을 그린 뒤 `initReceiptReveal()` 을 붙인다. 데이터와 무관한 `initSmoothScroll()` / `initMobileNav()`(1024px↓ 햄버거) / `initScrollSpy()` / `initInquiryForm()`(목업) 은 fetch 전에 먼저 붙는다.

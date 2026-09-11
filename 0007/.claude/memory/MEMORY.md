@@ -14,3 +14,4 @@
 - [폰트 크기 규칙 예외 처리](feedback_font-size-rule-exception.md) — "18~96px 예외 없음" 규칙을 사용자가 깨려 할 때: 이력 확인→구체적 대안 제시→규칙 문서 자체 갱신
 - ["모든 변경 파일 커밋"의 의미](feedback_commit-all-means-literal.md) — 문자 그대로 전부(디버그/스크래치 포함)이지 프로덕션 파일만 골라 커밋하는 게 아니다
 - [빠른 반복 디자인 요청 대응](feedback_rapid-iteration-design-requests.md) — 짧은 연속 요청으로 한 요소를 여러 번 재디자인할 때: 기존 keyframe 이름 재사용, 단순함으로 수렴하는 경향, 국소 변경엔 풀 검증 생략
+- [CSS 전역vs로컬 스코프 특이성 함정](feedback_css-specificity-scoped-vs-global.md) — 05 폼은 전역 label/input 셀렉터, 문의 모달은 같은 태그를 로컬 재스코프 — 공용 컴포넌트는 속성 전부를 다시 선언해야 한다
