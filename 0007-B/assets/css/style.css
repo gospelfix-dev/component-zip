@@ -648,7 +648,7 @@ section{ padding:120px 0; }
 @media (max-width:1024px){
   .revenue-grid{ grid-template-columns:1fr; gap:16px; }
   .revenue-figure{ font-size:clamp(32px,9vw,56px); }
-  .revenue::before{ width:520px; height:520px; }
+  .revenue::before{ width:340px; height:340px; }
 }
 
 /* ============================================================
@@ -661,7 +661,7 @@ section{ padding:120px 0; }
 }
 .price-row.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
 .price-row--head{
-  opacity:1; transform:none; animation:none;
+  opacity:1; transform:none; animation:none; justify-content:space-between;
   background:var(--coffee); margin:0 -24px; padding:16px 24px; border-radius:var(--radius-badge);
   border-bottom:none;
 }
@@ -670,6 +670,7 @@ section{ padding:120px 0; }
   color:var(--on-coffee); opacity:.85; font-weight:600;
 }
 .price-row--head .price-leader{ display:none; }
+.price-row--head .price-label{ flex-direction:row; gap:6px; }
 .price-label{ display:flex; flex-direction:column; gap:3px; flex:0 0 auto; min-width:120px; }
 .price-item{ font-family:var(--font-sans); font-weight:700; font-size:19px; color:var(--ink); }
 .price-detail{ font-size:13px; color:var(--ink-faint); }
@@ -677,9 +678,11 @@ section{ padding:120px 0; }
 .price-value{ font-family:var(--font-sans); font-weight:600; font-size:16px; color:var(--ink-dim); white-space:nowrap; }
 
 @media (max-width:1024px){
-  .price-row{ flex-wrap:wrap; }
-  .price-label{ min-width:0; flex:1 1 100%; }
-  .price-leader{ display:none; }
+  /* 모바일도 PC와 동일하게 항목/점선 리더/금액을 한 줄로 정렬한다(2026-09-11 요청) —
+     이전엔 .price-label 을 강제로 한 줄 전체(flex:1 1 100%)로 넓히고 리더를 숨겨
+     금액이 다음 줄로 떨어졌었다. 실제 값(항목/상세/금액)이 전부 짧은 문구라 한 줄에
+     들어가는 데 문제가 없어 wrap 규칙 자체를 없앴다. */
+  .price-label{ min-width:0; }
 }
 
 /* ============================================================
