@@ -57,3 +57,25 @@
   0%, 100%{ background-position:0% 50%; }
   50%{ background-position:100% 50%; }
 }
+
+/* heroPhotoUp — 히어로 고기 사진 슬라이드 전환 시 아래에서 위로 슥 올라오는 효과
+   (2026-09-11 요청). Swiper effect:'creative' 의 translate 로 슬라이드 자체를 옮기는
+   방식은 loop 모드에서 실제 기기 조건에 따라 활성 슬라이드가 컨테이너 중앙에서 벗어나
+   보이는 회귀가 있었다(실제 겪음, 헤드리스 가상시간에서는 재현되고 실시간 CDP 검증에서는
+   재현 안 됨 — 타이밍에 민감한 버그) — 슬라이드 포지셔닝은 검증된 effect:'fade' 로
+   그대로 두고, "올라오는" 모션만 활성 슬라이드의 <img> 에 별도 키프레임으로 얹어
+   Swiper 의 transform 엔진과 완전히 분리했다. */
+@keyframes heroPhotoUp{
+  from{ transform:translateY(6%); opacity:0; }
+  to{ transform:translateY(0); opacity:1; }
+}
+
+/* heroRightMobileIn — 모바일 .hero-right 전용 진입 애니메이션. 데스크톱의 fadeUp
+   (translateY 만 애니메이션)을 모바일에서도 그대로 쓰면, 애니메이션이 transform 을
+   통째로 덮어써 static left:50%;transform:translateX(-50%) 중앙 정렬이 애니메이션
+   종료 시 translateY(0)으로 대체되며 사라진다(실제 겪은 회귀) — 매 프레임에
+   translateX(-50%)를 같이 박아 넣어 중앙 정렬을 유지한 채로 페이드업만 재생한다. */
+@keyframes heroRightMobileIn{
+  from{ opacity:0; transform:translateX(-50%) translateY(16px); }
+  to{ opacity:1; transform:translateX(-50%) translateY(0); }
+}

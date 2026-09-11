@@ -144,13 +144,14 @@ section{ padding:120px 0; }
   .nav-word{ color:var(--ink); }
   .nav-toggle span{ background:var(--ink); }
   .nav-links{
-    position:fixed; inset:0; top:64px; flex-direction:column; align-items:flex-start; gap:0;
+    position:fixed; inset:0; top:64px; height:100vh; flex-direction:column; align-items:flex-start; gap:0;
     background:var(--paper); padding:24px; transform:translateX(100%); transition:transform .3s cubic-bezier(.22,1,.36,1);
   }
   .nav-links a{ width:100%; padding:16px 0; border-bottom:1px solid var(--paper-line); font-size:18px; color:var(--ink-dim); }
   .nav.nav-open .nav-links{ transform:translateX(0); }
   .nav-cta{ display:none; }
   .nav-toggle{ display:flex; }
+  body.nav-scroll-lock{ overflow:hidden; }
 }
 
 /* ============================================================
@@ -294,7 +295,17 @@ section{ padding:120px 0; }
 .hero-headline{
   font-family:var(--font-sans); font-weight:900; font-size:clamp(48px,8.5vw,120px);
   letter-spacing:-.02em; line-height:1; color:var(--paper); margin-bottom:8px;
-  border-bottom:3px solid var(--bronze); display:inline-block; padding-bottom:12px;
+}
+/* 헤드라인 밑줄 대신 브라우저 폭 전체를 가로지르는 배경 굵은 선(2026-09-11 요청).
+   .hero-left 안에 중첩된 별도 엘리먼트로 만들었다가(.hero-left 의 좁은 폭 때문에 퍼센트
+   기반 full-bleed 계산이 어긋나는 문제를 겪음), .hero 자체의 ::before 로 옮겼다 — .hero 는
+   .wrap 처럼 폭이 좁혀지지 않고 그대로 브라우저 전체 폭이라 left:0;right:0 만으로 계산
+   없이 정확한 full-bleed 가 된다. z-index 를 안 줘도 .hero-left/.hero-right 가 명시적
+   z-index(1/2)를 갖고 있어 항상 이 선 위에 그려진다(모바일 전용 세로선은 아래 미디어쿼리
+   에서 같은 ::before 를 재정의한다). */
+.hero::before{
+  content:''; position:absolute; left:0; right:0; top:50%; transform:translateY(-50%);
+  height:180px; background:var(--bronze); pointer-events:none;
 }
 .hero-sub{ font-size:16px; color:rgba(255,255,254,.7); line-height:1.8; margin:24px 0 32px; }
 .hero-cta-group{ display:flex; gap:16px; margin-bottom:40px; flex-wrap:wrap; }
@@ -315,15 +326,30 @@ section{ padding:120px 0; }
    attention 애니메이션 금지)과 상충하지 않는다 — 이 원칙은 사용자 조작을 막는 규칙이
    아니다. */
 .hero-right{
-  position:absolute; top:-30px; left:470px; z-index:2; width:650px; max-width:60vw;
+  position:absolute; top:-30px; left:470px; z-index:2; width:700px; max-width:63vw;
   pointer-events:auto; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) .15s both;
 }
-.hero-swiper{ width:100%; }
+/* aspect-ratio 를 .swiper-slide 가 아니라 컨테이너 자체에 줘야 한다 — Swiper 기본 CSS가
+   .swiper-slide{height:100%}로 높이를 명시해버려서(effect:'creative'가 이 값을 그대로
+   씀) 슬라이드에 aspect-ratio 만 주면 무시되고 .hero-swiper 의 height 가 0에 가깝게
+   찌그러진다. 그 상태에서 next 슬라이드가 translateY 로 아래로 빠져도 overflow:hidden
+   이 클리핑할 실제 높이가 없어 옆(아래) 슬라이드가 그대로 다 보이는 버그가 났다(실제
+   겪은 회귀 — creative 이펙트로 바꾸면서 드러남). 컨테이너에 aspect-ratio 를 주면 실제
+   높이가 생겨 overflow:hidden 이 next/prev 슬라이드를 제대로 가린다. */
+.hero-swiper{ width:100%; aspect-ratio:975/825; }
 /* Swiper 컨테이너의 overflow:hidden 이 .hero-meat-main 의 drop-shadow 블러를 사각형으로
    잘라내 테두리 박스처럼 보이는 클리핑 아티팩트가 생긴다 — 패딩을 그림자 번짐 반경보다
    넉넉히 키워, 그림자가 클리핑 경계에 닿기 전에 다 사그라들도록 한다. */
 .hero-swiper .swiper-slide{
-  aspect-ratio:975/825; padding:48px; display:flex; align-items:center; justify-content:center;
+  padding:48px; display:flex; align-items:center; justify-content:center;
+}
+/* 활성 슬라이드가 바뀔 때마다 사진이 아래에서 위로 슥 올라오는 모션 — 슬라이드 자체의
+   위치는 검증된 fade 이펙트가 담당하고, 이 모션은 이미지 한 겹에만 별도로 얹는다(위
+   .hero-swiper .swiper-slide 주석 및 animations.css 의 heroPhotoUp 참고). Swiper 가
+   전환마다 .swiper-slide-active 를 새 슬라이드로 옮겨 붙이므로 클래스가 다른 DOM
+   엘리먼트에 적용될 때마다 애니메이션이 자연히 다시 재생된다. */
+.hero-swiper .swiper-slide-active .hero-meat-main{
+  animation:heroPhotoUp .65s cubic-bezier(.22,1,.36,1) both;
 }
 .hero-photo-badge{
   position:absolute; top:24px; right:32px; z-index:3; display:inline-flex; align-items:center; gap:8px;
@@ -339,9 +365,17 @@ section{ padding:120px 0; }
   .hero{ padding:120px 0 72px; }
   .hero-inner{ display:flex; flex-direction:column; }
   .hero-left{ max-width:none; }
+  /* 데스크톱은 가로 굵은 선, 모바일은 세로선(2026-09-11 요청) — 히어로 섹션 위아래를
+     꽉 채우도록 top/bottom 을 0으로, 가로폭 대신 세로 막대(width:6px)로 재정의한다. */
+  .hero::before{
+    left:50%; right:auto; top:0; bottom:0; width:150px; height:auto;
+    transform:translateX(-50%);
+  }
   .hero-right{
-    position:relative; top:auto; left:auto; right:auto; width:78%; max-width:360px; margin:0 auto 24px;
+    position:relative; top:auto; left:50%; right:auto; transform:translateX(-50%);
+    width:118%; max-width:620px; margin:0 0 24px;
     display:block; z-index:1; order:-1; pointer-events:auto;
+    animation:heroRightMobileIn .9s cubic-bezier(.22,1,.36,1) .15s both;
   }
 }
 
@@ -393,7 +427,7 @@ section{ padding:120px 0; }
 .ranking-stars span:nth-child(3){ transform:translateY(-3px); }
 .ranking-stars span:nth-child(4){ transform:translateY(2px) rotate(12deg); }
 .ranking-stars span:nth-child(5){ transform:translateY(9px) rotate(24deg); }
-.ranking .running-head{ color:var(--bronze-tint); font-size:15px; }
+.ranking .running-head{ color:var(--paper); font-size:20px; }
 .ranking-content h2{
   font-family:var(--font-sans); font-weight:900; font-size:clamp(48px,6.5vw,88px);
   line-height:1.06; color:var(--paper); margin:16px 0 28px;
@@ -571,15 +605,26 @@ section{ padding:120px 0; }
 
 /* ============================================================
    03 수익분석 — 스탯카드 그리드 (.revenue-*)
+   상단 왼쪽에 지도 이미지(bg_map.png)를 은은한 배경 장식으로 깐다(2026-09-11 신규,
+   다크 반전 존이 아니다 — 섹션은 여전히 아이보리 라이트, 낮은 opacity 로만 존재감을 준다).
    ============================================================ */
+.revenue{ position:relative; overflow:hidden; }
+.revenue::before{
+  content:''; position:absolute; top:0; left:0; width:900px; height:900px;
+  background:url('../imgs/bg_map.png') top left/contain no-repeat;
+  opacity:.16; pointer-events:none; z-index:0;
+}
+.revenue .wrap{ position:relative; z-index:1; }
+.revenue .section-head p{ font-size:18px; }
 .revenue-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:8px; }
 .revenue-card{
   display:flex; flex-direction:column; gap:20px; padding:32px 28px;
   border:1px solid var(--paper-line); border-radius:var(--radius-card);
+  background:color-mix(in srgb, var(--paper) 70%, transparent);
   opacity:0; transform:translateY(16px);
 }
 .revenue-card.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
-.revenue-card--feature{ background:var(--paper-2); border-color:var(--bronze-tint); }
+.revenue-card--feature{ background:color-mix(in srgb, var(--paper-2) 70%, transparent); border-color:var(--bronze-tint); }
 .revenue-date{
   display:inline-flex; align-items:center; gap:8px; width:auto; height:auto;
   padding:8px 14px; border-radius:var(--radius-badge); background:var(--paper-2);
@@ -598,11 +643,12 @@ section{ padding:120px 0; }
 }
 .revenue-rate{ display:block; font-size:13px; color:var(--ink-dim); margin-top:8px; }
 .revenue-rate b{ color:var(--ink); }
-.revenue-footnote{ font-size:13px; color:var(--ink-faint); margin-top:32px; }
+.revenue-footnote{ font-size:14px; color:var(--ink-faint); margin-top:32px; }
 
 @media (max-width:1024px){
   .revenue-grid{ grid-template-columns:1fr; gap:16px; }
   .revenue-figure{ font-size:clamp(32px,9vw,56px); }
+  .revenue::before{ width:520px; height:520px; }
 }
 
 /* ============================================================
@@ -630,19 +676,10 @@ section{ padding:120px 0; }
 .price-leader{ flex:1; border-bottom:2px dotted var(--paper-line); margin-bottom:6px; min-width:24px; }
 .price-value{ font-family:var(--font-sans); font-weight:600; font-size:16px; color:var(--ink-dim); white-space:nowrap; }
 
-.cost-note{ display:flex; align-items:center; gap:24px; margin:16px 0 40px; padding:24px 0; border-top:1px solid var(--paper-line); }
-.seal-tag{
-  display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;
-  font-size:12px; font-weight:700; color:var(--ink-dim); text-align:center; line-height:1.4;
-}
-.cost-note p{ font-size:14px; color:var(--ink-dim); line-height:1.8; }
-.cost-cta{ display:block; }
-
 @media (max-width:1024px){
   .price-row{ flex-wrap:wrap; }
   .price-label{ min-width:0; flex:1 1 100%; }
   .price-leader{ display:none; }
-  .cost-note{ flex-direction:column; align-items:flex-start; gap:16px; }
 }
 
 /* ============================================================
@@ -794,14 +831,14 @@ section{ padding:120px 0; }
 /* ============================================================
    Footer — 커피브라운 다크 반전 존 (.sticky-inquiry-bar 가 같은 토큰을 재사용한다)
    ============================================================ */
-.footer{ background:var(--coffee); color:var(--on-coffee); padding:0 0 calc(56px + 84px); }
+.footer{ background:var(--coffee); color:var(--on-coffee); padding:56px 0 calc(56px + 84px); }
 /* 84px = 데스크톱 .sticky-inquiry-bar 실측 높이 여유분. ≤1024px 에서는 그 바가 숨고
    대신 .sticky-cta(76px)가 뜨므로 아래 미디어쿼리가 이 값을 76px 기준으로 덮어쓴다. */
 .footer-grid{ display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
 .footer-logo{ display:flex; align-items:center; gap:12px; }
 .footer-logo img{ height:36px; }
 .footer-logo span{ font-family:var(--font-sans); font-weight:800; font-size:18px; }
-.footer .meta{ font-size:13px; color:var(--line-on-coffee); line-height:1.7; opacity:.8; }
+.footer .meta{ font-size:13px; color:var(--on-coffee); line-height:1.7; opacity:.85; }
 .footer .socials{ display:flex; gap:20px; }
 .footer .socials a{ font-size:13px; color:var(--on-coffee); border-bottom:1px solid var(--line-on-coffee); padding-bottom:2px; }
 
@@ -814,14 +851,19 @@ section{ padding:120px 0; }
    접근성
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
-  .hero-left, .hero-right,
+  .hero-left,
   .feature-row, .trust-badge, .proof-headline, .proof-circle, .meat-card, .selfbar-card, .revenue-card, .price-row{
     animation:none !important; opacity:1 !important; transform:none !important;
   }
+  /* .hero-right 는 위 규칙에서 제외한다 — 모바일에서 transform:translateX(-50%)가
+     중앙 정렬을 담당하는데, transform:none 을 걸면 애니메이션뿐 아니라 정렬까지
+     사라진다(위 heroRightMobileIn 주석 참고). */
+  .hero-right{ animation:none !important; opacity:1 !important; }
   .gold-text, .ranking-stars span{ animation:none !important; background-position:0% 50% !important; transform:none !important; }
   .feature-body p b{ animation:none !important; background-size:100% 2px !important; }
   .revenue-figure{ animation:none !important; opacity:1 !important; transform:none !important; }
   .ranking-content h2{ animation:none !important; transform:none !important; opacity:1 !important; }
+  .hero-swiper .swiper-slide-active .hero-meat-main{ animation:none !important; opacity:1 !important; transform:none !important; }
   .btn-primary:hover, .btn-ghost:hover, .store-nav-btn:hover{ transform:none !important; }
   .inquiry-sheet, .inquiry-sheet-backdrop{ transition:none !important; }
   .select-field-list, .select-field-chevron{ transition:none !important; }

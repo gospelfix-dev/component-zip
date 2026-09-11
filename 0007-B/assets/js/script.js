@@ -308,6 +308,7 @@ const initSmoothScroll = () => {
 
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       nav.classList.remove('nav-open');   // 모바일 메뉴 열려있으면 닫기
+      document.body.classList.remove('nav-scroll-lock');
     });
   });
 };
@@ -321,6 +322,7 @@ const initMobileNav = () => {
   toggle.addEventListener('click', () => {
     const open = nav.classList.toggle('nav-open');
     toggle.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('nav-scroll-lock', open);
   });
 };
 
@@ -419,9 +421,9 @@ const initHeroSwiper = () => {
     loop: true,
     effect: 'fade',
     fadeEffect: { crossFade: true },
-    speed: reduceMotion ? 0 : 900,
+    speed: reduceMotion ? 0 : 650,
     grabCursor: true,
-    autoplay: reduceMotion ? false : { delay: 3200, disableOnInteraction: false },
+    autoplay: reduceMotion ? false : { delay: 2500, disableOnInteraction: false },
     a11y: { enabled: true },
   });
 };
