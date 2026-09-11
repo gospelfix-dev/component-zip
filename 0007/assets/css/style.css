@@ -741,6 +741,120 @@ input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--gold
 textarea{ resize:vertical; min-height:110px; }
 .submit-btn{ margin-top:8px; background:var(--gold); color:#1B1608; border:none; padding:17px; font-size:18px; font-weight:700; letter-spacing:0.02em; border-radius:2px; cursor:pointer; }
 .submit-btn:hover{ background:var(--gold-light); }
+
+/* shadcn/ui Select 참고 커스텀 드롭다운(.select-field, 2026-09-11 신규) — 형제 시안 0007-B 의
+   동일 컴포넌트를 이 프로젝트 아이덴티티로 재현했다. 네이티브 <select> 는 브라우저마다
+   화살표/패널 스타일을 못 건드려 통일된 외형을 못 낸다. #inquiryForm(05 인라인 폼)·
+   .inquiry-sheet-form(문의하기 Bottom Sheet)·.sticky-inquiry-bar(하단 고정 문의 폼 바)
+   세 곳의 "창업유형" select 를 이 컴포넌트로 교체했다. initCustomSelects(script.js)가
+   열기/닫기·키보드 탐색·선택 상태를 관리한다. 기본값은 트리거 아래로 펼치는 일반적인
+   드롭다운이고, 화면 맨 아래 고정된 .sticky-inquiry-bar 안에서만 위쪽으로 펼치게 별도로
+   뒤집는다(아래 .sticky-inquiry-bar 전용 오버라이드 참고). 폰트 크기는 프로젝트 전역 규칙
+   (18~96px)을 따라 18px 로 둔다 — 0007-B 원본(14px)보다 크므로 트리거 높이도 44px 로
+   맞췄다. */
+/* --text:#333333 로 재선언 — 이 흰 트리거/패널은 05 매장위치(.location)처럼
+   --text:var(--text-invert) 로 뒤집힌 어두운 섹션 안에서도 쓰이므로, 트러스트 카드
+   (.trust-item)와 같은 방식으로 밝은 카드용 값을 다시 뒤집어야 한다 — 안 그러면 어두운
+   섹션 안에서 흰 패널 위 글자가 연한 크림색(--text-invert)이 되어 거의 안 보인다. */
+.select-field{ position:relative; flex:1 1 130px; min-width:0; --text:#333333; }
+.select-field-trigger{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  width:100%; height:44px; padding:0 16px; border-radius:2px;
+  border:1px solid var(--line); background:var(--bg-card); color:var(--muted);
+  font-family:inherit; font-size:18px; text-align:left; cursor:pointer;
+  transition:border-color .15s ease;
+}
+.select-field-trigger:hover{ border-color:rgba(201,162,39,.5); }
+.select-field-trigger:focus{ outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,162,39,.18); }
+.select-field.open .select-field-trigger{ border-color:var(--gold); }
+.select-field.has-value .select-field-value{ color:var(--text); font-weight:600; }
+.select-field-chevron{
+  width:18px; height:18px; color:var(--muted); flex-shrink:0;
+  transition:transform .15s ease;
+}
+.select-field.open .select-field-chevron{ transform:rotate(180deg); }
+.select-field-list{
+  list-style:none; position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:10;
+  margin:0; padding:4px; max-height:260px; overflow-y:auto;
+  background:var(--bg-card); border:1px solid var(--line); border-radius:2px;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+  opacity:0; transform:translateY(-4px); visibility:hidden; pointer-events:none;
+  transition:opacity .15s ease, transform .15s ease;
+}
+.select-field.open .select-field-list{
+  opacity:1; transform:translateY(0); visibility:visible; pointer-events:auto;
+}
+.select-field-item{
+  display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:2px;
+  font-size:18px; color:var(--text); cursor:pointer;
+}
+.select-field-item:hover, .select-field-item:focus{ background:#F1EDE3; outline:none; }
+.select-field-item.selected{ font-weight:700; }
+.select-field-check{ width:16px; height:16px; color:var(--gold); flex-shrink:0; visibility:hidden; }
+.select-field-item.selected .select-field-check{ visibility:visible; }
+
+/* .sticky-inquiry-form 은 트리거를 44px 로 맞추고 나머지 input 과 같은 flex 규칙을 물려받는다. */
+.sticky-inquiry-form .select-field{ flex:1 1 140px; }
+
+/* 화면 맨 아래 고정된 .sticky-inquiry-bar 안에서는 패널이 기본값(아래로 펼침)대로면
+   뷰포트 밖으로 나간다 — 이 컨텍스트에서만 위쪽으로 펼치게 뒤집는다. */
+.sticky-inquiry-bar .select-field-list{
+  top:auto; bottom:calc(100% + 6px);
+  transform:translateY(4px);
+}
+.sticky-inquiry-bar .select-field.open .select-field-list{ transform:translateY(0); }
+
+/* 개인정보처리방침 동의 — #inquiryForm(05 인라인 폼)·.inquiry-sheet-form(문의하기 Bottom
+   Sheet)·.sticky-inquiry-bar(하단 고정 문의 폼 바) 세 곳이 공유하는 동의 체크박스
+   (2026-09-11 신규, 2026-09-11 사용자 제시 참고 이미지로 원형→둥근 사각 배지로 통일).
+   네이티브 체크박스는 시각적으로만 숨기고(position:absolute, opacity:0 — 포커스/키보드/
+   유효성 검사는 그대로 유지) 둥근 사각 배지(.form-agree-check)로 대체한다. "전문보기"는
+   <label> 바깥의 형제 요소로 둬서 클릭해도 체크박스가 토글되지 않게 한다. 배지는 --gold
+   단색이라 별도 토큰 없이 기존 색상만 재사용한다. .form-agree-input 은 위 736번째 줄
+   부근의 스코프 없는 전역 `input, select, textarea{width:100%;...}` 규칙을 덮어써야 한다
+   — 안 그러면 숨긴 체크박스가 컨테이너 전체 폭으로 늘어나 레이아웃이 깨진다(클래스
+   셀렉터가 타입 셀렉터보다 우선해 별도 스코프 없이도 이긴다). */
+/* .form-agree/.form-agree-more 의 16px 는 프로젝트 전역 폰트 크기 규칙(18~96px, 예외
+   없음)의 두 번째 예외다(2026-09-11, 사용자 확정 — 첫 예외는 .hero-wordmark). 체크박스
+   라벨은 다른 본문 텍스트와 같은 눈높이로 읽히지 않아도 되는 보조 요소라 사용자가
+   18px 아래로 줄여도 된다고 명시적으로 승인했다. 이 두 셀렉터 밖에서는 계속 18px
+   최소값을 지킨다. */
+.form-agree-row{ display:flex; align-items:center; gap:10px; }
+.form-agree{
+  display:flex; align-items:center; gap:8px; margin-bottom:0;
+  font-size:16px; font-weight:700; color:var(--text); cursor:pointer;
+}
+.form-agree-input{ position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+.form-agree-check{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:22px; height:22px; border-radius:7px; border:2px solid var(--line);
+  color:transparent; transition:background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.form-agree-check svg{ width:12px; height:12px; }
+.form-agree-input:checked + .form-agree-check{ background:var(--gold); border-color:var(--gold); color:#FFFFFF; }
+.form-agree-input:focus-visible + .form-agree-check{ outline:2px solid var(--gold-light); outline-offset:2px; }
+.form-agree-more{ font-size:16px; color:var(--text-dim); text-decoration:underline; text-underline-offset:2px; flex-shrink:0; }
+/* --text-dim(#B3A995, 밝은 톤)은 다크 배경 전용이다 — #inquiryForm(어두운 .location
+   섹션 바로 위)과 .sticky-inquiry-bar(다크 바)에서는 기본값 그대로 잘 보이지만,
+   .inquiry-sheet-form 은 흰 모달 카드라 같은 값이 저대비로 거의 안 보인다. 트러스트
+   카드류와 같은 이유로 이 컨텍스트만 var(--muted)(어두운 톤, 다른 흰 배경 요소에서
+   이미 쓰는 색)로 다시 뒤집는다. */
+.inquiry-sheet-form .form-agree-more{ color:var(--muted); }
+
+/* .sticky-inquiry-bar 는 --text-invert 로 뒤집는 섹션 스코프 밖(body 직속 형제)이라
+   .form-agree 의 기본 색(var(--text), 밝은 카드용 어두운 글자)이 다크 바 배경에서
+   거의 안 보인다 — 트러스트 카드류와 반대 방향으로 재반전한다. 배지 테두리도 var(--line)
+   (어두운 색)이 다크 배경에서 거의 안 보여 밝은 반투명 테두리로 바꾼다. */
+.sticky-inquiry-form .form-agree-row{ flex-shrink:0; }
+.sticky-inquiry-form .form-agree{ color:var(--text-invert); white-space:nowrap; }
+.sticky-inquiry-form .form-agree-check{ border-color:rgba(243,238,226,.35); }
+
+/* #inquiryForm 도 .location 의 어두운 섹션 배경 위에 바로 앉아 있어(흰 카드로 감싸지
+   않음) 배지 테두리 기본값 var(--line)(어두운 색)이 체크 해제 상태에서 거의 안 보인다
+   — .sticky-inquiry-form 과 같은 이유·같은 처방. .form-agree 자체의 글자색은 이미
+   var(--text)가 .location 스코프에서 --text-invert 로 뒤집혀 있어 손댈 필요 없다. */
+#inquiryForm .form-agree-check{ border-color:rgba(243,238,226,.35); }
+
 @media (max-width:1024px){ .inquiry-grid{grid-template-columns:1fr;} .field-row{grid-template-columns:1fr;} }
 
 /* 우측 스크롤바에 붙는 세로형 문의 퀵 탭 — 2026-09-09, 우측 하단 원형 플로팅 버튼 →
@@ -749,11 +863,14 @@ textarea{ resize:vertical; min-height:110px; }
    완전히 빼고 배경을 단색 --gold-light(#E8CD7A)로 고정해달라 요청해 최종적으로 정적인
    단색 탭이 됐다. body 직속 형제라 :root 기본 --text 대신 명시적으로 배색을 지정한다.
    글자는 writing-mode:vertical-rl + text-orientation:upright 로 눕히지 않고 위→아래로
-   쌓는다. */
+   쌓는다. 2026-09-11, 데스크톱(>1024px)에 .sticky-inquiry-bar(하단 고정 문의 폼 바)가
+   추가되며 같은 화면에 문의 CTA 가 두 개 떠 있게 됐다 — 사용자 요청으로 PC 에서는 이
+   탭을 숨기고 모바일(≤1024px, 그 바가 숨는 폭)에서만 보이게 뒤집었다. */
 .inquiry-fab{
+  display:none;
   position:fixed; right:0; top:50%; z-index:90;
   transform:translateY(-50%);
-  display:flex; flex-direction:column; align-items:center; gap:16px;
+  flex-direction:column; align-items:center; gap:16px;
   padding:28px 14px; border:none; border-radius:14px 0 0 14px; cursor:pointer;
   font-family:inherit;
   background:var(--gold-light);
@@ -769,7 +886,7 @@ textarea{ resize:vertical; min-height:110px; }
   font-weight:700; font-size:18px; letter-spacing:0.1em; color:#1B1608;
 }
 @media (max-width:1024px){
-  .inquiry-fab{ padding:22px 10px; gap:12px; }
+  .inquiry-fab{ display:flex; padding:22px 10px; gap:12px; }
 }
 
 /* 문의하기 Bottom Sheet — 2026-09-04에 추가된 팝업 모달(오버레이 딤 + 카드, PC 는 중앙
@@ -809,7 +926,13 @@ textarea{ resize:vertical; min-height:110px; }
 .inquiry-sheet-close svg{ width:16px; height:16px; }
 .inquiry-sheet-close:hover{ background:#F1EDE3; color:var(--text); }
 
-.inquiry-sheet-scroll{ overflow-y:auto; padding:32px 28px 20px; }
+/* 스크롤은 유지하되 스크롤바 자체만 시각적으로 숨긴다(2026-09-11 요청) — 특히 모바일
+   바텀시트에서 우측 끝에 세로 막대가 그대로 보여 카드 테두리처럼 어색하게 걸렸다. */
+.inquiry-sheet-scroll{
+  overflow-y:auto; padding:32px 28px 20px;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.inquiry-sheet-scroll::-webkit-scrollbar{ display:none; }
 .inquiry-sheet-brand{ display:flex; justify-content:center; margin-bottom:20px; }
 .inquiry-sheet-brand img{ height:96px; width:auto; border-radius:8px; }
 .inquiry-sheet-desc{
@@ -829,6 +952,25 @@ textarea{ resize:vertical; min-height:110px; }
   outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,162,39,.18);
 }
 .inquiry-sheet-form textarea{ resize:vertical; min-height:88px; }
+/* .select-field-trigger(버튼)는 위 .inquiry-sheet-form input,select,textarea 셀렉터에
+   안 걸린다(태그가 button) — 그래서 이 모달 안에서만 옆 input 은 연한 테두리(#DCD5C4/
+   6px 라운드)인데 창업유형 트리거만 기본값(var(--line), 어두운 색/2px 라운드)이라 유독
+   진하고 각져 보이는 불일치가 있었다(2026-09-11 발견). 같은 값으로 맞춘다. */
+.inquiry-sheet-form .select-field-trigger{ border-color:#DCD5C4; border-radius:6px; }
+.inquiry-sheet-form .select-field-list{ border-color:#DCD5C4; border-radius:6px; }
+/* 위 .inquiry-sheet-form label/.inquiry-sheet-form input 규칙이 class+type 특이성이라, 같은
+   .inquiry-sheet-form 안에 있는 .form-agree(label)·.form-agree-input(숨김 체크박스)를
+   특이성으로 이겨버린다(0,0,1,1 > 0,0,1,0) — 체크박스가 컨테이너 전체 폭으로 늘어나는
+   회귀뿐 아니라, display 만 덮어쓰고 넘어갔던 처음 수정에서는 .inquiry-sheet-form label 의
+   font-size:14px/font-weight:500/margin-bottom:6px 가 그대로 이겨버려 "개인정보처리방침
+   동의" 글자만 옆의 .form-agree-more(전문보기)보다 작고 아래로 밀려 보이는 회귀가
+   남아 있었다(2026-09-11 실제로 발견됨). .form-agree 가 원래 선언한 값을 전부 다시
+   명시해 확실히 이기게 한다(형제 시안 0007-B 에서 같은 특이성 문제를 같은 방식으로
+   고쳤다). font-size 는 위 .form-agree 기본값(16px, 예외 승인)과 맞춘다. */
+.inquiry-sheet-form .form-agree{
+  display:flex; font-size:16px; font-weight:700; color:var(--text); margin-bottom:0;
+}
+.inquiry-sheet-form .form-agree-input{ position:absolute; width:1px; height:1px; }
 
 .inquiry-sheet-submit{
   flex-shrink:0; margin:0; border:none; cursor:pointer; padding:16px 32px;
@@ -846,16 +988,64 @@ textarea{ resize:vertical; min-height:110px; }
   .inquiry-sheet{ max-width:100%; max-height:88vh; border-radius:16px 16px 0 0; transform:translateY(100%); }
   .inquiry-sheet-backdrop.is-open .inquiry-sheet{ transform:translateY(0); }
   .inquiry-sheet-scroll{ padding:28px 24px 16px; }
+  /* 모바일 문의 모달에서 동의 배지가 유독 커 보인다는 피드백(2026-09-11) — 배지 크기와
+     간격을 데스크톱 기본값(22px)보다 한 단계 더 좁힌다. */
+  .inquiry-sheet-form .form-agree-row{ gap:8px; }
+  .inquiry-sheet-form .form-agree{ gap:6px; }
+  .inquiry-sheet-form .form-agree-check{ width:20px; height:20px; border-radius:6px; }
+  .inquiry-sheet-form .form-agree-check svg{ width:11px; height:11px; }
 }
 
 /* FOOTER */
-footer{ position:relative; z-index:1; background:#0A0806; border-top:1px solid var(--line); padding:56px 0 40px; }
+/* 하단 padding 은 기본값(56px 0 40px)에 데스크톱 .sticky-inquiry-bar 실측 높이 여유분
+   (약 80px)을 더했다 — 안 더하면 그 바가 footer 마지막 줄을 덮는다. ≤1024px 에서는
+   바가 숨으므로 아래 미디어쿼리가 원래 40px 로 되돌린다. */
+footer{ position:relative; z-index:1; background:#0A0806; border-top:1px solid var(--line); padding:56px 0 calc(40px + 80px); }
 .footer-grid{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;}
 .footer-logo{ display:flex; align-items:center; gap:10px; }
 .footer-logo img{ height:28px; border-radius:3px; }
 .footer-logo span{ color:var(--gold-light); font-weight:700; font-size:18px; }
 footer .meta{ color:var(--muted); font-size:18px; line-height:1.9; }
 footer .socials a{ color:var(--text-dim); font-size:18px; margin-left:18px; }
+@media (max-width:1024px){
+  footer{ padding-bottom:40px; }
+}
+
+/* ============================================================
+   하단 고정 문의 폼 바(.sticky-inquiry-bar, 2026-09-11 신규) — 형제 시안 0007-B 의
+   동일 컴포넌트를 이 프로젝트 아이덴티티로 재현했다. 데스크톱(>1024px) 전용 — 모바일은
+   이미 우측 세로 퀵 탭(.inquiry-fab)이 같은 역할을 하므로 ≤1024px 에서는 숨긴다(대체가
+   아니라 중복 방지). 자동으로 열리거나 애니메이션되지 않는 상시 정적 바다.
+   input/select 는 736번째 줄 부근의 스코프 없는 전역 `input, select, textarea` 셀렉터
+   (흰 배경/var(--line) 테두리/18px 글자)를 그대로 물려받는다 — 여기서는 높이·여백만
+   좁혀 한 줄에 배치한다. 체크박스만 그 전역 규칙(width:100%짜리 흰 박스가 됨)을
+   깨뜨리므로 별도로 리셋한다.
+   ============================================================ */
+.sticky-inquiry-bar{
+  display:flex; position:fixed; left:0; right:0; bottom:0; z-index:80;
+  align-items:center; gap:24px;
+  background:var(--bg-card-2); border-top:1px solid var(--line);
+  padding:14px 32px;
+}
+.sticky-inquiry-brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; white-space:nowrap; }
+.sticky-inquiry-brand img{ height:28px; width:auto; border-radius:3px; }
+.sticky-inquiry-brand strong{ font-size:18px; font-weight:700; color:var(--gold-light); }
+.sticky-inquiry-form{ display:flex; flex-direction:row; flex-wrap:nowrap; align-items:center; gap:12px; flex:1; min-width:0; }
+.sticky-inquiry-form input, .sticky-inquiry-form select{
+  height:44px; padding:0 14px; flex:1 1 140px; min-width:0;
+}
+.sticky-inquiry-submit{
+  flex-shrink:0; height:44px; padding:0 28px; border:none; cursor:pointer;
+  border-radius:2px; background:var(--gold); color:#1B1608;
+  font-size:18px; font-weight:700; letter-spacing:0.02em; font-family:inherit;
+  transition:background-color .15s ease;
+}
+.sticky-inquiry-submit:hover{ background:var(--gold-light); }
+.sticky-inquiry-submit:disabled{ opacity:.6; cursor:default; }
+
+@media (max-width:1024px){
+  .sticky-inquiry-bar{ display:none; }
+}
 
 /* focus visibility for accessibility */
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{

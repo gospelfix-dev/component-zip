@@ -448,6 +448,96 @@ const initInquiryForm = () => {
   });
 };
 
+/** shadcn/ui Select 참고 커스텀 드롭다운(.select-field, #inquiryForm·.inquiry-sheet-form·
+ *  .sticky-inquiry-bar 세 곳 공용) — 열기/닫기, 방향키 탐색, 선택 상태를 관리한다. 패널이
+ *  트리거 위/아래 어느 쪽으로 펼쳐지는지는 CSS 가 컨텍스트별로 결정하므로 여기서는
+ *  열림/선택 상태만 다룬다. */
+const initCustomSelects = () => {
+  const selects = document.querySelectorAll('.select-field');
+  if (!selects.length) return;
+
+  const closeAll = () => {
+    selects.forEach((el) => {
+      el.classList.remove('open');
+      el.querySelector('.select-field-trigger')?.setAttribute('aria-expanded', 'false');
+    });
+  };
+
+  selects.forEach((el) => {
+    const trigger = el.querySelector('.select-field-trigger');
+    const valueEl = el.querySelector('.select-field-value');
+    const list = el.querySelector('.select-field-list');
+    const hidden = el.querySelector('input[type="hidden"]');
+    const items = Array.from(el.querySelectorAll('.select-field-item'));
+
+    const selectItem = (item) => {
+      items.forEach((i) => { i.classList.remove('selected'); i.setAttribute('aria-selected', 'false'); });
+      item.classList.add('selected');
+      item.setAttribute('aria-selected', 'true');
+      valueEl.textContent = item.dataset.value;
+      el.classList.add('has-value');
+      if (hidden) hidden.value = item.dataset.value;
+    };
+
+    const open = () => {
+      closeAll();
+      el.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      (el.querySelector('.select-field-item.selected') || items[0])?.focus();
+    };
+
+    const close = (refocusTrigger) => {
+      el.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (refocusTrigger) trigger.focus();
+    };
+
+    trigger.addEventListener('click', () => {
+      el.classList.contains('open') ? close(false) : open();
+    });
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(); }
+    });
+
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => { selectItem(item); close(true); });
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); selectItem(item); close(true);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault(); items[Math.min(i + 1, items.length - 1)].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault(); items[Math.max(i - 1, 0)].focus();
+        } else if (e.key === 'Escape') {
+          e.preventDefault(); close(true);
+        } else if (e.key === 'Tab') {
+          close(false);
+        }
+      });
+    });
+
+    list.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(true); });
+  });
+
+  document.addEventListener('click', (e) => {
+    selects.forEach((el) => { if (!el.contains(e.target)) el.classList.remove('open'); });
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+};
+
+/** 하단 고정 문의 폼 바 (목업 제출) */
+const initStickyInquiryForm = () => {
+  const form = document.getElementById('stickyInquiryForm');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.sticky-inquiry-submit');
+    btn.textContent = '접수되었습니다';
+    btn.disabled = true;
+  });
+};
+
 // ---- 부팅 ----
 
 /** JSON 을 못 읽었을 때(대개 file:// 로 연 경우) 화면에 이유를 남긴다 */
@@ -481,6 +571,8 @@ const boot = async () => {
   initScrollSpy();
   initInquiryForm();
   initInquirySheet();
+  initCustomSelects();
+  initStickyInquiryForm();
 
   try {
     const res = await fetch(DATA_URL, { cache: 'no-cache' });
