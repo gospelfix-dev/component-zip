@@ -49,6 +49,50 @@ budget으로 `--dump-dom`을 찍으면 `swiper-wrapper`의 `transform:translate3
 뒤 새로 띄우고, `curl -s http://localhost:8765/index.html | grep <현재-작업-중인-고유
 클래스명>`으로 지금 고치는 파일이 실제로 서빙되는지 확인한 뒤에만 스크린샷을 찍는다.
 
+**`--window-size`의 폭이 좁으면(≲450px) 헤드리스가 요청한 값을 무시하고 내부적으로
+500px 뷰포트를 쓴다 — 스크린샷 PNG는 요청한 크기(예: 390×900)로 나오지만, 그 안의
+레이아웃은 500px 폭 기준으로 계산된 뒤 축소 없이 크롭된다.** 실제로 겪은 사례: `left:50%;
+transform:translateX(-50%);width:150px` 로 만든 배경 띠가 390px 캔버스에서 x=175~325
+(중심 250)에 그려져 "중앙(195)에서 55px 어긋났다"고 오판했는데, 페이지에 `document.
+documentElement.clientWidth`를 찍어보니 500이 나왔다(500/2=250, 정확히 일치). **≥800px
+폭에서는 `clientWidth`가 요청값과 일치해 정상 동작한다.** 모바일(`max-width:1024px`) 스타일
+검증 시 실제 좁은 기기 폭(360~430px)이 아니라 **800px 안팎을 쓸 것** — CLAUDE.md/screenshot-
+verifier가 이미 "450px 미만에서 오른쪽 정렬 flex 자식이 안 그려지는 결함"을 문서화해
+뒀지만, 이번 건은 그거와 다른 증상(엉뚱한 폭으로 렌더)이라 **450px 미만 전체를 신뢰하지
+않는 게 안전**하다.
+
+**`--virtual-time-budget`은 `setTimeout` 타이머는 정상 진행시키지만, 그 타이머가 트리거한
+CSS `transform` 트랜지션(예: Swiper `effect:'creative'`의 슬라이드 위치 보간)은 실제
+컴포지터 프레임 타이밍과 다르게 뒤틀린 상태로 스크린샷에 찍힐 수 있다.** Swiper
+`effect:'creative'` + `loop:true` 조합에서 활성 슬라이드가 오른쪽으로 밀려 보이는 버그를
+`--virtual-time-budget=3400/6000` 양쪽에서 100% 재현했지만, **같은 페이지를 실시간(virtual-
+time-budget 없이) `--remote-debugging-port`로 띄우고 CDP로 직접 `getBoundingClientRect()`를
+찍었더니 완벽히 중앙 정렬**돼 있었다 — 헤드리스 가상시간 자체가 만든 착시였다. **transform
+기반 JS 애니메이션(Swiper 이펙트 등)의 "전환 후 안착 상태"를 검증할 때는 `--virtual-time-
+budget` 스크린샷을 곧이곧대로 믿지 말고, 의심되면 아래 CDP 실시간 확인으로 교차검증할 것.**
+(참고: 이 세션에서 결국 Swiper 자체는 `effect:'fade'`로 되돌리고 "슥 올라오는" 모션은
+별도 CSS 키프레임으로 분리해 문제를 우회했다 — `gopumgyeok-swiper-creative-loop-bug`
+참고.)
+
+**CDP(Chrome DevTools Protocol) 실시간 디버깅 — puppeteer 없이 Node 네이티브
+`WebSocket`으로 가능하다.**
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+  --disable-gpu --force-device-scale-factor=1 --hide-scrollbars \
+  --window-size=800,1200 --remote-debugging-port=9333 \
+  --user-data-dir=/private/tmp/.../chrome-profile-debug \
+  "http://localhost:8766/index.html" &
+curl -s http://localhost:9333/json   # 타겟 목록 — "type":"page" 인 것만 골라야 한다.
+                                      # 실수로 browser_ui(Omnibox Popup) 타겟에 붙으면
+                                      # querySelector 가 전부 null 이 된다.
+```
+Node(v22+, 네이티브 `WebSocket` 전역 지원)로 `ws://.../devtools/page/<targetId>`에 접속해
+`Runtime.enable`→(대기)→`Runtime.evaluate({expression, returnByValue:true})`로 임의 JS를
+실행하고 `getBoundingClientRect()`/`getComputedStyle()` 값을 그대로 받아올 수 있고,
+`Page.captureScreenshot`으로 그 순간의 실제(가상시간 아닌) 스크린샷도 뜰 수 있다. 메시지
+`id`를 자기가 보낸 요청 수만큼 정확히 세어(`Runtime.enable`이 id=1이면 그 응답도 id=1) 매칭
+해야 한다 — 어긋나면 다음 응답을 영영 못 받는다.
+
 **특정 섹션이 정적 HTML에 이미 존재하면(= JS `fetch` 렌더를 안 거치는 섹션 껍데기), iframe
 없이 URL 해시(`index.html#섹션id`)만으로도 헤드리스가 그 위치로 점프해 스크린샷에 잡힌다.**
 위 "iframe 래퍼가 필요하다" 항목은 `#profit`처럼 스크롤 위치가 애매하거나 실패했던
