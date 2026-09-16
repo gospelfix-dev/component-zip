@@ -225,6 +225,7 @@ const initGridReveal = () => {
     ...document.querySelectorAll('#trustStrip .trust-item'),
     ...document.querySelectorAll('.review-grid .review-item'),
     ...document.querySelectorAll('#meatGrid .meat-card'),
+    ...document.querySelectorAll('#selfbarGrid .sb-item'),
   ];
   if (!targets.length) return;
 

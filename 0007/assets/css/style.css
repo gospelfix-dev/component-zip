@@ -354,10 +354,21 @@ section{ padding:120px 0; position:relative; scroll-margin-top:84px; }
 .selfbar-note{ display:flex; align-items:baseline; gap:14px; margin:56px 0 20px; color:var(--text-dim); font-size:18px; flex-wrap:wrap;}
 .selfbar-note b{ color:var(--gold-light); font-size:18px;}
 .selfbar-grid{ display:grid; grid-template-columns:repeat(8,1fr); gap:14px; }
-.sb-item{ text-align:center; }
-.sb-item .circle{ width:100%; aspect-ratio:1; border-radius:50%; overflow:hidden; border:1px solid var(--line); }
-.sb-item .circle img{ width:100%; height:100%; object-fit:cover; }
+.sb-item{ text-align:center; opacity:0; }   /* initGridReveal 이 in-view 를 붙이기 전까지 숨겨둔다 */
+.sb-item .circle{ width:100%; aspect-ratio:1; border-radius:50%; overflow:hidden; border:1px solid var(--line); transition:border-color .3s ease, box-shadow .3s ease; }
+.sb-item .circle img{ width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+.sb-item:hover .circle{ border-color:var(--gold); box-shadow:0 10px 22px -8px rgba(0,0,0,.4); }
+.sb-item:hover .circle img{ transform:scale(1.15); }
 .sb-item span{ display:block; margin-top:8px; font-size:18px; color:var(--muted); }
+.sb-item.in-view{ animation:compCardReveal .7s cubic-bezier(0.16,1,0.3,1) forwards; }
+.sb-item.in-view:nth-child(1){ animation-delay:0s; }
+.sb-item.in-view:nth-child(2){ animation-delay:.06s; }
+.sb-item.in-view:nth-child(3){ animation-delay:.12s; }
+.sb-item.in-view:nth-child(4){ animation-delay:.18s; }
+.sb-item.in-view:nth-child(5){ animation-delay:.24s; }
+.sb-item.in-view:nth-child(6){ animation-delay:.3s; }
+.sb-item.in-view:nth-child(7){ animation-delay:.36s; }
+.sb-item.in-view:nth-child(8){ animation-delay:.42s; }
 @media (max-width:1024px){ .selfbar-grid{grid-template-columns:repeat(4,1fr); row-gap:24px;} }
 
 /* REVIEWS — 실제 네이버 리뷰 스크린샷(review1~3.png)을 아이폰 목업(iphone.png)에 끼워 넣은 소비자 찐후기.
@@ -1057,8 +1068,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .hero-bg{ background-attachment:scroll; }   /* 패럴랙스도 움직임이므로 함께 끈다 */
   .promise-bg{ background-attachment:scroll; }
   .hero-wordmark{ animation:none; transform:none; opacity:1; }
-  .comp-card, .trust-item, .review-item, .meat-card{ animation:none !important; opacity:1 !important; transform:none !important; }
-  .comp-card:hover, .trust-item:hover, .review-item:hover .review-phone{ transform:none; }
+  .comp-card, .trust-item, .review-item, .meat-card, .sb-item{ animation:none !important; opacity:1 !important; transform:none !important; }
+  .comp-card:hover, .trust-item:hover, .review-item:hover .review-phone, .sb-item:hover .circle img{ transform:none; }
   .comp-card:hover .comp-num, .trust-item:hover h5{ transform:none; }
   .comp-card b{ animation:none !important; opacity:1 !important; }
   .accent-impact{ animation:none !important; opacity:1 !important; transform:none !important; }
