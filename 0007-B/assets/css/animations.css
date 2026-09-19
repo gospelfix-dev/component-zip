@@ -75,6 +75,15 @@
    통째로 덮어써 static left:50%;transform:translateX(-50%) 중앙 정렬이 애니메이션
    종료 시 translateY(0)으로 대체되며 사라진다(실제 겪은 회귀) — 매 프레임에
    translateX(-50%)를 같이 박아 넣어 중앙 정렬을 유지한 채로 페이드업만 재생한다. */
+/* selfbarReveal — 02 메뉴 셀프바 그리드(.selfbar-card) 전용 스크롤 리빌 키프레임. 0007(A안)의
+   .sb-item.in-view가 쓰는 compCardReveal을 그대로 가져왔다(사용자 명시적 요청, 2026-09-19) —
+   이동 거리(32px)·재생 시간(.7s)·이징(cubic-bezier(0.16,1,0.3,1))이 B의 다른 그리드가 쓰는
+   fadeUp(16px/.6s/cubic-bezier(.22,1,.36,1))과 다르다. */
+@keyframes selfbarReveal{
+  0%{ opacity:0; transform:translateY(32px); }
+  100%{ opacity:1; transform:translateY(0); }
+}
+
 @keyframes heroRightMobileIn{
   from{ opacity:0; transform:translateX(-50%) translateY(16px); }
   to{ opacity:1; transform:translateX(-50%) translateY(0); }

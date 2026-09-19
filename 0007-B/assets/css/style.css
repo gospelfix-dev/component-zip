@@ -589,8 +589,19 @@ section{ padding:120px 0; }
 .selfbar-note span{ font-size:14px; color:var(--ink-faint); }
 
 .selfbar-grid{ display:grid; grid-template-columns:repeat(8,1fr); gap:16px; }
-.selfbar-card{ opacity:0; transform:translateY(16px); text-align:center; }
-.selfbar-card.in-view{ animation:fadeUp .6s cubic-bezier(.22,1,.36,1) var(--d,0ms) both; }
+.selfbar-card{ opacity:0; transform:translateY(32px); text-align:center; }
+/* 0007(A안) .sb-item.in-view 와 동일한 열(column) 단위 스태거 — 8열 그리드 한 행이 왼쪽부터
+   .06s 씩 늦게 떠오른다(사용자 명시적 요청, 2026-09-19). 다른 그리드처럼 JS가 심어주는
+   --d(전역 인덱스 기반)를 쓰지 않고, nth-child 로 실제 그리드 열 위치에 고정한다. */
+.selfbar-card.in-view{ animation:selfbarReveal .7s cubic-bezier(0.16,1,0.3,1) forwards; }
+.selfbar-card.in-view:nth-child(8n+1){ animation-delay:0s; }
+.selfbar-card.in-view:nth-child(8n+2){ animation-delay:.06s; }
+.selfbar-card.in-view:nth-child(8n+3){ animation-delay:.12s; }
+.selfbar-card.in-view:nth-child(8n+4){ animation-delay:.18s; }
+.selfbar-card.in-view:nth-child(8n+5){ animation-delay:.24s; }
+.selfbar-card.in-view:nth-child(8n+6){ animation-delay:.3s; }
+.selfbar-card.in-view:nth-child(8n+7){ animation-delay:.36s; }
+.selfbar-card.in-view:nth-child(8n+8){ animation-delay:.42s; }
 .selfbar-frame{
   width:100%; aspect-ratio:1/1; border-radius:var(--radius-circle); overflow:hidden;
   border:3px solid var(--bronze-tint);
@@ -601,6 +612,12 @@ section{ padding:120px 0; }
 @media (max-width:1024px){
   .meat-grid{ grid-template-columns:repeat(2,1fr); gap:32px 16px; }
   .selfbar-grid{ grid-template-columns:repeat(4,1fr); gap:16px 12px; }
+  /* 4열로 줄어든 모바일 그리드에서도 같은 열끼리 같은 딜레이를 받도록 재매핑(0007 동일) —
+     8n+1 과 8n+5 는 4열 그리드에서 같은 열(매 행의 첫 칸)이다. */
+  .selfbar-card.in-view:nth-child(8n+1),.selfbar-card.in-view:nth-child(8n+5){ animation-delay:0s; }
+  .selfbar-card.in-view:nth-child(8n+2),.selfbar-card.in-view:nth-child(8n+6){ animation-delay:.06s; }
+  .selfbar-card.in-view:nth-child(8n+3),.selfbar-card.in-view:nth-child(8n+7){ animation-delay:.12s; }
+  .selfbar-card.in-view:nth-child(8n+4),.selfbar-card.in-view:nth-child(8n+8){ animation-delay:.18s; }
 }
 
 /* ============================================================
