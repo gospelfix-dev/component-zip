@@ -1,0 +1,500 @@
+/* :root 토큰 + 컴포넌트. 미디어쿼리는 해당 컴포넌트 블록 바로 뒤에 둔다.
+   단일 브레이크포인트 max-width:1024px 만 쓴다. */
+
+:root{
+  /* 배경 (재료색 컨셉 갱신: 구운 김의 짙은 녹흑색 — ESSEL류 분식 무드보드 6장 픽셀
+     샘플링 근거, 6장 중 4장이 이 포레스트그린 계열을 메인 배경으로 씀) */
+  --bg:#FFFBF2;
+  --bg-dark:#0B3D20;
+  --bg-darker:#072614;
+  --bg-card:#FFFFFF;
+  --bg-card-2:#FFF4E0;
+
+  /* 포인트 (당근·고추장 번트오렌지 레드 / 단무지·골드 옐로우 — 무드보드의 금색 타이포,
+     오렌지 포스터 2장 근거로 색상 미세 조정) */
+  --red:#D9481F;
+  --red-deep:#B23416;
+  --yellow:#FFD65A;
+  --yellow-deep:#E8B93E;
+  --white:#FFFFFF;
+
+  /* 텍스트 */
+  --text:#2B211D;
+  --text-invert:#FBF3E3;
+  --text-dim:#8C7F74;
+  --muted:#B6A999;
+  --line:#E8DECE;
+
+  /* 모서리 4단 체계 */
+  --radius-badge:8px;
+  --radius-card:16px;
+  --radius-pill:999px;
+  --radius-circle:50%;
+
+  /* 레이아웃 */
+  --maxw:1200px;
+  --gutter:clamp(20px, 4vw, 48px);
+
+  font-family:'GmarketSans', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+body{ font-family:'GmarketSans', sans-serif; background:var(--bg); color:var(--text); }
+
+.section-head{ text-align:center; max-width:var(--maxw); margin:0 auto clamp(32px,5vw,56px); padding:0 var(--gutter); }
+.eyebrow{ font-size:13px; letter-spacing:0.14em; font-weight:700; color:var(--red); text-transform:uppercase; }
+.eyebrow.invert{ color:var(--yellow); }
+.section-head h2{ font-size:clamp(24px,4vw,40px); font-weight:800; margin-top:10px; line-height:1.3; }
+.section-head h2.invert{ color:var(--text-invert); }
+
+.btn-primary{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--red); color:var(--white); font-weight:700;
+  font-size:clamp(14px,1.4vw,16px);
+  padding:14px 28px; border-radius:var(--radius-pill);
+  transition:transform 0.2s ease, background 0.2s ease;
+}
+.btn-primary:hover{ background:var(--red-deep); transform:translateY(-2px); }
+
+/* ===== 헤더 =====
+   기본(스크롤 전) 상태는 히어로와 같은 --bg-dark 녹색을 공유해 하나의 색면처럼 이어지도록
+   한다(레퍼런스의 "nav가 히어로 색면 위에 바로 얹힌" 구성). 스크롤
+   후(.is-scrolled)에는 밝은 --bg 고형 배경 + 그림자로 전환해 하단 섹션에서도 가독성을
+   유지한다. */
+.site-header{
+  position:sticky; top:0; z-index:40;
+  background:var(--bg-dark); border-bottom:1px solid rgba(251,243,227,0.12);
+  transition:background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.site-header.is-scrolled{
+  background:var(--bg); border-bottom-color:var(--line);
+  box-shadow:0 4px 16px rgba(43,33,29,0.08);
+}
+
+main section{ scroll-margin-top:88px; }
+.header-inner{
+  max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter);
+  height:72px; display:flex; align-items:center; justify-content:space-between; gap:24px;
+}
+.logo{ font-size:20px; font-weight:800; color:var(--text-invert); transition:color 0.25s ease; }
+.logo span{ color:var(--yellow); transition:color 0.25s ease; }
+.site-header.is-scrolled .logo{ color:var(--text); }
+.site-header.is-scrolled .logo span{ color:var(--red); }
+.nav-list{ display:flex; gap:28px; }
+.nav-link{ font-size:15px; font-weight:600; color:var(--muted); transition:color 0.2s ease; }
+.nav-link:hover{ color:var(--yellow); }
+.site-header.is-scrolled .nav-link{ color:var(--text-dim); }
+.site-header.is-scrolled .nav-link:hover{ color:var(--red); }
+.btn-call{
+  font-size:14px; font-weight:700; color:var(--white); background:var(--red);
+  padding:10px 18px; border-radius:var(--radius-pill);
+}
+.nav-toggle{ display:none; flex-direction:column; gap:5px; width:28px; }
+.nav-toggle span{ display:block; height:2px; background:var(--text-invert); border-radius:2px; transition:background 0.25s ease; }
+.site-header.is-scrolled .nav-toggle span{ background:var(--text); }
+
+@media (max-width:1024px){
+  .main-nav{
+    position:fixed; inset:72px 0 0 0; background:var(--bg);
+    display:flex; flex-direction:column; padding:32px var(--gutter);
+    transform:translateY(-12px); opacity:0; pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+  }
+  .main-nav.is-open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .nav-list{ flex-direction:column; gap:20px; }
+  /* 모바일 드롭다운 패널은 스크롤 상태와 무관하게 항상 밝은 배경이므로 어두운 글자로 고정 */
+  .main-nav .nav-link{ color:var(--text-dim); font-size:18px; }
+  .main-nav .nav-link:hover{ color:var(--red); }
+  .nav-toggle{ display:flex; }
+}
+
+/* ===== 히어로 =====
+   레퍼런스(버거 랜딩)의 비대칭 색면 블롭 + 2단(카피/사진) 구성 + 손글씨 스퀴글·말풍선·
+   스탬프 뱃지 + 타일형 워터마크 패턴을 차용하되, 실제 식품 사진(김밥)과 --red/--yellow
+   토큰으로 재구성했다. */
+.hero{
+  position:relative; overflow:hidden;
+  background:var(--bg-dark); color:var(--text-invert);
+  padding:clamp(48px,8vw,96px) var(--gutter) clamp(32px,5vw,64px);
+}
+.hero::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  opacity:0.08;
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNjAiIGhlaWdodD0iMTQwIj48dGV4dCB4PSI0MCIgeT0iNzgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjMwIiBmb250LXdlaWdodD0iODAwIiBmaWxsPSIjRkJGM0UzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTQgMTMwIDcwKSI+65Og65Og6rmA67ClPC90ZXh0Pjwvc3ZnPg==");
+  background-repeat:repeat;
+}
+.hero .eyebrow{ color:var(--yellow); }
+
+/* ===== 창업안내(프로세스) — 히어로에서 분리된 독립 섹션 =====
+   2026-10-14 배경을 갈색(--bg-warm) → 노란색(--yellow)으로 변경. 밝은 배경이라
+   워터마크는 히어로(크림색 글자, 어두운 배경)와 반대로 어두운 글자색 버전을 쓴다. */
+.guide-section{
+  position:relative; overflow:hidden;
+  background:var(--yellow); color:var(--text);
+  padding:clamp(48px,7vw,80px) var(--gutter);
+}
+.guide-section::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  opacity:0.1;
+  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNjAiIGhlaWdodD0iMTQwIj48dGV4dCB4PSI0MCIgeT0iNzgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjMwIiBmb250LXdlaWdodD0iODAwIiBmaWxsPSIjMkIyMTFEIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTQgMTMwIDcwKSI+65Og65Og6rmA67ClPC90ZXh0Pjwvc3ZnPg==");
+  background-repeat:repeat;
+}
+
+.hero-top{
+  position:relative; z-index:1;
+  max-width:var(--maxw); margin:0 auto;
+  display:grid; grid-template-columns:1.1fr 1fr; align-items:center; gap:clamp(24px,5vw,56px);
+}
+.hero-icon{ width:40px; height:40px; color:var(--yellow); margin-bottom:12px; }
+.hero-title{ font-size:clamp(32px,5vw,64px); font-weight:800; line-height:1.25; margin:16px 0 20px; }
+.hero-desc{ font-size:clamp(15px,1.6vw,18px); color:var(--muted); line-height:1.7; margin-bottom:28px; }
+.hero-cta-row{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.hero-squiggle{ width:72px; height:28px; color:var(--red); }
+
+.hero-visual{ position:relative; display:flex; align-items:center; justify-content:center; min-height:300px; }
+.hero-blob{
+  position:absolute; z-index:0;
+  width:88%; aspect-ratio:1; border-radius:50%;
+  background:var(--yellow); right:-12%; top:50%; transform:translateY(-50%);
+}
+.hero-photo-frame{ position:relative; z-index:1; width:85%; max-width:420px; }
+.hero-photo{
+  width:100%; height:auto; display:block;
+  filter:drop-shadow(0 20px 28px rgba(0,0,0,0.35));
+}
+.hero-bubble{
+  position:absolute; top:-16px; left:-12px; z-index:2;
+  background:var(--white); color:var(--bg-dark); font-weight:800; font-size:14px;
+  padding:8px 18px; border-radius:var(--radius-pill); box-shadow:0 8px 16px rgba(0,0,0,0.2);
+  transform:rotate(-6deg);
+}
+.hero-stamp{
+  position:absolute; bottom:-18px; right:-14px; z-index:2;
+  width:108px; height:108px; border-radius:50%;
+  background:var(--red); color:var(--white); border:3px dashed var(--yellow);
+  font-size:13px; font-weight:800; line-height:1.3; text-align:center;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 12px 24px rgba(0,0,0,0.25); transform:rotate(-8deg);
+}
+
+@media (max-width:1024px){
+  .hero-top{ grid-template-columns:1fr; text-align:center; }
+  .hero-icon{ margin-inline:auto; }
+  .hero-cta-row{ justify-content:center; }
+  .hero-visual{ margin-top:12px; min-height:220px; }
+  .hero-blob{ width:80%; right:-6%; }
+  .hero-photo-frame{ max-width:340px; }
+  .hero-stamp{ width:88px; height:88px; font-size:12px; }
+}
+
+.process-wrap{ position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; }
+.process-title{ text-align:center; font-size:clamp(24px,3.2vw,34px); font-weight:800; color:var(--text); margin-bottom:clamp(32px,5vw,48px); letter-spacing:0.02em; }
+
+/* 지그재그 2단 스텝퍼(레퍼런스: 나드리김밥 창업절차 안내) — 7단계를 4+3 으로 접어
+   1행은 좌→우, 2행은 우→좌로 이어지며 원형 배지를 굵은 바(커넥터)로 연결한다.
+   커넥터는 원 뒤(z-index 낮음)에 행 전체/열 전체를 가로지르는 띠로 깔아, 원이 덮는
+   부분만 가려지고 원 사이 간격에서만 보이도록 한다(셀 폭에 의존하지 않는 안전한 방식). */
+.process-track{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(12px,2vw,28px); row-gap:clamp(48px,7vw,72px);
+  padding:8px 0 16px;
+}
+.process-connector{ background:var(--red-deep); border-radius:var(--radius-pill); z-index:0; }
+.process-connector-row1{ grid-column:1/5; grid-row:1; align-self:center; justify-self:stretch; height:clamp(10px,1.6vw,16px); }
+.process-connector-row2{ grid-column:2/5; grid-row:2; align-self:center; justify-self:stretch; height:clamp(10px,1.6vw,16px); }
+.process-connector-vert{ grid-column:4; grid-row:1/3; justify-self:center; align-self:stretch; width:clamp(10px,1.6vw,16px); }
+
+/* 마지막 단계(07)에서 왼쪽 멘트 칸(1열/2행, 원래 비어있는 셀)으로 이어지는 화살표 —
+   나드리김밥 레퍼런스의 "높은 매출로 안정성 있는 운영 OK!" 마무리 연출 차용 */
+.process-connector-arrow{
+  grid-column:1; grid-row:2; justify-self:end; align-self:center; z-index:0;
+  width:clamp(70px,8vw,110px); height:clamp(40px,5vw,60px); margin-right:-48px;
+  background:var(--red-deep);
+  clip-path:polygon(100% 37%, 40% 37%, 40% 6%, 0% 50%, 40% 94%, 40% 63%, 100% 63%);
+}
+.process-callout{
+  grid-column:1; grid-row:2; justify-self:start; align-self:center; z-index:1;
+  max-width:calc(100% - 70px);
+}
+.process-callout p{
+  font-size:clamp(22px,2.6vw,30px); font-weight:800; color:var(--red); line-height:1.4;
+}
+.process-callout .callout-highlight{
+  display:inline-block; background:var(--white); color:var(--text);
+  padding:2px 12px; border-radius:var(--radius-badge);
+}
+
+.process-step{ position:relative; z-index:1; display:flex; justify-content:center; }
+.process-step-1{ grid-column:1; grid-row:1; }
+.process-step-2{ grid-column:2; grid-row:1; }
+.process-step-3{ grid-column:3; grid-row:1; }
+.process-step-4{ grid-column:4; grid-row:1; }
+.process-step-5{ grid-column:4; grid-row:2; }
+.process-step-6{ grid-column:3; grid-row:2; }
+.process-step-7{ grid-column:2; grid-row:2; }
+
+.process-circle{
+  position:relative; width:clamp(120px,11vw,158px); aspect-ratio:1; border-radius:var(--radius-circle);
+  background:var(--white); color:var(--text);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  padding:12px; box-shadow:0 10px 24px rgba(0,0,0,0.25);
+}
+.step-num-ribbon{
+  position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+  background:var(--red); color:var(--white); font-weight:800; font-size:14px;
+  width:40px; height:36px; padding:0 0 9px;
+  display:flex; align-items:center; justify-content:center;
+  clip-path:polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+}
+.step-label{ font-size:clamp(18px,2vw,22px); font-weight:800; margin-top:4px; }
+.step-desc{ font-size:clamp(14px,1.5vw,16px); color:var(--text-dim); line-height:1.4; margin-top:4px; }
+
+@media (max-width:1024px){
+  .process-track{
+    display:flex; overflow-x:auto; scroll-snap-type:x mandatory;
+    gap:16px; padding-bottom:8px;
+  }
+  .process-connector, .process-connector-arrow{ display:none; }
+  .process-step{ flex:0 0 42%; scroll-snap-align:start; }
+  .process-circle{ width:100%; max-width:200px; margin:0 auto; }
+  .process-callout{
+    display:flex; align-items:center; justify-content:center;
+    flex:0 0 42%; scroll-snap-align:start; order:99; max-width:none;
+    background:rgba(255,255,255,0.06); border-radius:var(--radius-card); padding:16px;
+  }
+  .process-callout p{ text-align:center; }
+}
+
+/* ===== 신뢰지표 ===== */
+.trust-section{ padding:clamp(56px,8vw,96px) var(--gutter); }
+.trust-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.trust-card{
+  background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-card);
+  padding:clamp(24px,3vw,32px) 20px; text-align:center;
+}
+.trust-value-row{ display:flex; align-items:baseline; justify-content:center; gap:4px; }
+.trust-value{ font-size:clamp(28px,4vw,44px); font-weight:800; color:var(--red); }
+.trust-suffix{ font-size:clamp(16px,2vw,22px); font-weight:700; color:var(--red); }
+.trust-label{ margin-top:8px; font-size:14px; color:var(--text-dim); font-weight:600; }
+
+@media (max-width:1024px){
+  .trust-grid{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* ===== 경쟁력(장비) ===== */
+.equip-section{ padding:clamp(56px,8vw,96px) var(--gutter); background:var(--bg-card-2); }
+.equip-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.equip-card{ background:var(--white); border-radius:var(--radius-card); padding:28px 22px; }
+.equip-icon{ width:44px; height:44px; color:var(--red); margin-bottom:16px; }
+.fetch-error{ padding:24px; text-align:center; color:var(--text-dim); font-size:14px; }
+.equip-name{ font-size:17px; font-weight:800; margin-bottom:12px; }
+.equip-compare{ display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:12px; flex-wrap:wrap; }
+.equip-before{ color:var(--text-dim); text-decoration:line-through; }
+.equip-after{ color:var(--red); font-weight:700; }
+.equip-desc{ font-size:14px; line-height:1.6; color:var(--text-dim); }
+.equip-desc b{ color:var(--text); }
+
+@media (max-width:1024px){
+  .equip-grid{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* ===== 메뉴 ===== */
+.menu-section{ padding:clamp(56px,8vw,96px) var(--gutter); }
+.menu-tabs{ max-width:var(--maxw); margin:0 auto 28px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+.menu-tab{
+  font-size:14px; font-weight:700; padding:10px 20px; border-radius:var(--radius-pill);
+  border:1px solid var(--line); color:var(--text-dim); transition:background 0.2s ease, color 0.2s ease;
+}
+.menu-tab.is-active{ background:var(--red); border-color:var(--red); color:var(--white); }
+.menu-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.menu-card{ text-align:center; }
+.menu-ph{
+  position:relative; width:100%; aspect-ratio:1; border-radius:var(--radius-circle);
+  display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+  background:linear-gradient(145deg, var(--yellow), var(--red));
+}
+.menu-ph-initial{ font-size:clamp(24px,3vw,32px); font-weight:800; color:var(--white); }
+.menu-badge{
+  position:absolute; top:6px; right:6px; font-size:12px; font-weight:800;
+  background:var(--yellow); color:var(--text); padding:4px 8px; border-radius:var(--radius-badge);
+}
+.menu-name{ font-size:16px; font-weight:700; margin-bottom:4px; }
+.menu-price{ font-size:15px; color:var(--red); font-weight:700; }
+
+@media (max-width:1024px){
+  .menu-grid{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* ===== 브랜드 마퀴 티커 — 유일한 무한 반복 애니메이션 예외(절제된 인터랙션 원칙 참고) =====
+   레퍼런스(efully.co.kr)처럼 끊임없이 좌측으로 흐르는 로고+문구 띠. 동일한 아이템 그룹을
+   두 벌 나란히 두고 -50% 까지 translateX 해서 이음새 없이 반복되게 한다. */
+.marquee-section{ background:var(--bg-darker); overflow:hidden; padding:clamp(20px,3vw,32px) 0; }
+.marquee-track{ display:flex; width:max-content; animation:marquee-scroll 26s linear infinite; }
+.marquee-group{ display:flex; align-items:center; flex-shrink:0; }
+.marquee-item{
+  display:flex; align-items:center; gap:clamp(12px,2vw,20px);
+  padding:0 clamp(20px,3vw,32px); white-space:nowrap;
+}
+.marquee-icon{
+  width:clamp(32px,3vw,44px); height:clamp(32px,3vw,44px); border-radius:var(--radius-circle);
+  overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.marquee-icon img{ width:100%; height:100%; object-fit:cover; }
+.marquee-text{ font-size:clamp(20px,3vw,36px); font-weight:800; color:var(--text-invert); letter-spacing:0.02em; }
+
+/* ===== 매출증명/수익분석 ===== */
+.profit-section{ background:var(--bg-dark); color:var(--text-invert); padding:clamp(56px,8vw,96px) var(--gutter); }
+.profit-grid{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.profit-card{
+  background:rgba(251,243,227,0.06); border:1px solid rgba(251,243,227,0.14);
+  border-radius:var(--radius-card); padding:28px 24px; text-align:center;
+}
+.profit-name{ font-size:16px; font-weight:700; margin-bottom:4px; }
+.profit-open{ font-size:13px; color:var(--muted); margin-bottom:18px; }
+.revenue-figure{ font-size:clamp(28px,4vw,44px); font-weight:800; color:var(--red); }
+.revenue-unit{ font-size:16px; font-weight:700; color:var(--red); margin-left:2px; }
+.profit-rate{ margin-top:10px; font-size:14px; color:var(--yellow); font-weight:700; }
+
+@media (max-width:1024px){
+  .profit-grid{ grid-template-columns:1fr; }
+}
+
+/* ===== 가맹개설비용표 ===== */
+.cost-section{ padding:clamp(56px,8vw,96px) var(--gutter); }
+.cost-tabs{ max-width:var(--maxw); margin:0 auto 24px; display:flex; justify-content:center; gap:10px; }
+.cost-tab{
+  font-size:14px; font-weight:700; padding:10px 22px; border-radius:var(--radius-badge);
+  border:1px solid var(--line); color:var(--text-dim);
+}
+.cost-tab.is-active{ background:var(--text); border-color:var(--text); color:var(--text-invert); }
+.cost-table-wrap{ max-width:var(--maxw); margin:0 auto; overflow-x:auto; }
+.cost-table{ width:100%; border-collapse:collapse; font-size:14px; }
+.cost-table thead th{
+  background:var(--bg-dark); color:var(--text-invert); font-weight:700;
+  padding:14px 16px; text-align:left; border-radius:var(--radius-badge) var(--radius-badge) 0 0;
+}
+.cost-table tbody td{ padding:14px 16px; border-bottom:1px solid var(--line); }
+.cost-table tbody tr:nth-child(odd){ background:var(--bg-card-2); }
+.cost-table tfoot td{ padding:16px; font-weight:800; font-size:16px; color:var(--red); border-top:2px solid var(--text); }
+.cost-loan-notice{ max-width:var(--maxw); margin:20px auto 0; text-align:center; font-size:14px; color:var(--text-dim); }
+
+@media (max-width:1024px){
+  .cost-table{ font-size:13px; }
+  .cost-table thead th, .cost-table tbody td, .cost-table tfoot td{ padding:10px; }
+}
+
+/* ===== 매장안내 ===== */
+.store-section{ padding:clamp(56px,8vw,96px) var(--gutter); background:var(--bg-card-2); }
+.store-filter-row{ max-width:var(--maxw); margin:0 auto 24px; display:flex; align-items:center; justify-content:center; gap:12px; }
+.store-filter-row label{ font-size:14px; font-weight:700; }
+#storeRegionFilter{
+  border:1px solid var(--line); border-radius:var(--radius-badge); padding:10px 14px;
+  font-size:14px; background:var(--white);
+}
+.store-swiper{ max-width:var(--maxw); margin:0 auto; padding-bottom:36px; }
+.store-card{
+  background:var(--white); border-radius:var(--radius-card); padding:24px;
+  display:flex; flex-direction:column; gap:8px; min-height:140px;
+}
+.store-name{ font-size:17px; font-weight:800; }
+.store-region{ display:inline-block; font-size:12px; font-weight:700; color:var(--red); }
+.store-date{ font-size:13px; color:var(--text-dim); }
+.store-map-link{ margin-top:auto; font-size:13px; font-weight:700; color:var(--red-deep); text-decoration:underline; }
+
+/* ===== 창업문의 ===== */
+.inquiry-section{ background:var(--bg-dark); color:var(--text-invert); padding:clamp(56px,8vw,96px) var(--gutter) clamp(96px,10vw,120px); }
+.inquiry-inner{ max-width:var(--maxw); margin:0 auto; display:grid; grid-template-columns:1fr 1.2fr; gap:48px; align-items:start; }
+.inquiry-deadline{ margin-top:16px; font-size:15px; font-weight:700; color:var(--yellow); }
+.inquiry-form{ background:rgba(251,243,227,0.06); border:1px solid rgba(251,243,227,0.14); border-radius:var(--radius-card); padding:28px; display:flex; flex-direction:column; gap:16px; }
+.form-row{ display:flex; flex-direction:column; gap:6px; }
+.form-row label{ font-size:13px; font-weight:700; color:var(--muted); }
+.form-row input, .form-row textarea{
+  background:rgba(251,243,227,0.08); border:1px solid rgba(251,243,227,0.2);
+  border-radius:var(--radius-badge); padding:12px 14px; color:var(--text-invert); font-size:14px;
+}
+.form-agree{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
+.form-agree input{ width:18px; height:18px; border-radius:var(--radius-badge); accent-color:var(--red); }
+.form-submit{ width:100%; margin-top:4px; }
+
+@media (max-width:1024px){
+  .inquiry-inner{ grid-template-columns:1fr; }
+}
+
+/* ===== 푸터 ===== */
+.site-footer{ padding:40px var(--gutter) 120px; background:var(--bg); border-top:1px solid var(--line); }
+.footer-inner{ max-width:var(--maxw); margin:0 auto; text-align:center; }
+.footer-brand{ font-size:16px; font-weight:800; margin-bottom:8px; }
+#footerContact{ font-size:13px; color:var(--text-dim); line-height:1.8; }
+.footer-copyright{ margin-top:16px; font-size:12px; color:var(--muted); }
+
+/* ===== 하단 고정 바 (데스크톱) ===== */
+.sticky-inquiry{
+  position:fixed; left:0; right:0; bottom:0; z-index:50;
+  background:var(--text-invert); color:var(--text);
+  display:flex; align-items:center; justify-content:center; gap:20px;
+  padding:14px var(--gutter);
+  border-top:1px solid var(--line);
+}
+.sticky-phone{ font-size:18px; font-weight:800; color:var(--red); white-space:nowrap; }
+.sticky-form{ display:flex; align-items:center; gap:10px; }
+.sticky-form input{
+  background:var(--white); border:1px solid var(--line);
+  border-radius:var(--radius-badge); padding:8px 12px; font-size:13px; color:var(--text); width:140px;
+}
+.form-agree-mini{ display:flex; align-items:center; gap:4px; font-size:12px; color:var(--text-dim); white-space:nowrap; }
+.form-agree-mini input{ width:16px; height:16px; border-radius:var(--radius-badge); accent-color:var(--red); }
+.sticky-form button{
+  background:var(--red); color:var(--white); font-weight:700; font-size:13px;
+  padding:9px 16px; border-radius:var(--radius-pill); white-space:nowrap;
+}
+
+@media (max-width:1024px){
+  .sticky-inquiry{ display:none; }
+}
+
+/* ===== 모바일 FAB + 문의 모달(바텀시트) ===== */
+.inquiry-fab{
+  display:none; position:fixed; right:16px; bottom:16px; z-index:50;
+  width:64px; height:64px; border-radius:var(--radius-circle);
+  background:var(--red); color:var(--white); font-size:13px; font-weight:800; line-height:1.3;
+  align-items:center; justify-content:center; text-align:center;
+  box-shadow:0 8px 20px rgba(217,72,31,0.35);
+}
+
+@media (max-width:1024px){
+  .inquiry-fab{ display:flex; }
+}
+
+.inquiry-modal{
+  position:fixed; inset:0; z-index:60;
+  background:rgba(11,61,32,0.6);
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.inquiry-modal[hidden]{ display:none; }
+.inquiry-modal-sheet{
+  width:100%; max-width:480px; background:var(--bg);
+  border-radius:var(--radius-card) var(--radius-card) 0 0;
+  padding:28px 24px calc(28px + env(safe-area-inset-bottom));
+  position:relative;
+  animation:modal-sheet-in 0.25s ease;
+}
+.inquiry-modal-close{ position:absolute; top:16px; right:20px; font-size:22px; color:var(--text-dim); }
+.inquiry-modal h3{ font-size:20px; font-weight:800; margin-bottom:20px; }
+.inquiry-modal-form{ display:flex; flex-direction:column; gap:12px; }
+.inquiry-modal-form input{
+  border:1px solid var(--line); border-radius:var(--radius-badge); padding:12px 14px; font-size:14px;
+}
+
+/* ===== 스크롤 리빌 ===== */
+.reveal{ opacity:0; }
+.reveal.is-visible{ opacity:1; animation:reveal-up 0.6s ease forwards; }
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity:1; animation:none; }
+  .inquiry-modal-sheet{ animation:none; }
+  .marquee-track{ animation:none; }
+}

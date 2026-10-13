@@ -1,0 +1,97 @@
+{
+  "_readme": "든든김밥 랜딩 콘텐츠 단일 진실 공급원. desc로 끝나는 필드만 <b> 같은 인라인 태그를 허용한다(HTML로 삽입). 비용/매출 수치는 데모 placeholder이며 실제 가맹 계약 전 실측값으로 교체가 필요하다.",
+
+  "contact": {
+    "phone": "1588-0000",
+    "instagram": "@deundeun_gimbap",
+    "instagramUrl": "https://www.instagram.com/deundeun_gimbap"
+  },
+
+  "process": [
+    { "step": 1, "label": "창업문의", "desc": "전화 또는 온라인 폼으로 문의" },
+    { "step": 2, "label": "상담예약", "desc": "담당자 배정 후 일정 조율" },
+    { "step": 3, "label": "상권분석", "desc": "희망 지역 상권·입지 분석" },
+    { "step": 4, "label": "가맹계약", "desc": "계약 조건 확인 및 체결" },
+    { "step": 5, "label": "교육·공사", "desc": "본사 교육 + 인테리어 공사" },
+    { "step": 6, "label": "오픈준비", "desc": "집기 설치·채용·초도물품" },
+    { "step": 7, "label": "매장오픈", "desc": "오픈 후 본사 관리 지속" }
+  ],
+
+  "trustStats": [
+    { "value": 128, "suffix": "호점", "label": "전국 가맹점" },
+    { "value": 92, "suffix": "%", "label": "2년 재계약률" },
+    { "value": 7, "suffix": "년", "label": "본사 직영 운영" },
+    { "value": 0, "suffix": "건", "label": "직영 매장 폐업" }
+  ],
+
+  "equipment": [
+    { "icon": "sealer", "name": "라벨 실링기", "before": "포장 1줄 40초", "after": "포장 1줄 9초", "desc": "숙련도와 무관하게 <b>균일한 포장 속도</b>를 보장합니다." },
+    { "icon": "roller", "name": "자동 김밥말이", "before": "숙련 2년차 필요", "after": "당일 교육 숙달", "desc": "초보자도 <b>즉시 균일한 두께</b>로 말 수 있습니다." },
+    { "icon": "pos", "name": "스마트 포스", "before": "수기 주문·정산", "after": "원터치 주문 연동", "desc": "주문 실수를 줄이고 <b>정산을 자동화</b>합니다." },
+    { "icon": "rice", "name": "자동 밥솥·간수기", "before": "계량 오차 발생", "after": "레시피 고정 자동화", "desc": "매장마다 <b>동일한 밥맛</b>을 유지합니다." }
+  ],
+
+  "menu": {
+    "categories": ["대표 김밥", "프리미엄 김밥", "분식 사이드"],
+    "items": [
+      { "category": "대표 김밥", "name": "든든 기본김밥", "price": 3500, "badge": "BEST" },
+      { "category": "대표 김밥", "name": "참치김밥", "price": 4000, "badge": "" },
+      { "category": "대표 김밥", "name": "야채김밥", "price": 3500, "badge": "" },
+      { "category": "프리미엄 김밥", "name": "불고기 꼬마김밥", "price": 5500, "badge": "NEW" },
+      { "category": "프리미엄 김밥", "name": "새우튀김김밥", "price": 6000, "badge": "" },
+      { "category": "프리미엄 김밥", "name": "치즈돈까스김밥", "price": 6500, "badge": "" },
+      { "category": "분식 사이드", "name": "매운 떡볶이", "price": 4000, "badge": "" },
+      { "category": "분식 사이드", "name": "라면", "price": 3500, "badge": "" },
+      { "category": "분식 사이드", "name": "튀김모둠", "price": 4500, "badge": "" }
+    ]
+  },
+
+  "profitStores": [
+    { "name": "든든김밥 OO본점", "open": "2024. 09 오픈", "salesWon": 42000000, "netRate": 28.5 },
+    { "name": "든든김밥 OO역점", "open": "2025. 02 오픈", "salesWon": 51000000, "netRate": 31.2 },
+    { "name": "든든김밥 OO신도시점", "open": "2025. 11 오픈", "salesWon": 33000000, "netRate": 25.8 }
+  ],
+
+  "cost": {
+    "tiers": [
+      {
+        "key": "compact",
+        "label": "소형 매장 (10평형)",
+        "rows": [
+          { "item": "가맹비", "detail": "브랜드 사용권 및 가맹 계약", "price": 3000000 },
+          { "item": "교육비", "detail": "레시피·운영 시스템 전수", "price": 2000000 },
+          { "item": "간판", "detail": "외부 간판 제작·설치", "price": 2500000 },
+          { "item": "주방기구", "detail": "자동 김밥기 등 기본 장비", "price": 15000000 },
+          { "item": "인테리어", "detail": "브랜드 표준 인테리어", "price": 20000000 },
+          { "item": "초도물품", "detail": "오픈 초기 식자재·부자재", "price": 5000000 }
+        ]
+      },
+      {
+        "key": "standard",
+        "label": "표준 매장 (20평형)",
+        "rows": [
+          { "item": "가맹비", "detail": "브랜드 사용권 및 가맹 계약", "price": 5000000 },
+          { "item": "교육비", "detail": "레시피·운영 시스템 전수", "price": 3000000 },
+          { "item": "간판", "detail": "외부 간판 제작·설치", "price": 4500000 },
+          { "item": "주방기구", "detail": "자동 김밥기·커피머신 포함", "price": 24000000 },
+          { "item": "인테리어", "detail": "브랜드 표준 인테리어", "price": 35000000 },
+          { "item": "초도물품", "detail": "오픈 초기 식자재·부자재", "price": 8000000 }
+        ]
+      }
+    ],
+    "loanNotice": "창업자금 무이자 대출 상담 가능 (조건은 상담 시 안내)"
+  },
+
+  "regions": ["전체", "서울", "경기", "인천", "부산", "대구"],
+
+  "stores": [
+    { "name": "든든김밥 OO본점", "region": "서울", "date": "2024. 09 OPEN", "mapUrl": "https://map.naver.com/p/search/든든김밥" },
+    { "name": "든든김밥 OO역점", "region": "경기", "date": "2025. 02 OPEN", "mapUrl": "https://map.naver.com/p/search/든든김밥" },
+    { "name": "든든김밥 OO신도시점", "region": "인천", "date": "2025. 11 OPEN", "mapUrl": "https://map.naver.com/p/search/든든김밥" }
+  ],
+
+  "inquiry": {
+    "deadlineText": "이달 상담 마감까지",
+    "deadlineDate": "2026-10-31T23:59:59+09:00"
+  }
+}

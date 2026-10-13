@@ -1,0 +1,8 @@
+/* 폰트 로드 전용 — @font-face 선언만 모아둔다. 실제 사용(font-family 지정)은
+   assets/css/style.css 쪽 컴포넌트 규칙에서 한다.
+
+   GmarketSans 3웨이트(Light 300 / Medium 500 / Bold 700) self-host, 본문/헤드라인
+   전부 이 하나로 통일한다. 별도 디스플레이 폰트는 쓰지 않는다. */
+@font-face{ font-family:'GmarketSans'; src:url('../fonts/GmarketSansLight.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+@font-face{ font-family:'GmarketSans'; src:url('../fonts/GmarketSansMedium.woff2') format('woff2'); font-weight:500; font-style:normal; font-display:swap; }
+@font-face{ font-family:'GmarketSans'; src:url('../fonts/GmarketSansBold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }

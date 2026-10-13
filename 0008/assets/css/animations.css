@@ -1,0 +1,26 @@
+/* @keyframes 전용 — 컴포넌트 전용이어도 예외 없이 여기 둔다.
+   전환은 transform/opacity 만 쓴다. 무한 반복 애니메이션은 두지 않는다 —
+   스크롤 리빌/모달 오픈 모두 1회성 재생이다.
+   유일한 예외: marquee-scroll(브랜드 마퀴 티커, .marquee-track) — 2026-10-14 사용자
+   명시적 요청으로 추가된 의도된 무한 반복(레퍼런스: efully.co.kr). 회귀 스윕의
+   "grep infinite 0건" 체크는 이 한 줄만 예외로 허용한다. */
+
+@keyframes reveal-up{
+  from{ opacity:0; transform:translateY(24px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes modal-sheet-in{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes fade-in{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+
+@keyframes marquee-scroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
