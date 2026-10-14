@@ -1,17 +1,22 @@
 /* @keyframes 전용 — 컴포넌트 전용이어도 예외 없이 여기 둔다.
    전환은 transform/opacity 만 쓴다. 무한 반복 애니메이션은 두지 않는다 —
    스크롤 리빌/모달 오픈 모두 1회성 재생이다.
-   유일한 예외: marquee-scroll(브랜드 마퀴 티커, .marquee-track) — 2026-10-14 사용자
+   예외 ①: marquee-scroll(브랜드 마퀴 티커, .marquee-track) — 2026-10-14 사용자
    명시적 요청으로 추가된 의도된 무한 반복(레퍼런스: efully.co.kr). 회귀 스윕의
-   "grep infinite 0건" 체크는 이 한 줄만 예외로 허용한다. */
+   "grep infinite 0건" 체크는 이 한 줄만 예외로 허용한다.
+   예외 ②: heroPhotoUp(히어로 비주얼 사진 전환, .hero-swiper) — 2026-10-14 사용자가
+   형제 폴더 0007-B의 히어로 고기 슬라이드 효과를 그대로 가져와 달라고 명시적 요청,
+   autoplay 포함 여부까지 확인 후 추가. 키프레임 자체는 무한 반복 키워드 없이 끝나는
+   1회성 재생(활성 슬라이드가 바뀔 때마다 Swiper autoplay(2.5s, loop)가 클래스를 토글해
+   반복 재생되는 구조) — 회귀 스윕 grep 대상은 아니지만 marquee와 같은 성격의 "새로
+   추가한 무한 반복 UI" 예외이므로 기록해둔다.
+   예외 ③: cursorBadgeSpin(커스텀 커서의 김밥 뱃지, .custom-cursor-badge) — 2026-10-14
+   사용자가 "마우스 커서 김밥이 360도 계속 무한으로 돌았으면 좋겠다"고 명시적으로 요청해
+   추가. 회귀 스윕의 "grep infinite 0건" 체크는 이 줄도 예외로 허용한다(이제 2건: marquee,
+   cursorBadgeSpin). */
 
 @keyframes reveal-up{
   from{ opacity:0; transform:translateY(24px); }
-  to{ opacity:1; transform:translateY(0); }
-}
-
-@keyframes modal-sheet-in{
-  from{ opacity:0; transform:translateY(16px); }
   to{ opacity:1; transform:translateY(0); }
 }
 
@@ -23,4 +28,66 @@
 @keyframes marquee-scroll{
   from{ transform:translateX(0); }
   to{ transform:translateX(-50%); }
+}
+
+@keyframes heroPhotoUp{
+  from{ transform:translateY(6%); opacity:0; }
+  to{ transform:translateY(0); opacity:1; }
+}
+
+@keyframes cursorBadgeSpin{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
+
+/* 창업안내 프로세스 커넥터(.process-connector-row1/vert) 가 스크롤 진입 시 방향성
+   있게 그려지는 연출. scaleX/scaleY 만 0→1 로 바꾸고, 방향(좌→우 vs 우→좌)은
+   assets/css/style.css 쪽에서 transform-origin 을 반대로 둬서 가른다 — 키프레임은
+   축만 다르고 둘 다 1회성 재생(.reveal.is-visible 로만 트리거)이다. 단순 사각 막대라
+   scaleX/scaleY 로 늘려도 모양이 왜곡되지 않는다. */
+@keyframes connectorGrowX{
+  from{ transform:scaleX(0); opacity:0; }
+  to{ transform:scaleX(1); opacity:1; }
+}
+@keyframes connectorGrowY{
+  from{ transform:scaleY(0); opacity:0; }
+  to{ transform:scaleY(1); opacity:1; }
+}
+
+/* .process-connector-arrow-wrap 전용. 화살표(막대+화살촉)는 단순 사각형이 아닌 복합
+   폴리곤이라 위 scaleX 방식(기하 좌표를 곱셈으로 압축)을 쓰면 도형이 눌렸다 펴지며
+   일그러진다 — 대신 wrap 의 overflow:hidden 마스크 폭만 오른쪽→왼쪽으로 넓히고, 안쪽
+   도형(.process-connector-arrow)은 position:absolute 로 실제 크기 그대로 고정해 왜곡
+   없이 "드러나기만" 하게 한다. clip-path 를 쓰는 유일한 리빌 애니메이션 — 복합 폴리곤을
+   transform 만으로 비왜곡 재생할 방법이 없어 이 요소 하나에 한해 두는 예외다
+   (.claude/rules/02-css.md 참고). */
+@keyframes connectorWipeIn{
+  from{ clip-path:inset(0 0 0 100%); opacity:0; }
+  to{ clip-path:inset(0 0 0 0%); opacity:1; }
+}
+
+/* .chat-panel 전용 오픈 전환. 예전 삭제된 .inquiry-modal-sheet의 modal-sheet-in과 같은
+   "translateY+opacity, 0.25s ease, 1회성" 기법을 재사용하지만, 삭제된 코드를 되살리는
+   것으로 오인되지 않도록 새 키프레임 이름(chatPanelIn)을 쓴다. infinite 키워드가 없어
+   회귀 스윕("grep infinite" 2건 예외) 대상이 아니다. */
+@keyframes chatPanelIn{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* .chat-pop-in 전용(챗봇 메시지/칩/타이핑 표시가 실제 내용 그대로 나타나는 공통 등장
+   모션). reveal-up과 같은 "페이드인 + 아래→위" 기법이지만 섹션 스크롤 리빌(24px)보다
+   훨씬 작은 채팅 버블 단위라 이동 거리를 10px로 줄였다. 1회성이며(JS가 animationend
+   후 클래스를 제거해 재생을 막는다) infinite를 쓰지 않는다. */
+@keyframes chatPopIn{
+  from{ opacity:0; transform:translateY(10px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* .chat-typing-dot 전용(타이핑 중 로딩 점 3개). infinite를 쓰지 않는다 — 반복 횟수는
+   assets/css/style.css의 .chat-typing-dot 선언(4회)에서 지정한다. 엘리먼트 자체가
+   JS에 의해 600ms 안에 DOM에서 제거되므로 그보다 훨씬 긴 유한 반복이면 충분하다. */
+@keyframes chatTypingBounce{
+  0%, 80%, 100%{ transform:translateY(0); opacity:0.4; }
+  40%{ transform:translateY(-4px); opacity:1; }
 }

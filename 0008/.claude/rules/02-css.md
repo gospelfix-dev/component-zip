@@ -48,16 +48,45 @@ BEM이 아니라 **의미 기반 클래스명**을 쓴다 (`.trust-card`, `.proc
 ## 애니메이션
 
 - 전환은 `transform`과 `opacity`만 쓴다. `width`/`height`/`top`을 전환하지 않는다.
+  **유일한 예외**: `.process-connector-arrow-wrap`(창업 프로세스 07→멘트 칸 화살표
+  커넥터)의 `clip-path:inset()` 리빌(`@keyframes connectorWipeIn`, `assets/css/
+  animations.css`). 2026-10-14, 막대+화살촉이 합쳐진 복합 `clip-path:polygon()` 도형에
+  row1/vert 와 같은 `scaleX(0)→1` 리빌을 썼더니 기하 좌표가 통째로 곱셈 압축되면서
+  애니메이션 도중 모양이 일그러지는 문제가 실제로 보고됐다(모션을 늦춘 뒤 더 또렷하게
+  드러남) — 단순 사각 막대(row1/vert)는 scaleX/scaleY 로 늘려도 왜곡이 없지만, 복합
+  폴리곤은 transform 만으로 왜곡 없이 "그려내는" 효과를 낼 방법이 없다. 대신 wrap 을
+  `overflow:hidden` 마스크로 두고 안쪽 도형은 `position:absolute`로 실제 크기 그대로
+  고정한 채 마스크의 `clip-path:inset()` 왼쪽 값만 줄여 가려진 영역만 드러낸다 — 도형
+  자체는 한 번도 scale 되지 않는다. 새로운 복합 폴리곤 리빌을 또 추가해야 한다면 이
+  패턴을 재사용할 것(단, 이 예외를 "clip-path 전환 전면 허용"으로 확대 해석하지 않는다).
+  **함정**: `clip-path:inset(...)`로 완전히 접힌 상태(예: `inset(0 0 0 100%)`)를
+  `.reveal`의 정적(트리거 전) 규칙에 두면 Chrome의 IntersectionObserver 가 그 요소를
+  "교차 안 함"으로 판정해 `is-visible` 이 영원히 안 붙는 교착 상태가 생긴다(직접 관찰로
+  확인됨 — `transform:scaleX(0)` 정적 상태는 이 문제가 없었다). clip-path 의 접힌
+  시작값은 반드시 `@keyframes`의 `from{}` 안에서만 선언하고, 정적 `.reveal` 규칙에는
+  `opacity:0`만 둔다.
 - **무한 반복 애니메이션(팝/샤인/블링크/스냅류)을 만들지 않는다.** 스크롤 리빌은 전부
   1회 재생(`IntersectionObserver` 후 `unobserve`)만 허용한다.
 - 신뢰지표/매출증명의 숫자 카운트업(`animateCount`)도 1회성 예외로 허용된 장치다 — 정보를
   가리지 않고(목표값은 처음부터 `data-count-to`에 존재) 시각적 카운팅만 진행되므로 원칙과
   충돌하지 않는다.
-- **유일한 무한 반복 예외: 브랜드 마퀴 티커(`.marquee-track`, `@keyframes marquee-scroll`).**
-  2026-10-14 사용자가 레퍼런스(efully.co.kr)를 보여주며 명시적으로 요청해 추가한 의도된
-  무한 루프다 — 배포 전 회귀 스윕의 `grep infinite assets/css/*.css`는 이 한 줄만 나오면
-  정상이다(그 외 0건이어야 함). 새로운 무한 반복 요소를 **추가로** 만들 때는 반드시
-  사용자에게 먼저 확인할 것 — 이 예외가 "무한 반복 전면 허용"으로 확대 해석되지 않는다.
+- **승인된 무한 반복 예외 세 가지.** 모두 사용자가 명시적으로 요청·확인한 뒤 추가됐다 —
+  이 예외들이 "무한 반복 전면 허용"으로 확대 해석되지 않는다. 새로운 무한 반복 요소를
+  **추가로** 만들 때는 반드시 사용자에게 먼저 확인할 것.
+  1. 브랜드 마퀴 티커(`.marquee-track`, `@keyframes marquee-scroll`) — 2026-10-14
+     레퍼런스(efully.co.kr)를 보여주며 요청. 배포 전 회귀 스윕의
+     `grep infinite assets/css/*.css`는 이 줄과 아래 3번 줄, 총 두 줄만 나오면 정상이다.
+  2. 히어로 비주얼 사진 전환(`.hero-swiper`, Swiper `autoplay` + `@keyframes heroPhotoUp`)
+     — 2026-10-14 형제 폴더 0007-B의 히어로 "고기 슬라이드" 효과를 그대로 가져와 달라는
+     요청(autoplay 포함 여부까지 확인받음). `heroPhotoUp` 키프레임 자체는 `infinite`를
+     쓰지 않는 1회성 재생이라 위 grep 체크에는 걸리지 않는다 — 반복은 Swiper의
+     `autoplay`(JS, `assets/js/script.js`의 `initHeroSwiper()`)가 슬라이드 전환마다
+     클래스를 토글하는 방식이다.
+  3. 커스텀 커서 김밥 뱃지 회전(`.custom-cursor-badge`, `@keyframes cursorBadgeSpin`,
+     3s linear) — 2026-10-14 "마우스 커서 김밥이 360도 계속 무한으로 돌았으면 좋겠다"는
+     명시적 요청. 부모 `.custom-cursor`가 아니라 자식 뱃지에만 건다 — 부모는
+     `initCustomCursor()`가 매 mousemove 마다 `transform:translate()`를 인라인으로
+     덮어써 커서를 따라다니게 하므로, 회전을 부모에 걸면 위치 추적이 깨진다.
 - **새 애니메이션을 추가하면 `prefers-reduced-motion` 블록에도 반드시 예외를 추가한다.**
 
 ## 반응형 분기점

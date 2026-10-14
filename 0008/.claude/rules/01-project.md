@@ -13,9 +13,15 @@
 - **빌드 단계를 도입하지 않는다.** npm, webpack, Vite, Sass, TypeScript 모두 사용하지 않는다.
   브라우저가 파일을 그대로 읽어서 동작해야 한다.
 - **프레임워크를 도입하지 않는다.** React, Vue, jQuery 없이 바닐라 JS(ES6)로 작성한다.
-- **외부 리소스는 Swiper.js CDN만 허용한다.** jsdelivr Swiper.js(매장안내 캐러셀 전용,
-  `<link>`/`<script defer>`만 추가) 외의 CDN 스크립트·스타일시트를 새로 추가하지 않는다.
-  웹폰트(GmarketSans)는 전부 self-host라 Google Fonts 등 폰트 CDN에 의존하지 않는다.
+- **외부 리소스는 Swiper.js CDN만 허용한다.** jsdelivr Swiper.js(매장안내 캐러셀 + 히어로
+  비주얼 전환, `<link>`/`<script defer>`만 추가) 외의 CDN 스크립트·스타일시트를 새로 추가하지
+  않는다. 웹폰트(GmarketSans)는 전부 self-host라 Google Fonts 등 폰트 CDN에 의존하지 않는다.
+  **아이콘도 CDN이 아니라 인라인 SVG로만 추가한다.** 2026-10-14 사용자가 lucide.dev 아이콘을
+  CDN으로 불러오자고 제안했으나, 이 규칙과 충돌한다고 안내하고 확인받은 뒤 "CDN 추가 없이
+  Lucide 디자인의 path만 복사해 인라인 `<svg>`로 심는" 대안으로 진행했다(헤더
+  `.header-phone-label` 전화 아이콘, `index.html`). 장비 카드 아이콘(`assets/js/script.js`의
+  `equip-icon`)과 같은 방식 — 새 아이콘이 더 필요하면 이 패턴을 재사용할 것, lucide.dev
+  CDN `<script>`/`<link>` 자체를 추가하지 않는다.
 
 ## 파일 구조
 
@@ -30,9 +36,14 @@ assets/css/animations.css   @keyframes 전용
 assets/css/style.css        :root 토큰 + 컴포넌트
 assets/js/script.js         fetch → 렌더 + 인터랙션
 assets/fonts/                GmarketSans*.woff2 3개
-assets/imgs/                 kimbap_cutout.png(히어로 투명 컷아웃 사진),
+assets/imgs/                 kimbap_cutout.png / tteokbokki_cutout.png
+                              (히어로 투명 컷아웃 사진, `.hero-swiper` 슬라이드 2장),
+                              trust_bg.jpg(신뢰지표 섹션 뒷배경 사진),
                               marquee_kimbap.png / marquee_tteokbokki.png
-                              (브랜드 마퀴 티커 아이콘 2종, 각 160x160, 홀/짝 번갈아 사용) —
+                              (브랜드 마퀴 티커 아이콘 2종, 각 160x160, 홀/짝 번갈아 사용),
+                              cursor_pointer.svg(사이트 전역 커스텀 마우스 커서 화살표,
+                              `body`에 `cursor:url(...)` 기본 적용 + 마우스 환경에서는
+                              `#customCursor`가 marquee_kimbap.png 뱃지와 함께 따라다님) —
                               메뉴/매장/장비는 여전히 CSS/SVG placeholder
 ```
 

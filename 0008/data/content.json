@@ -18,10 +18,10 @@
   ],
 
   "trustStats": [
-    { "value": 128, "suffix": "호점", "label": "전국 가맹점" },
-    { "value": 92, "suffix": "%", "label": "2년 재계약률" },
-    { "value": 7, "suffix": "년", "label": "본사 직영 운영" },
-    { "value": 0, "suffix": "건", "label": "직영 매장 폐업" }
+    { "value": 7, "suffix": "년", "label": "직영점 검증" },
+    { "value": 180, "suffix": "%", "label": "3년간 매출성장" },
+    { "value": 28, "suffix": "%", "label": "운영으로 검증된 구조" },
+    { "value": 4, "suffix": "천만원 대", "label": "초기 투자비 (10평 기준)" }
   ],
 
   "equipment": [
@@ -93,5 +93,28 @@
   "inquiry": {
     "deadlineText": "이달 상담 마감까지",
     "deadlineDate": "2026-10-31T23:59:59+09:00"
+  },
+
+  "chatbot": {
+    "fabLabel": "24시간 창업상담",
+    "panelTitle": "든든김밥 창업상담",
+    "panelSubtitle": "자주 묻는 질문에 바로 답해드리는 챗봇입니다",
+    "greeting": [
+      "안녕하세요! 든든김밥 창업상담봇입니다.",
+      "아래 버튼을 눌러 궁금한 항목을 바로 확인해보세요."
+    ],
+    "inputPlaceholder": "궁금한 점을 입력해보세요",
+    "topics": [
+      { "id": "apply",         "label": "상담신청 하기" },
+      { "id": "cost",          "label": "창업비용" },
+      { "id": "profit",        "label": "수익성" },
+      { "id": "ops",           "label": "운영구조" },
+      { "id": "location",      "label": "상권전략" },
+      { "id": "support",       "label": "본사지원" },
+      { "id": "video-sales1",  "label": "영상보기-매출편1" },
+      { "id": "video-sales2",  "label": "영상보기-매출편2" },
+      { "id": "video-ops",     "label": "영상보기-운영편" },
+      { "id": "video-founder", "label": "영상보기-창업자편" }
+    ]
   }
 }

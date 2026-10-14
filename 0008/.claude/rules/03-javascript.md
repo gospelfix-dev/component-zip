@@ -20,15 +20,25 @@ DOMContentLoaded
  ├─ initSmoothScroll()     [data-target] 클릭 스크롤 + 모바일 nav 닫기
  ├─ initMobileNav()        햄버거 토글
  ├─ initScrollSpy()        헤더 .is-scrolled 토글
- ├─ initInquiryForm()      인라인 폼(#inquiryForm) mock 제출
- ├─ initStickyInquiryBar() 데스크톱 하단 고정 바(#stickyForm) mock 제출
- ├─ initInquiryFab()       모바일 FAB → 모달 오픈/닫기 + 모달 폼 mock 제출
+ ├─ initInquiryForm()      인라인 폼(#inquiryForm) mock 제출 — 유일하게 남은 문의 폼.
+ │                         2026-10-14 사용자 요청으로 데스크톱 하단 고정 바
+ │                         (initStickyInquiryBar/#stickyForm)와 모바일 FAB+모달
+ │                         (initInquiryFab/#inquiryFab/#inquiryModal)을 완전히 삭제했다
+ │                         — 되살리지 않는다(CLAUDE.md "되살리면 안 되는 것" 참고).
+ ├─ initHeroSwiper()       히어로 비주얼(.hero-swiper) 정적 마크업 기준 1회 초기화,
+ │                         effect:'fade' + autoplay(2.5s, loop) — 승인된 무한반복 예외
+ ├─ initCustomCursor()     마우스 환경(hover:hover)이면 body.has-custom-cursor 로 네이티브
+ │                         커서를 끄고 #customCursor(화살표+김밥 뱃지)를 mousemove로 추종
  ├─ renderProcess / renderTrustStats / renderEquipment
  ├─ renderMenu(+initMenuTabs) / renderProfitCards
  ├─ renderCost(+initCostTierToggle — 탭 전환 시 합계 재계산)
  ├─ renderStores(+initStoreFilter, +initStoreSwiper — 지역 필터 변경 시 Swiper
  │                         destroy(true,true) 후 재생성)
  ├─ renderContact / initCountdown()  inquiry.deadlineDate 기준 실제 Date 계산
+ ├─ renderChatbot(data)   24시간 창업상담 FAB+패널(.chat-fab/.chat-panel) — FAB 클릭으로만
+ │                        열림(자동 오픈 없음), 칩 클릭은 e.target.closest('[data-topic]')
+ │                        위임 리스너(initMenuTabs와 동일 관용구) 1개로 처리. 정적 FAQ
+ │                        트리이지 실제 AI/백엔드 호출이 아니다.
  ├─ initScrollReveal(sel)  공용 1회성 스크롤 리빌 유틸(IntersectionObserver, threshold 0.15)
  └─ initCountUp(sel)       공용 1회성 카운트업 유틸(threshold 0.4) — 신뢰지표/매출 숫자
 ```

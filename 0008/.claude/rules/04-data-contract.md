@@ -31,7 +31,13 @@
   },
   "regions": ["string"],                                                        // "전체" 포함
   "stores": [ { "name": "string", "region": "string", "date": "string", "mapUrl": "string" } ], // 3개
-  "inquiry": { "deadlineText": "string", "deadlineDate": "ISO8601 string" }
+  "inquiry": { "deadlineText": "string", "deadlineDate": "ISO8601 string" },
+  "chatbot": {                                                                  // UI 카피만 — 답변 본문은 JS 하드코딩
+    "fabLabel": "string", "panelTitle": "string", "panelSubtitle": "string",
+    "greeting": ["string"],                                                     // 봇 인사 1~2줄
+    "inputPlaceholder": "string",
+    "topics": [ { "id": "string(kebab-case)", "label": "string" } ]             // 10개, 배열 순서=칩 노출 순서
+  }
 }
 ```
 
@@ -55,6 +61,11 @@
   기본값으로 쓰인다.
 - `inquiry.deadlineDate`는 ISO8601 문자열(타임존 포함, 예: `2026-10-31T23:59:59+09:00`)로
   쓴다 — `initCountdown`이 `new Date()`로 직접 파싱한다.
+- **`chatbot.topics[].id`는 JS `buildChatReply()`의 분기 키로만 쓰인다.** 비용/수익성/
+  운영구조 답변은 `data.cost`/`data.profitStores`/`data.process`를 그 자리에서 포맷해
+  만든다(같은 숫자를 `chatbot` 아래 다시 하드코딩하지 않는다 — 두 곳에 두면 싱크가
+  깨진다). 소스 데이터가 없는 `location`/`support`/`video-*` 6개 토픽은 지어낸 숫자
+  없이 "상담 시 안내/준비 중" 톤의 플레이스홀더 문자열을 `script.js`에 직접 쓴다.
 
 ## 동기화 의무
 

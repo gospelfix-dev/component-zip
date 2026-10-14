@@ -89,7 +89,7 @@
 | `--radius-badge` | 8px | 배지, 인풋, 비용표 헤더 행, 동의 체크박스 |
 | `--radius-card` | 16px | 카드, 문의 모달(바텀시트) |
 | `--radius-pill` | 999px | 버튼, 메뉴/비용 탭 |
-| `--radius-circle` | 50% | 메뉴 placeholder 원, 프로세스 단계 아이콘 원, FAB 버튼 |
+| `--radius-circle` | 50% | 메뉴 placeholder 원, 프로세스 단계 아이콘 원, 챗봇 아바타 원 |
 
 임의로 섞지 않는다 — 버튼에 `--radius-card`를 쓰거나 카드에 `--radius-pill`을 쓰지 않는다.
 
@@ -104,7 +104,7 @@
 - 신뢰지표 숫자와 매출 숫자(`[data-count-to]`)는 같은 1회성 IO 패턴으로 0→목표값 카운트업
   (`initCountUp`/`animateCount`, threshold 0.4) — 목표값은 처음부터 `data-count-to`에
   존재하므로 정보를 가리지 않는 장식적 카운팅이다.
-- 문의 모달(바텀시트) 오픈은 `modal-sheet-in` 1회 재생.
+- 챗봇 패널(`.chat-panel`) 오픈은 `chatPanelIn` 1회 재생(translateY+opacity).
 - 새 애니메이션 추가 시 `prefers-reduced-motion` 블록에 예외를 반드시 추가한다(현재
   `init.css`의 전역 wildcard 규칙이 모든 애니메이션/전환을 제거하도록 이미 커버함).
 
@@ -222,16 +222,60 @@
    갱신하고 `renderStoreSlides()`를 다시 호출한다. 이때 기존 Swiper 인스턴스를
    `destroy(true,true)`로 완전히 제거한 뒤 `new Swiper(...)`로 재생성한다(`initStoreSwiper`)
    — 필터링 후 슬라이드 개수가 바뀌므로 `update()`만으로는 부족해 재생성 방식을 쓴다.
-11. **창업문의**: 인라인 폼(`#inquiryForm`) + 데스크톱 하단 고정 바(`#stickyForm`,
-   `max-width:1024px`에서 `display:none`) + 모바일 FAB(`#inquiryFab`, 1024px 이하에서만
-   표시)→모달(`#inquiryModal`, ESC/배경클릭/닫기버튼으로 닫힘). 하단 고정 바(`.sticky-inquiry`)
-   배경은 2026-10-14 `var(--text-invert)`(밝은 크림)로 바꿨다 — 다크 배경 전제였던
-   전화번호/인풋/동의문구 색도 함께 라이트 배경용으로 반전했다(전화번호 `var(--red)`,
-   인풋 `var(--white)` 배경 + `var(--line)` 테두리, 동의문구 `var(--text-dim)`). 세 폼 모두 `mockSubmit()`
-   공용 함수로 제출 버튼 텍스트를 2초간 "문의 접수 완료"로 바꾸는 mock만 수행한다(실제 전송
-   없음). 카운트다운(`initCountdown`)은 `inquiry.deadlineDate` 기준 실제 `Date` 계산으로
-   D-day 텍스트를 1분마다 갱신한다 — 가짜 할인 타이머가 아니다.
+11. **창업문의**: 인라인 폼(`#inquiryForm`) 1곳만 남아있다 — 2026-10-14 데스크톱 하단
+   고정 바와 모바일 FAB+모달은 사용자 요청으로 삭제됐다(CLAUDE.md "되살리면 안 되는 것"
+   참고). `mockSubmit()` 공용 함수가 제출 버튼 텍스트를 2초간 "문의 접수 완료"로
+   바꾸는 mock만 수행한다(실제 전송 없음). 카운트다운(`initCountdown`)은
+   `inquiry.deadlineDate` 기준 실제 `Date` 계산으로 D-day 텍스트를 1분마다
+   갱신한다 — 가짜 할인 타이머가 아니다.
 12. **푸터**: 연락처는 `renderContact`가 `data/content.json`의 `contact`에서 채운다.
+13. **24시간 창업상담 챗봇**(`.chat-fab`/`.chat-panel`): 2026-10-14 사용자 요청으로
+   레퍼런스처럼 **데스크톱에서는 화면 정중앙에 큰 모달**(`width:min(640px,calc(100vw-48px))`,
+   `height:min(760px,calc(100vh-80px))`, `--radius-card`)로 뜨도록 바꿨다 — 원래 우하단
+   고정 말풍선(380×600)이었던 것을 확대/중앙 정렬했다. 중앙 정렬은
+   `transform:translate(-50%,-50%)`가 아니라 `position:fixed; inset:0; margin:auto;`로
+   구현한다 — 같은 요소에 오픈 전환(`chatPanelIn`)이 `transform:translateY(...)`를
+   쓰므로, 정적 중앙 정렬까지 `transform`으로 하면 애니메이션 재생 중 static transform
+   값이 keyframe 값에 통째로 덮어써져 중앙 정렬이 깨진다(margin:auto 방식은 transform을
+   전혀 쓰지 않아 충돌이 없다). 배경 `.chat-backdrop`에도 `backdrop-filter:blur(6px)`를
+   추가해 레퍼런스의 블러 처리를 재현했다. 모바일(`max-width:1024px`)은 기존대로 전체화면
+   시트. FAB은 `--red` 배경+
+   `--radius-pill`의 정적 버튼(반복 애니메이션 없음). 헤더바는 `--bg-dark`+
+   `--text-invert`, 아바타 원(`.chat-avatar-sm/-lg`)은 `.menu-ph`와 같은 그라디언트
+   (`--yellow`→`--red`)+이니셜 placeholder 패턴 재사용. 말풍선은 봇=`--white`/
+   사용자=`--red` 2변형. 전송 버튼은 `--radius-circle`이 아니라 "정사각형 박스+
+   `--radius-pill`" 트릭으로 원형을 낸다(circle 토큰은 아바타/아이콘 전용 유지). 오픈
+   전환은 `@keyframes chatPanelIn`(translateY+opacity, 0.25s, 1회성) — 삭제된
+   `modal-sheet-in`과 기법은 같지만 이름은 새로 지었다. 토픽 칩 10개 중 비용/수익성/
+   운영구조는 `data.cost`/`data.profitStores`/`data.process`를 그 자리에서 포맷해
+   답하고, 상권전략·본사지원·영상 4종은 소스 데이터가 없어 "상담 시 안내/준비 중"
+   톤의 플레이스홀더 문구를 쓴다(사용자 확인된 선택). "상담신청 하기" 선택 시 패널을
+   닫고 `#inquiry`로 스무스 스크롤한다. 실제 AI/백엔드 연동이 아닌 정적 스크립트 FAQ다.
+   입력창 바로 아래에 `.chat-footer-credit`("Powered by GospelFix / 제작문의") 캡션을
+   뒀다 — 레퍼런스의 "Powered by 프차톡 / 제작문의" 구조를 실제 제작사명(GospelFix)
+   으로 바꿔 그대로 따랐다. "제작문의"는 사용자가 텍스트는 넣어달라고 명시적으로
+   요청했지만 실제 연결할 URL/연락처를 받은 적이 없어 `<a>` 링크가 아니라 일반
+   텍스트로만 둔다(정적 텍스트, 토큰은 `--text-dim`) — 목적지를 받으면 링크로 바꾼다.
+   2026-10-14 봇 메시지 옆에 "든" 아바타(`.chat-avatar-sm`)가 계속 유지되도록
+   `.chat-bot-row`(아바타+말풍선 행)로 감쌌다. 같은 날 챗봇 안의 모든 등장(메시지,
+   칩, 타이핑 표시)이 공통으로 **페이드인 + 아래에서 위로 10px 살짝 떠오르는 모션**
+   (`.chat-pop-in`, `@keyframes chatPopIn`, 0.35s)을 쓰도록 통일했다 — 처음엔 점
+   로딩만 있었다가, "로딩이 나오고 채팅내용이 나오는게 아니고 페이드인/위로 뜨는
+   모션을 추가해달라"는 요청으로 이 모션을 도입했고, 바로 이어서 "그 모션은 잘했고,
+   타이핑 중 모션도 같이 있어야 한다"는 요청으로 **점 로딩(`.chat-bubble-typing`/
+   `.chat-typing-dot`)과 이 등장 모션을 함께 쓰는 형태로 확정**했다 — 즉 봇 응답은
+   먼저 점 3개 타이핑 표시가 `.chat-pop-in`으로 나타났다가(`appendTypingIndicator`)
+   600ms 뒤 사라지고, 그 자리에 실제 답변/칩이 같은 `.chat-pop-in`으로 새로 나타난다
+   (`appendBotReply`). FAB을 눌러 패널을 **처음** 열 때(그리고 리셋 버튼을 누를
+   때)도 인사말이 즉시 뜨지 않고 같은 타이핑 표시가 먼저 보인 뒤 인사말로 교체되며
+   (`showGreetingWithTyping()`), 이미 한 번 연 뒤 재오픈에서는 `greeted` 플래그로
+   반복하지 않는다. 칩 10개는 `animation-delay`를 0.05s씩 늘려 순서대로 등장하는
+   캐스케이드 효과를 낸다. `.chat-pop-in` 재생이 끝나면 JS(`playPopIn`)가
+   `animationend`에서 클래스를 바로 제거해, 패널을 닫았다 다시 열 때 이미 쌓인 과거
+   대화 전체가 또 재생되지 않는다(요소당 정확히 1회만 재생). 점 애니메이션
+   (`chatTypingBounce`)은 "무한 반복 금지" 원칙과 충돌하지 않도록 `infinite` 대신
+   유한 반복(4회, 3.6s — 체류 시간 600ms보다 넉넉히 길다)만 선언해 회귀 스윕의
+   `grep infinite` 대상이 아니다.
 
 ---
 

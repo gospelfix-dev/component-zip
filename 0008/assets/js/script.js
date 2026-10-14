@@ -89,27 +89,29 @@ function initInquiryForm(){
   mockSubmit(document.getElementById('inquiryForm'));
 }
 
-function initStickyInquiryBar(){
-  mockSubmit(document.getElementById('stickyForm'));
+function initHeroSwiper(){
+  if(typeof Swiper === 'undefined') return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  new Swiper('.hero-swiper', {
+    loop: true,
+    effect: 'fade',
+    fadeEffect: { crossFade: true },
+    speed: reduceMotion ? 0 : 650,
+    grabCursor: true,
+    autoplay: reduceMotion ? false : { delay: 2500, disableOnInteraction: false },
+    a11y: { enabled: true }
+  });
 }
 
-function initInquiryFab(){
-  const fab = document.getElementById('inquiryFab');
-  const modal = document.getElementById('inquiryModal');
-  const closeBtn = document.getElementById('inquiryModalClose');
-  if(!fab || !modal) return;
+function initCustomCursor(){
+  const cursor = document.getElementById('customCursor');
+  if(!cursor) return;
+  if(window.matchMedia('(hover:none), (pointer:coarse)').matches) return;
 
-  const openModal = () => { modal.hidden = false; };
-  const closeModal = () => { modal.hidden = true; };
-
-  fab.addEventListener('click', openModal);
-  if(closeBtn) closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
-  document.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && !modal.hidden) closeModal();
-  });
-
-  mockSubmit(document.getElementById('inquiryModalForm'), closeModal);
+  document.body.classList.add('has-custom-cursor');
+  window.addEventListener('mousemove', e => {
+    cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  }, { passive: true });
 }
 
 /* ===== 렌더 함수 ===== */
@@ -121,7 +123,7 @@ function renderProcess(process){
 
   const circle = p => `
     <div class="process-step process-step-${p.step}">
-      <div class="process-circle">
+      <div class="process-circle reveal">
         <span class="step-num-ribbon">${p.step}</span>
         <p class="step-label">${esc(p.label)}</p>
         <p class="step-desc">${esc(p.desc)}</p>
@@ -129,10 +131,11 @@ function renderProcess(process){
     </div>`;
 
   const html = `
-    <div class="process-connector process-connector-row1" aria-hidden="true"></div>
-    <div class="process-connector process-connector-row2" aria-hidden="true"></div>
-    <div class="process-connector process-connector-vert" aria-hidden="true"></div>
-    <div class="process-connector-arrow" aria-hidden="true"></div>
+    <div class="process-connector process-connector-row1 reveal" aria-hidden="true"></div>
+    <div class="process-connector process-connector-vert reveal" aria-hidden="true"></div>
+    <div class="process-connector-arrow-wrap reveal" aria-hidden="true">
+      <div class="process-connector process-connector-arrow" aria-hidden="true"></div>
+    </div>
     <div class="process-callout">
       <p>높은 매출로<br><span class="callout-highlight">안정성 있는</span><br>운영 OK!</p>
     </div>
@@ -143,7 +146,7 @@ function renderProcess(process){
 
 function renderTrustStats(trustStats){
   const html = trustStats.map(t => `
-    <div class="trust-card">
+    <div class="trust-card" data-value="${t.value}">
       <div class="trust-value-row">
         <span class="trust-value" data-count-to="${t.value}">0</span>
         <span class="trust-suffix">${esc(t.suffix)}</span>
@@ -320,11 +323,8 @@ function renderContact(contact){
   const headerPhone = document.getElementById('headerPhone');
   if(headerPhone) headerPhone.href = telHref;
 
-  const stickyPhone = document.getElementById('stickyPhone');
-  if(stickyPhone){
-    stickyPhone.href = telHref;
-    stickyPhone.textContent = contact.phone;
-  }
+  const headerPhoneNumber = document.getElementById('headerPhoneNumber');
+  if(headerPhoneNumber) headerPhoneNumber.textContent = contact.phone;
 
   fill('footerContact', `TEL. ${esc(contact.phone)} ・ Instagram <a href="${esc(contact.instagramUrl)}" target="_blank" rel="noopener">${esc(contact.instagram)}</a>`);
 }
@@ -401,6 +401,216 @@ function initCountUp(selector){
   els.forEach(el => io.observe(el));
 }
 
+/* ===== 24시간 창업상담 챗봇 ===== */
+
+const CHAT_PLACEHOLDER = {
+  location: '상권전략은 지역마다 분석 포인트가 달라 챗봇 답변 대신 상담 시 안내드립니다. 담당자가 직접 입지를 검토해드려요.',
+  support: '본사지원(교육·물류·마케팅 등) 세부 항목은 상담 시 안내드립니다.',
+  'video-sales1': '매출편1 영상은 준비 중입니다. 공개되면 이 챗봇에서 바로 보실 수 있게 업데이트할게요.',
+  'video-sales2': '매출편2 영상은 준비 중입니다. 공개되면 이 챗봇에서 바로 보실 수 있게 업데이트할게요.',
+  'video-ops': '운영편 영상은 준비 중입니다. 공개되면 이 챗봇에서 바로 보실 수 있게 업데이트할게요.',
+  'video-founder': '창업자편 영상은 준비 중입니다. 공개되면 이 챗봇에서 바로 보실 수 있게 업데이트할게요.'
+};
+
+function buildChatReply(topicId, data){
+  if(topicId === 'cost'){
+    const lines = data.cost.tiers.map(t => {
+      const total = t.rows.reduce((sum, r) => sum + r.price, 0);
+      return `${esc(t.label)} 합계 ${won(total)}원`;
+    });
+    return `창업비용은 평수에 따라 달라집니다.<br>${lines.join('<br>')}<br>${esc(data.cost.loanNotice)}`;
+  }
+  if(topicId === 'profit'){
+    const lines = data.profitStores.map(p =>
+      `${esc(p.name)}(${esc(p.open)}) 월매출 ${won(p.salesWon)}원 · 순수익률 ${p.netRate}%`);
+    return `실제 가맹점 수익 사례입니다.<br>${lines.join('<br>')}`;
+  }
+  if(topicId === 'ops'){
+    const lines = data.process.map(p => `${p.step}.${esc(p.label)}`);
+    return `운영은 다음 ${data.process.length}단계로 이어집니다.<br>${lines.join(' → ')}`;
+  }
+  if(topicId === 'apply'){
+    return '네, 상담신청 폼으로 바로 이동할게요! 성함과 연락처만 남겨주시면 담당자가 순차적으로 연락드립니다.';
+  }
+  return CHAT_PLACEHOLDER[topicId] || '곧 더 자세한 내용으로 안내드릴게요.';
+}
+
+// 요소가 패널이 hidden인 동안 DOM에 들어와도(예: 최초 인사말은 패널이 열리기 전에
+// 렌더된다) 애니메이션은 실제로 화면에 보일 때까지는 재생되지 않는다 — 처음 보일 때
+// 1회 재생 후 animationend에서 클래스를 떼어내, 패널을 닫았다 다시 열어도 과거 대화가
+// 또 한 번 다시 애니메이션 재생되지 않게 한다.
+function playPopIn(el){
+  if(!el) return;
+  el.classList.add('chat-pop-in');
+  el.addEventListener('animationend', () => el.classList.remove('chat-pop-in'), { once: true });
+}
+
+function appendChatBubble(role, html){
+  const body = document.getElementById('chatBody');
+  if(!body) return;
+  if(role === 'bot'){
+    const row = document.createElement('div');
+    row.className = 'chat-bot-row';
+    row.innerHTML = `
+      <div class="chat-avatar-sm" aria-hidden="true"><span>든</span></div>
+      <div class="chat-bubble chat-bubble-bot">${html}</div>`;
+    body.appendChild(row);
+    playPopIn(row);
+    body.scrollTop = body.scrollHeight;
+    return;
+  }
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble chat-bubble-${role}`;
+  bubble.innerHTML = html;
+  body.appendChild(bubble);
+  playPopIn(bubble);
+  body.scrollTop = body.scrollHeight;
+}
+
+function appendTypingIndicator(){
+  const body = document.getElementById('chatBody');
+  if(!body) return null;
+  const row = document.createElement('div');
+  row.className = 'chat-bot-row';
+  row.innerHTML = `
+    <div class="chat-avatar-sm" aria-hidden="true"><span>든</span></div>
+    <div class="chat-bubble chat-bubble-bot chat-bubble-typing" aria-label="답변 작성 중">
+      <span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span>
+    </div>`;
+  body.appendChild(row);
+  playPopIn(row);
+  body.scrollTop = body.scrollHeight;
+  return row;
+}
+
+// 2026-10-14 사용자 요청 — "타이핑 중" 점 로딩도 같이 보이고, 그 다음 실제 답변도
+// 페이드인+떠오르는 모션으로 나타나야 한다(둘 다 필요, 하나가 다른 하나를 대체하는
+// 게 아님). appendTypingIndicator가 먼저 .chat-pop-in으로 나타났다가 600ms 뒤 제거,
+// 실제 답변(appendChatBubble)과 칩(renderChipRow)이 같은 .chat-pop-in으로 새로 나타난다.
+function appendBotReply(data, replyHtml, afterCb){
+  const typing = appendTypingIndicator();
+  setTimeout(() => {
+    if(typing) typing.remove();
+    appendChatBubble('bot', replyHtml);
+    renderChipRow(data);
+    if(afterCb) afterCb();
+  }, 600);
+}
+
+function renderChipRow(data){
+  const body = document.getElementById('chatBody');
+  if(!body) return;
+  const old = body.querySelector('.chat-chip-row');
+  if(old) old.remove();
+  const row = document.createElement('div');
+  row.className = 'chat-chip-row';
+  row.innerHTML = data.chatbot.topics.map((t, i) =>
+    `<button type="button" class="chat-chip" data-topic="${esc(t.id)}" style="animation-delay:${(i * 0.05).toFixed(2)}s">${esc(t.label)}</button>`).join('');
+  body.appendChild(row);
+  [...row.children].forEach(playPopIn);
+  body.scrollTop = body.scrollHeight;
+}
+
+function renderChatGreeting(data){
+  const cb = data.chatbot;
+  const body = document.getElementById('chatBody');
+  if(!body) return;
+  body.innerHTML = `
+    <div class="chat-intro">
+      <div class="chat-avatar-lg" aria-hidden="true"><span>든</span></div>
+      <p class="chat-intro-title">${esc(cb.panelTitle)}</p>
+      <p class="chat-intro-sub">${esc(cb.panelSubtitle)}</p>
+    </div>
+    <div class="chat-bot-row" style="animation-delay:0.15s">
+      <div class="chat-avatar-sm" aria-hidden="true"><span>든</span></div>
+      <div class="chat-bubble chat-bubble-bot">${cb.greeting.map(esc).join('<br>')}</div>
+    </div>`;
+  playPopIn(body.querySelector('.chat-intro'));
+  playPopIn(body.querySelector('.chat-bot-row'));
+  renderChipRow(data);
+}
+
+function renderChatbot(data){
+  const fab = document.getElementById('chatFabBtn');
+  const backdrop = document.getElementById('chatBackdrop');
+  const panel = document.getElementById('chatPanel');
+  const closeBtn = document.getElementById('chatCloseBtn');
+  const resetBtn = document.getElementById('chatResetBtn');
+  const body = document.getElementById('chatBody');
+  const form = document.getElementById('chatInputForm');
+  const input = document.getElementById('chatTextInput');
+  if(!fab || !backdrop || !panel || !body || !form || !input) return;
+
+  input.placeholder = data.chatbot.inputPlaceholder;
+
+  // FAB을 눌러 패널을 처음 열 때(그리고 리셋 버튼을 누를 때)도 인사말이 바로 뜨지
+  // 않고 "타이핑 중" 표시가 잠깐 먼저 보인 뒤, 인사말이 .chat-pop-in(페이드인+떠오름)
+  // 으로 나타난다. 이미 한 번 연 뒤에는(greeted=true) 재오픈마다 반복하지 않는다 —
+  // 매번 타이핑 모션이 뜨면 거슬린다.
+  let greeted = false;
+  function showGreetingWithTyping(){
+    body.innerHTML = '';
+    const typing = appendTypingIndicator();
+    setTimeout(() => {
+      if(typing) typing.remove();
+      renderChatGreeting(data);
+    }, 600);
+  }
+
+  function openChat(){
+    backdrop.hidden = false;
+    panel.hidden = false;
+    fab.setAttribute('aria-expanded', 'true');
+    if(!greeted){
+      greeted = true;
+      showGreetingWithTyping();
+    }
+    body.scrollTop = body.scrollHeight;
+  }
+  function closeChat(){
+    backdrop.hidden = true;
+    panel.hidden = true;
+    fab.setAttribute('aria-expanded', 'false');
+  }
+
+  fab.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+  backdrop.addEventListener('click', closeChat);
+  resetBtn.addEventListener('click', showGreetingWithTyping);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && !panel.hidden) closeChat();
+  });
+
+  // 위임 클릭 리스너 — initMenuTabs의 e.target.closest('[data-cat]') 관용구와 동일
+  body.addEventListener('click', e => {
+    const chip = e.target.closest('[data-topic]');
+    if(!chip) return;
+    const topic = data.chatbot.topics.find(t => t.id === chip.dataset.topic);
+    if(!topic) return;
+
+    appendChatBubble('user', esc(topic.label));
+    appendBotReply(data, buildChatReply(topic.id, data), () => {
+      if(topic.id === 'apply'){
+        setTimeout(() => {
+          closeChat();
+          const target = document.querySelector('#inquiry');
+          if(target) target.scrollIntoView({ behavior: 'smooth' });
+        }, 900);
+      }
+    });
+  });
+
+  // mockSubmit()과 같은 "실제 전송 없음, 친절한 안내만" 원칙의 자유입력 버전
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if(!text) return;
+    appendChatBubble('user', esc(text));
+    input.value = '';
+    appendBotReply(data, '자유 입력 상담은 아직 준비 중입니다. 아래 버튼으로 궁금한 항목을 선택해주시면 더 정확히 안내드려요. 급하신 경우 "상담신청 하기"를 눌러주세요.');
+  });
+}
+
 /* ===== 렌더 총괄 + fetch 오류 처리 ===== */
 
 function renderAll(data){
@@ -416,6 +626,7 @@ function renderAll(data){
   initStoreFilter();
   renderContact(data.contact);
   initCountdown(data.inquiry);
+  renderChatbot(data);
 }
 
 function showFetchError(){
@@ -427,6 +638,8 @@ function showFetchError(){
   fill('costTableBody', `<tr><td colspan="3">${msg}</td></tr>`);
   const footerContact = document.getElementById('footerContact');
   if(footerContact) footerContact.textContent = msg;
+  const chatFab = document.getElementById('chatFabBtn');
+  if(chatFab) chatFab.setAttribute('hidden', '');
 }
 
 function boot(){
@@ -434,8 +647,8 @@ function boot(){
   initMobileNav();
   initScrollSpy();
   initInquiryForm();
-  initStickyInquiryBar();
-  initInquiryFab();
+  initHeroSwiper();
+  initCustomCursor();
 
   fetch('data/content.json')
     .then(res => {
