@@ -63,3 +63,12 @@ DOMContentLoaded
 
 이 프로젝트에는 카운트다운이나 숫자 카운트업 같은 장치가 없다 — 가격은 정적으로
 `toLocaleString()`만 거쳐 표시한다. 허위 긴급성 연출(가짜 타이머 등)을 만들지 않는다.
+
+**예외(2026-10-16, 사용자 확정)**: `initScrollSpy()`가 `.is-scrolled` 토글 시
+`window.Motion.animate()`(motion.dev, CDN 예외는 `.claude/rules/01-project.md` 참고)로
+`top`/`left`/`right`/`border-radius`/`backdrop-filter`를 FLIP 방식으로 보간한다 —
+CSS 전환을 `transform`/`opacity`로만 제한하는 `02-css.md` 애니메이션 규칙과 별개로,
+레이아웃에 영향을 주는 속성이라 JS 라이브러리로 처리한 단일 예외다. class 전환 자체는
+CSS가 그대로 담당해 Motion 로드 실패 시에도 즉시 전환되며, `prefers-reduced-motion`일
+때는 `window.Motion.animate()` 호출 자체를 건너뛴다(CSS의 전역 reduced-motion 블록은
+WAAPI 애니메이션을 제어하지 않으므로 JS에서 별도 체크 필요).

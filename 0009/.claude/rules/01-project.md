@@ -28,6 +28,11 @@ Skin—clean(코스메톨로지 클리닉) 3개 레퍼런스를 분석해 섹션
   의존하지 않고 CSS `scroll-snap` + 바닐라 JS로 구현한다. 웹폰트(Noto Sans KR)는 전부
   self-host이며 Google Fonts 등 폰트 CDN에 의존하지 않는다. **아이콘도 CDN이 아니라 인라인
   SVG로만 추가한다**(0007/0008의 lucide path 인라인 패턴과 동일).
+  - **예외(2026-10-16, 사용자 확정)**: `index.html`에 motion.dev(Motion)를
+    `https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js`로 불러온다(전역
+    `window.Motion`, `<script type="module">`/`import` 아님 — 모듈 시스템 금지 규칙은
+    그대로 유지). 애니메이션 라이브러리 도입을 위한 명시적 단일 예외이며, 다른 CDN
+    리소스(캐러셀, 아이콘, 폰트)로 확장하지 않는다.
 - **실제 인물·제품 사진을 쓰지 않는다.** 스톡 사진 라이선스 문제를 피하기 위해 히어로
   인물, 전후사진, 디자이너 얼굴, 갤러리 등 모든 사진 영역은 `tint`/`surface` 배경 +
   `[이미지 설명]` 텍스트 placeholder 블록으로 대체한다(`docs/08-guidelines.md` "이미지"
@@ -62,7 +67,7 @@ docs/                        정본 디자인 문서 (위 표 참고)
 data/content.json           콘텐츠 단일 진실 공급원 (브랜드·연락처·내비·히어로·메뉴·
                              전후사진·팀·후기·가격·챗봇·푸터)
 assets/css/init.css         브라우저 리셋
-assets/css/fonts.css        @font-face (Noto Sans KR 3웨이트, self-host — 유일한 서체)
+assets/css/fonts.css        @font-face (Noto Sans KR 5웨이트, self-host — 유일한 서체)
 assets/css/animations.css   @keyframes 전용
 assets/css/style.css        :root 토큰 + 컴포넌트
 assets/js/script.js         fetch → 렌더 + 인터랙션

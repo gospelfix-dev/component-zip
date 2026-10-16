@@ -15,3 +15,7 @@
 | `radius-pill` | 16px 이상 | 태그 |
 
 구현용 CSS 변수는 [09-shadcn-tokens.md](09-shadcn-tokens.md)를 참고하세요.
+
+**예외(2026-10-16, 사용자 확정)**: `.site-header.is-scrolled`(플로팅 인셋 헤더)에
+`radius-base`(6px)를 적용했다 — 스크롤 시 상/좌/우 여백이 생기며 독립된 플로팅 박스
+형태가 되어, 버튼/카드/이미지 외 용도로 `radius-base`를 재사용한 단일 예외다.

@@ -6,7 +6,7 @@
 `style.css`에 다시 섞어 넣지 않는다.
 
 1. `init.css` — 브라우저 기본값 리셋만
-2. `fonts.css` — `@font-face` 선언만 (Noto Sans KR 3웨이트, 유일한 서체)
+2. `fonts.css` — `@font-face` 선언만 (Noto Sans KR 5웨이트: 400/500/700/800/900, 유일한 서체)
 3. `animations.css` — `@keyframes` 전용, 컴포넌트 전용이어도 예외 없이 여기
 4. `style.css` — `:root` 토큰 + 컴포넌트. 미디어쿼리는 파일 끝에 몰지 않고 **해당 컴포넌트
    블록 바로 뒤에** 붙인다.
@@ -39,6 +39,10 @@ BEM이 아니라 **의미 기반 클래스명**을 쓴다 (`.menu-row`, `.review
 - **크기는 `clamp()`로 반응형 처리한다.** 미디어쿼리로 폰트 크기를 계단식 변경하지 않는다.
   단, 기준값 자체는 `docs/03-typography.md`의 표(H1 32/40·H2 22/30·Body 16/26·Button
   15/24·Caption 13/20)를 벗어나지 않는다.
+  - **예외**: `.hero-content h1`/`.hero-content p`(2026-10-16, 사용자 확정). 히어로
+    헤드라인·설명문만 각각 `clamp(28px, 6.5vw, 44px)`/52, `clamp(16px, 3.2vw, 18px)`/28로
+    확대했다 — 히어로의 시각적 임팩트를 키워달라는 명시적 요청에 따른 예외이며, H2 이하
+    다른 헤딩이나 다른 섹션의 Body 텍스트에는 확장하지 않는다.
 - **`font-size`는 12px 이상 120px 이하만 허용한다.**
 - **모서리는 용도별 2단 체계다.** 임의로 섞지 않는다(`docs/05-radius.md`).
   - `--radius-base`(6px) — 버튼, 카드, 이미지(placeholder 포함)

@@ -187,12 +187,20 @@ section {
 }
 
 .site-header.is-scrolled {
-  background: var(--color-white);
+  top: var(--space-3);
+  left: var(--space-4);
+  right: var(--space-4);
+  background: color-mix(in srgb, var(--color-white) 40%, transparent);
+  border-radius: var(--radius-base);
+  border-bottom: none;
+  /* 2026-10-16 평평한 UI(엘리베이션 없음) 원칙의 명시적 예외(사용자 확정) — 스크롤 시
+     플로팅 헤더 가독성을 위해 블러를 추가(스크롤 전 기본 상태에는 적용하지 않음) */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .site-header.is-scrolled .brand-mark,
 .site-header.is-scrolled .nav-link,
-.site-header.is-scrolled .header-phone,
 .site-header.is-scrolled .hamburger-btn {
   color: var(--color-ink);
 }
@@ -212,6 +220,10 @@ section {
   color: var(--color-white);
 }
 
+#brandWordmark {
+  font-weight: 900;
+}
+
 .main-nav {
   display: flex;
 }
@@ -223,6 +235,7 @@ section {
 
 .nav-link {
   font-size: 15px;
+  font-weight: 600;
   line-height: 24px;
   color: var(--color-white);
   transition: opacity 0.15s;
@@ -236,20 +249,6 @@ section {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.header-phone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  color: var(--color-white);
-}
-
-.header-phone svg {
-  width: 20px;
-  height: 20px;
 }
 
 .hamburger-btn {
@@ -293,10 +292,6 @@ section {
     color: var(--color-ink);
   }
 
-  .header-phone {
-    display: none;
-  }
-
   .header-actions .btn {
     display: none;
   }
@@ -311,8 +306,8 @@ section {
 .hero {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  min-height: 560px;
+  align-items: end;
+  min-height: 640px;
   margin: 0 0 var(--space-4);
   padding: var(--space-6) 0;
   overflow: hidden;
@@ -329,21 +324,24 @@ section {
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 480px;
+  flex-grow: 1;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  margin-bottom: var(--space-6);
 }
 
 .hero-content h1 {
   color: var(--color-white);
-  font-size: clamp(28px, 5vw, 32px);
-  line-height: 40px;
+  font-size: clamp(28px, 6.5vw, 44px);
+  line-height: 52px;
 }
 
 .hero-content p {
   margin-top: var(--space-3);
-  font-size: clamp(15px, 3vw, 16px);
-  line-height: 26px;
+  font-size: clamp(16px, 3.2vw, 18px);
+  line-height: 28px;
   color: var(--color-white);
-  max-width: 44ch;
+  max-width: 45ch;
 }
 
 .hero-actions {

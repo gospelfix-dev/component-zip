@@ -77,9 +77,6 @@ function renderHeader(data) {
     .map((item) => `<li><a class="nav-link" href="${esc(item.target)}" data-target="${esc(item.target)}">${esc(item.label)}</a></li>`)
     .join('');
   fill('navList', navHtml);
-
-  const phoneLink = document.getElementById('headerPhone');
-  if (phoneLink) phoneLink.href = `tel:${data.contact.phone.replace(/-/g, '')}`;
 }
 
 function renderHero(data) {
@@ -336,8 +333,50 @@ function initScrollSpy() {
   const header = document.getElementById('siteHeader');
   if (!header) return;
 
+  // 2026-10-16: top/left/right/border-radius/backdrop-filter는 CSS transition
+  // 금지 대상(transform/opacity만 허용)이라 motion.dev(Motion)로 FLIP 방식 애니메이션을
+  // 건다 — CSS의 .is-scrolled 규칙이 끝 상태를 정하고, Motion은 전/후 계산값을 읽어
+  // 그 사이만 부드럽게 보간한다(class 전환 자체는 CSS가 계속 담당, JS 실패 시에도
+  // 즉시 전환되어 동작은 보장됨).
+  const ANIMATED_PROPS = ['top', 'left', 'right', 'borderRadius', 'backdropFilter'];
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let isScrolled = false;
+
+  const readProps = () => {
+    const cs = getComputedStyle(header);
+    const values = {};
+    ANIMATED_PROPS.forEach((prop) => {
+      const value = cs[prop];
+      values[prop] = prop === 'backdropFilter' && value === 'none' ? 'blur(0px)' : value;
+    });
+    return values;
+  };
+
   window.addEventListener('scroll', () => {
-    header.classList.toggle('is-scrolled', window.scrollY > 8);
+    const shouldScroll = window.scrollY > 8;
+    if (shouldScroll === isScrolled) return;
+    isScrolled = shouldScroll;
+
+    if (!window.Motion || prefersReducedMotion) {
+      header.classList.toggle('is-scrolled', isScrolled);
+      return;
+    }
+
+    const from = readProps();
+    header.classList.toggle('is-scrolled', isScrolled);
+    // Motion이 매 animate() 호출 끝에 결과값을 인라인 스타일로 커밋해두기 때문에,
+    // class만 바꿔서는 getComputedStyle이 이전 애니메이션의 인라인 값을 그대로
+    // 반환한다 — CSS가 정한 진짜 목표값을 읽으려면 먼저 인라인 오버라이드를 지운다.
+    ANIMATED_PROPS.forEach((prop) => {
+      header.style[prop] = '';
+    });
+    const to = readProps();
+
+    const keyframes = {};
+    ANIMATED_PROPS.forEach((prop) => {
+      keyframes[prop] = [from[prop], to[prop]];
+    });
+    window.Motion.animate(header, keyframes, { duration: 0.3, easing: 'ease-out' });
   });
 }
 

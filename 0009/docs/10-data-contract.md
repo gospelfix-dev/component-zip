@@ -11,7 +11,7 @@
 
 ```jsonc
 {
-  "brand": { "name": "연두", "wordmark": "yeondu", "tagline": "string" },
+  "brand": { "name": "연두", "wordmark": "YEONDU", "tagline": "string" },
   "nav": [ { "label": "string", "target": "#sectionId" } ],
   "contact": { "phone": "string", "instagram": "string", "instagramUrl": "string",
                "address": "string", "businessHours": "string",

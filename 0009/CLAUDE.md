@@ -6,8 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 "연두"(yeondu) — 아직 실존 클라이언트가 확정되지 않은 플레이스홀더 뷰티샵 브랜딩
 랜딩페이지. 단일 `index.html` + 빌드 도구 없는 순수 정적 파일(HTML/CSS/바닐라 ES6
-JS)로만 구성된 1페이지 사이트다. npm, 번들러, 프레임워크, 외부 CDN이 전혀 없다 —
-브라우저가 파일을 그대로 읽어 동작한다.
+JS)로만 구성된 1페이지 사이트다. npm, 번들러, 프레임워크가 전혀 없다 — 브라우저가
+파일을 그대로 읽어 동작한다. 외부 CDN도 원칙적으로 쓰지 않지만, 2026-10-16 사용자
+확정으로 애니메이션 라이브러리 motion.dev(Motion)만 `index.html`에 CDN(`<script>`
+전역 빌드)으로 불러오는 단일 예외가 있다(`.claude/rules/01-project.md` 참고).
 
 이 저장소는 `component-zip` 모노레포 안의 번호 폴더 하나(`0009`)다. 형제 폴더
 (`0007`, `0007-B`, `0008`)는 업종·브랜드·콘텐츠 계약이 전혀 다른 독립 프로젝트이므로
@@ -97,7 +99,8 @@ DOMContentLoaded → boot()
 차이로만), 이탤릭·장식 폰트 없음(Noto Sans KR 단일), 승인된 무한 반복 애니메이션 없음,
 반응형 분기점은 `max-width:1024px` 하나뿐.
 
-폰트는 Noto Sans KR 3웨이트(400/500/700)를 `assets/fonts/`에 self-host한다 — Google
+폰트는 Noto Sans KR 5웨이트(400/500/700/800/900, 2026-10-16 800·900 추가)를
+`assets/fonts/`에 self-host한다 — Google
 Fonts 등 폰트 CDN에 의존하지 않는다. 아이콘도 CDN이 아니라 인라인 SVG로만 추가한다.
 
 ### 콘텐츠 모델
