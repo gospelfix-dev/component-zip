@@ -37,4 +37,5 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 디렉토리 자체가 형제 폴더에서 잘못 복제된 것으로 보인다(내용이 전부 고품격대패/든든김밥
 얘기이고 0009=연두 뷰티샵 얘기는 하나도 없었다). 아래가 0009 고유 메모리다.
 
-- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. border/box-shadow 금지 규칙과 충돌하는 요청(헤더 하단 선)이 0009에서도 발생해 같은 절차로 해결, 폴더 전용이 아닌 공통 절차로 재확인됨
+- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. 폰트 크기/웨이트·radius 재사용·backdrop-filter·CDN·워드마크 대소문자 등 6건 추가 재확인, 전부 "예외 선택"이었지만 그래도 매번 물을 것
+- [크롬 자동화 캐시 함정, JS/JSON까지 확장](feedback_chrome-automation-stylesheet-cache.md) — 바로 위 0008 항목과 동일 파일. CSS뿐 아니라 script.js·content.json도 캐시되며, 새 탭을 열어도(프로필 공유) 재현됨 — `fetch(url,{cache:'no-store'})`로 서버 실제값 확인, `{cache:'reload'}`로 캐시 갱신
