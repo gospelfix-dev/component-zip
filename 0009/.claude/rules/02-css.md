@@ -46,6 +46,11 @@ BEM이 아니라 **의미 기반 클래스명**을 쓴다 (`.menu-row`, `.review
 - **`border`와 `box-shadow`를 쓰지 않는다.** 레이어 구분은 배경색 차이(`white` ↔
   `surface`)로만 한다(`docs/06-elevation.md`). 그림자·그라데이션·테두리 카드를 추가하지
   않는다.
+  - **예외**: `.site-header`(2026-10-16, 사용자 확정). 헤더가 `position: fixed`
+    플로팅으로 바뀌면서 흰 배경 섹션 위로 스크롤될 때 배경색 차이만으로는 경계가 전혀
+    보이지 않는 상황이 생겨, `border-bottom: 0.5px solid var(--color-surface-hover)`를
+    예외로 추가했다(흰 배경 위에서도 보이도록 `white`가 아닌 `surface-hover` 톤 사용).
+    배경색 차이로 구분 가능한 다른 컴포넌트에는 이 예외를 확장하지 않는다.
 - **이탤릭·장식 폰트를 쓰지 않는다.** Noto Sans KR 단일 서체, 404/500/700 웨이트로만
   위계를 만든다(`docs/03-typography.md`). 레퍼런스 이미지(LUMINA, Skin—clean)의 세리프
   이탤릭 헤드라인은 이 프로젝트의 확정된 "하지 말 것"과 충돌하므로 따라 하지 않는다.
