@@ -1,6 +1,6 @@
 ---
 name: feedback_hard-rule-conflict-ask-first
-description: 사용자 요청이 CLAUDE.md/.claude/rules의 확정된 절대 규칙과 정면으로 충돌할 때는 조용히 따르거나 조용히 거부하지 말고, 충돌 지점을 짚어 AskUserQuestion으로 먼저 확인한다
+description: 사용자 요청이 CLAUDE.md/.claude/rules의 확정된 절대 규칙과 정면으로 충돌할 때는 조용히 따르거나 조용히 거부하지 말고, 충돌 지점을 짚어 AskUserQuestion으로 먼저 확인한다(0008/0009 등 component-zip 전반에 적용, 매번 다시 물을 것)
 metadata:
   type: feedback
 ---
@@ -28,3 +28,12 @@ metadata:
 "이것은 의도된 유일한 예외"라고 명시해, 다음 세션이 회귀로 오인해 되돌리지 않게 한다
 (실제로 이번에 `.claude/rules/02-css.md`·`CLAUDE.md`·`docs/design.md` 세 곳 모두에
 마퀴 예외를 기록해뒀다).
+
+**2026-10-16, 0009(연두)에서 재확인**: `border`/`box-shadow` 금지 규칙(`docs/06-elevation.md`)과
+충돌하는 요청이 같은 대화에서 두 번 나왔다 — ①"헤더 밑에 흰 선" 요청 때는 AskUserQuestion으로
+물어 사용자가 "배경색 차이로만 구분(규칙 준수)"을 선택했고, ②헤더를 `position: fixed`
+플로팅으로 바꾼 뒤 "보더"라는 단어로 다시 요청했을 때는 같은 방식으로 물었더니 이번엔
+"실제 border-bottom 추가(규칙 예외)"를 선택했다. 같은 종류의 충돌이라도 요청마다 사용자의
+답이 달라질 수 있으므로, 한 번 규칙 준수를 택했다고 다음에도 같은 결론이라고 넘겨짚지 말고
+충돌이 생길 때마다 다시 묻는다. 이 절차는 0008뿐 아니라 이 모노레포의 다른 폴더(0009 등)에도
+동일하게 적용된다 — 폴더 전용이 아니라 `component-zip` 전반의 작업 방식으로 취급한다.

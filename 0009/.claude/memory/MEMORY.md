@@ -26,5 +26,15 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 위 항목들은 전부 형제 폴더 0007-B(고품격대패) 전용이며 `CLAUDE.md`에 기록된 대로 이 폴더에
 잘못 세팅된 것이다 — 이번 작업과 무관하니 참고하지 말 것. 아래가 0008 자체 메모리다.
 
-- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 요청이 CLAUDE.md/rules의 절대 규칙(예: 무한 반복 애니메이션 금지)과 충돌하면 조용히 따르거나 거절하지 말고 AskUserQuestion으로 먼저 확인
+- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 절대 규칙과 충돌하면 AskUserQuestion으로 먼저 확인(0008/0009 재확인됨, 같은 충돌이라도 매번 답이 다를 수 있어 매번 물을 것)
 - [크롬 자동화 탭의 stylesheet 캐시 함정](feedback_chrome-automation-stylesheet-cache.md) — computed style은 선언값 echo일 뿐 실제 적용 보증이 아님; `getAnimations()`/`styleSheets.cssRules`로 직접 확인, 필요시 `<link>` href에 캐시버스터
+
+---
+
+## 0009(연두) 전용
+
+위 항목(0007-B/0008 관련)은 이 폴더(0009)와 무관하니 참고하지 말 것 — `.claude/memory/`
+디렉토리 자체가 형제 폴더에서 잘못 복제된 것으로 보인다(내용이 전부 고품격대패/든든김밥
+얘기이고 0009=연두 뷰티샵 얘기는 하나도 없었다). 아래가 0009 고유 메모리다.
+
+- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. border/box-shadow 금지 규칙과 충돌하는 요청(헤더 하단 선)이 0009에서도 발생해 같은 절차로 해결, 폴더 전용이 아닌 공통 절차로 재확인됨
