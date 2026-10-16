@@ -1,0 +1,99 @@
+{
+  "brand": {
+    "name": "연두",
+    "wordmark": "yeondu",
+    "tagline": "과하지 않은, 나에게 맞는 변화"
+  },
+  "nav": [
+    { "label": "메뉴", "target": "#menu" },
+    { "label": "전후사진", "target": "#before-after" },
+    { "label": "소개", "target": "#team" },
+    { "label": "후기", "target": "#reviews" },
+    { "label": "가격·예약", "target": "#pricing" }
+  ],
+  "contact": {
+    "phone": "02-1234-5678",
+    "instagram": "@yeondu_beauty",
+    "instagramUrl": "https://instagram.com/yeondu_beauty",
+    "address": "서울시 마포구 월드컵북로 123 2층",
+    "businessHours": "매일 10:00 - 20:00 (화요일 휴무)",
+    "owner": "박세은",
+    "bizRegNo": "123-45-67890"
+  },
+  "hero": {
+    "headline": "과하지 않은, 나에게 맞는 변화",
+    "desc": "연두는 피부 본연의 리듬을 살피는 차분한 뷰티샵입니다. 처음 상담부터 관리까지, 나에게 맞는 속도로 안내해 드립니다.",
+    "primaryLabel": "예약하기",
+    "secondaryLabel": "메뉴 보기"
+  },
+  "menu": {
+    "categories": ["스킨케어", "왁싱", "속눈썹"],
+    "items": [
+      { "category": "스킨케어", "name": "수분 진정 페이셜", "desc": "건조하고 예민해진 피부결을 가라앉히는 기본 관리입니다.", "price": 70000, "badge": "인기" },
+      { "category": "스킨케어", "name": "모공 딥클렌징 케어", "desc": "피지와 각질을 정리해 피부결을 정돈합니다.", "price": 85000, "badge": "" },
+      { "category": "스킨케어", "name": "브라이트닝 앰플 케어", "desc": "칙칙한 톤을 환하게 가꾸는 집중 관리입니다.", "price": 95000, "badge": "신규" },
+      { "category": "왁싱", "name": "팔 왁싱", "desc": "매끈한 팔 라인을 위한 기본 왁싱입니다.", "price": 30000, "badge": "" },
+      { "category": "왁싱", "name": "다리 왁싱", "desc": "부담 없는 가격의 다리 전체 왁싱입니다.", "price": 45000, "badge": "" },
+      { "category": "왁싱", "name": "얼굴 솜털 정리", "desc": "화장이 잘 받는 매끈한 피부결을 만듭니다.", "price": 25000, "badge": "추천" },
+      { "category": "속눈썹", "name": "속눈썹 펌", "desc": "자연스럽게 올라간 눈매를 연출합니다.", "price": 40000, "badge": "" },
+      { "category": "속눈썹", "name": "속눈썹 연장(내추럴)", "desc": "또렷하지만 과하지 않은 자연스러운 연장입니다.", "price": 60000, "badge": "" },
+      { "category": "속눈썹", "name": "속눈썹 연장(볼륨)", "desc": "풍성한 밀도감을 더한 볼륨 연장입니다.", "price": 80000, "badge": "인기" }
+    ]
+  },
+  "about": {
+    "lead": "피부를 대하는 방식은 늘 같습니다.",
+    "body": "연두는 유행보다 <b>피부 본연의 리듬</b>을 먼저 살핍니다. 짙은 초록이 되기 전 여린 새잎처럼, 무리하지 않는 속도로 나아갑니다. 상담부터 관리까지 과정마다 차분하게 설명해 드리고, 꼭 필요한 관리만 권해 드립니다."
+  },
+  "beforeAfter": [
+    { "service": "수분 진정 페이셜", "beforeLabel": "관리 전", "afterLabel": "관리 직후" },
+    { "service": "모공 딥클렌징 케어", "beforeLabel": "관리 전", "afterLabel": "2주 후" },
+    { "service": "브라이트닝 앰플 케어", "beforeLabel": "관리 전", "afterLabel": "4주 후" },
+    { "service": "속눈썹 연장(볼륨)", "beforeLabel": "시술 전", "afterLabel": "시술 후" }
+  ],
+  "team": [
+    { "name": "박세은", "role": "원장 · 피부관리사", "bio": "10년간 피부 상담과 관리를 해왔습니다. 눈에 띄는 변화보다 꾸준히 좋아지는 피부를 지향합니다." },
+    { "name": "이하늘", "role": "디자이너", "bio": "속눈썹·왁싱 전문 디자이너입니다. 자연스러운 라인을 가장 중요하게 생각합니다." }
+  ],
+  "reviews": [
+    { "author": "이*영", "service": "수분 진정 페이셜", "month": "2026.09", "text": "설명을 꼼꼼하게 해주셔서 믿음이 갔어요. 관리 받고 나니 피부가 편안해졌습니다." },
+    { "author": "박*준", "service": "속눈썹 연장(내추럴)", "month": "2026.08", "text": "과하지 않게 자연스러운 라인으로 해주셔서 만족스러워요." },
+    { "author": "최*은", "service": "모공 딥클렌징 케어", "month": "2026.08", "text": "부담 없이 편안한 분위기에서 관리받을 수 있었어요." }
+  ],
+  "pricing": [
+    { "service": "첫 방문 상담", "price": 0 },
+    { "service": "수분 진정 페이셜", "price": 70000 },
+    { "service": "모공 딥클렌징 케어", "price": 85000 },
+    { "service": "다리 왁싱", "price": 45000 },
+    { "service": "속눈썹 펌", "price": 40000 },
+    { "service": "속눈썹 연장(볼륨)", "price": 80000 }
+  ],
+  "chatbot": {
+    "fabLabel": "빠른 문의",
+    "panelTitle": "무엇이 궁금하신가요?",
+    "panelSubtitle": "자주 묻는 질문에 바로 답해드려요.",
+    "greeting": ["안녕하세요, 연두입니다.", "아래 질문 중 궁금하신 걸 눌러보세요."],
+    "topics": [
+      { "id": "price", "label": "가격이 궁금해요" },
+      { "id": "reservation", "label": "예약은 어떻게 하나요" },
+      { "id": "location", "label": "위치가 어디인가요" },
+      { "id": "hours", "label": "영업시간이 궁금해요" }
+    ]
+  },
+  "footer": {
+    "about": [
+      { "label": "브랜드 소개" },
+      { "label": "오시는 길" },
+      { "label": "채용" }
+    ],
+    "info": [
+      { "label": "예약 안내" },
+      { "label": "환불 정책" },
+      { "label": "자주 묻는 질문" }
+    ],
+    "other": [
+      { "label": "인스타그램" },
+      { "label": "개인정보처리방침" },
+      { "label": "이용약관" }
+    ]
+  }
+}
