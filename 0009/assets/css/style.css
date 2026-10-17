@@ -539,35 +539,121 @@ section {
   }
 }
 
-/* 실제 후기 */
+/* 실제 후기 — 비정형 높이의 사진 placeholder 그리드. 호버 시 해당 후기 내용 오버레이 */
 
-.review-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
+.review-photo-grid {
+  position: relative;
+  column-count: 4;
+  column-gap: var(--space-2);
 }
 
-.review-card {
-  padding: 16px 20px;
-  background: var(--color-surface);
+/* 그라데이션 금지 규칙의 명시적 예외(02-css.md 참고) — 그리드 하단이 흰 배경으로
+   자연스럽게 번져 사라지는 페이드아웃. 아래 셀의 호버는 pointer-events:none으로 유지 */
+.review-photo-grid::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 520px;
+  background: linear-gradient(to bottom, transparent, var(--color-white));
+  pointer-events: none;
+}
+
+.review-photo-cell {
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius-base);
+  break-inside: avoid;
+  margin-bottom: var(--space-2);
 }
 
-.review-text {
-  font-size: 15px;
-  line-height: 24px;
+.review-photo-cell:nth-child(8n + 1) {
+  height: 200px;
 }
 
-.review-meta {
+.review-photo-cell:nth-child(8n + 2) {
+  height: 260px;
+}
+
+.review-photo-cell:nth-child(8n + 3) {
+  height: 180px;
+}
+
+.review-photo-cell:nth-child(8n + 4) {
+  height: 230px;
+}
+
+.review-photo-cell:nth-child(8n + 5) {
+  height: 220px;
+}
+
+.review-photo-cell:nth-child(8n + 6) {
+  height: 170px;
+}
+
+.review-photo-cell:nth-child(8n + 7) {
+  height: 280px;
+}
+
+.review-photo-cell:nth-child(8n + 8) {
+  height: 210px;
+}
+
+.review-photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review-photo-hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--color-lime) 85%, transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.review-photo-cell:hover .review-photo-hover {
+  opacity: 1;
+}
+
+.review-photo-hover-text {
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.review-photo-hover-meta {
   margin-top: var(--space-2);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.review-photo-hover-name {
   font-size: 13px;
-  line-height: 20px;
-  color: var(--color-gray);
+  font-weight: 700;
+}
+
+.review-photo-hover-service {
+  font-weight: 500;
+}
+
+.review-photo-hover-date {
+  font-weight: 400;
 }
 
 @media (max-width: 1024px) {
-  .review-grid {
-    grid-template-columns: 1fr;
+  .review-photo-grid {
+    column-count: 2;
   }
 }
 

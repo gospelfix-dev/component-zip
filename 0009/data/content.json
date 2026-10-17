@@ -59,6 +59,20 @@
     { "author": "박*준", "service": "속눈썹 연장(내추럴)", "month": "2026.08", "text": "과하지 않게 자연스러운 라인으로 해주셔서 만족스러워요." },
     { "author": "최*은", "service": "모공 딥클렌징 케어", "month": "2026.08", "text": "부담 없이 편안한 분위기에서 관리받을 수 있었어요." }
   ],
+  "reviewGallery": [
+    "realReviews/39-1.jpg",
+    "realReviews/40-2.jpg",
+    "realReviews/41-3.jpg",
+    "realReviews/42-4.jpg",
+    "realReviews/43-5.jpg",
+    "realReviews/44-6.jpg",
+    "realReviews/45-7.jpg",
+    "realReviews/46-8.jpg",
+    "realReviews/47-9.jpg",
+    "realReviews/48-10.jpg",
+    "realReviews/49-11.jpg",
+    "realReviews/50-12.jpg"
+  ],
   "pricing": [
     { "service": "첫 방문 상담", "price": 0 },
     { "service": "수분 진정 페이셜", "price": 70000 },

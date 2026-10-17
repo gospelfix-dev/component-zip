@@ -171,17 +171,25 @@ function renderTeam(data) {
 }
 
 function renderReviews(data) {
-  const html = data.reviews
-    .map(
-      (review) => `
-        <div class="review-card">
-          <p class="review-text">${esc(review.text)}</p>
-          <p class="review-meta">${esc(review.author)} · ${esc(review.service)} · ${esc(review.month)}</p>
+  const photoHtml = data.reviewGallery
+    .map((file, i) => {
+      const review = data.reviews[i % data.reviews.length];
+      return `
+        <div class="review-photo-cell">
+          <img class="review-photo-img" src="assets/imgs/${esc(file)}" alt="고객 후기 사진" loading="lazy" />
+          <div class="review-photo-hover">
+            <p class="review-photo-hover-text">${esc(review.text)}</p>
+            <p class="review-photo-hover-meta">
+              <span class="review-photo-hover-name">${esc(review.author)}</span> ·
+              <span class="review-photo-hover-service">${esc(review.service)}</span> ·
+              <span class="review-photo-hover-date">${esc(review.month)}</span>
+            </p>
+          </div>
         </div>
-      `
-    )
+      `;
+    })
     .join('');
-  fill('reviewGrid', html);
+  fill('reviewPhotoGrid', photoHtml);
 }
 
 function renderPricing(data) {

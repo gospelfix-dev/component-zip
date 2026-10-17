@@ -27,6 +27,7 @@
   "team": [ { "name": "string", "role": "string", "bio": "string" } ],       // 2개
   "reviews": [ { "author": "string", "service": "string", "month": "string",
                  "text": "string" } ],                                       // 3개
+  "reviewGallery": ["string(assets/imgs/ 기준 상대경로)"],                     // 8개, 실제 사진
   "pricing": [ { "service": "string", "price": 50000 } ],                    // 6개
   "chatbot": {                                                               // UI 카피만 — 답변 본문은 JS가 조합
     "fabLabel": "string", "panelTitle": "string", "panelSubtitle": "string",
@@ -51,6 +52,15 @@
 - **`image` 필드는 의도적으로 두지 않는다.** 실사진이 전무하므로 JS가 필드 부재를
   기준으로 `tint`/`surface` 배경의 색상블록 placeholder를 렌더링한다. 실사진이 들어오면
   `image` 필드를 추가하고 `assets/js/script.js`의 해당 render 함수에 분기를 추가한다.
+  - **실제 사례**: 히어로(`hero` 배경, `assets/imgs/top-banner.png`, CSS
+    `background: url(...) center/cover`)와 실제 후기 사진 그리드(`reviewGallery`,
+    `assets/imgs/realReviews/*.jpg`, `<img>` + `object-fit: cover`)에 실사진이
+    적용됐다 — 이 두 곳은 플레이스홀더 블록 규칙의 의도된 예외다. 원본은
+    `assets/imgs/realReviews/*.png`(최대 변 1122px, 장당 ~2MB)였고, 그리드 셀
+    표시 크기(최대 ~340px)에 맞춰 `sips -Z 640 -s format jpeg -s formatOptions 75`로
+    리사이즈·JPEG 변환해 장당 55~80KB로 줄인 뒤 `.jpg`만 `reviewGallery`에 연결했다.
+    원본 `.png`는 이후 사용자 요청으로 삭제했다 — `assets/imgs/realReviews/`에는
+    실제 사용하는 `.jpg` 8장만 남아 있다.
 - `nav[].target`은 `index.html`의 섹션 `id`와 정확히 일치해야 한다(`#hero`, `#menu`,
   `#before-after`, `#team`, `#pricing` 등) — 어긋나면 `initSmoothScroll`이 조용히
   아무 동작도 하지 않는다.
