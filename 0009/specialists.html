@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>연두 — 전문가 소개 (디자인 시안)</title>
+  <meta name="description" content="Stitch 디자인 시안을 재현한 연두 전문가 소개 페이지입니다." />
+  <link rel="stylesheet" href="assets/css/init.css" />
+  <link rel="stylesheet" href="assets/css/fonts.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+
+  <header class="site-header site-header--solid" id="siteHeader">
+    <div class="header-inner container">
+      <a class="brand-mark" href="index.html" id="brandWordmark">yeondu</a>
+
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list" id="draftNavList">
+          <li><a class="nav-link" href="home.html">홈</a></li>
+          <li><a class="nav-link is-active" href="specialists.html">전문가 소개</a></li>
+          <li><a class="nav-link" href="programs.html">프로그램·가격</a></li>
+          <li><a class="nav-link" href="portfolio.html">포트폴리오</a></li>
+          <li><a class="nav-link" href="contact.html">예약·오시는 길</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-primary btn-sm" href="contact.html#reservationForm" data-target="#reservationForm">예약하기</a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mainNav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" id="hero">
+      <div class="container">
+        <p class="draft-notice reveal">
+          <span class="draft-badge">디자인 시안</span>
+          <a href="index.html">실제 홈페이지 보기 →</a>
+        </p>
+        <h1 class="reveal">당신의 피부가 지닌<br />고유한 결을 가장 자연스럽게 살립니다</h1>
+        <p class="reveal" id="aboutLead"></p>
+
+        <div class="ethos-grid reveal">
+          <div class="ethos-card">
+            <span class="ethos-label">01 · 상담</span>
+            <span class="ethos-title">1:1 정밀 피부 진단</span>
+            <p class="ethos-desc">피부 타입과 고민을 꼼꼼히 여쭤보고 그날의 컨디션에 맞는 관리를 제안합니다.</p>
+          </div>
+          <div class="ethos-card">
+            <span class="ethos-label">02 · 위생</span>
+            <span class="ethos-title">일회용 멸균 도구</span>
+            <p class="ethos-desc">시술에 쓰는 도구는 고객이 보는 자리에서 새로 개봉해 안전을 약속합니다.</p>
+          </div>
+          <div class="ethos-card">
+            <span class="ethos-label">03 · 제품</span>
+            <span class="ethos-title">정품·정량 원칙</span>
+            <p class="ethos-desc">사용하는 제품과 용량을 투명하게 안내하고, 꼭 필요한 관리만 권해 드립니다.</p>
+          </div>
+          <div class="ethos-card">
+            <span class="ethos-label">04 · 예약</span>
+            <span class="ethos-title">1인 프라이빗 케어</span>
+            <p class="ethos-desc">동시간대 한 분만 모셔 온전히 집중할 수 있는 조용한 시간을 보장합니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-surface">
+      <div class="container">
+        <div class="director-grid">
+          <div class="director-portrait reveal">
+            <div class="img-placeholder">[원장 사진]</div>
+            <div class="director-caption">
+              <p class="director-caption-name" id="directorCaptionName"></p>
+              <p class="director-caption-role" id="directorCaptionRole"></p>
+            </div>
+          </div>
+          <div class="reveal">
+            <span class="tag">원장 인터뷰</span>
+            <h2 class="director-quote">“불필요한 관리는 권하지 않습니다.<br />눈에 띄는 변화보다 꾸준히 좋아지는 피부를 지향합니다.”</h2>
+            <p class="about-body" id="directorBio"></p>
+            <div class="director-credentials">
+              <span class="director-credential">피부미용사 국가자격증 보유</span>
+              <span class="director-credential">10년 이상 상담·관리 경력</span>
+              <span class="director-credential">정품·정량 관리 원칙 준수</span>
+            </div>
+            <div class="director-signature-row">
+              <span>
+                <span class="director-signature-role">연두 원장</span>
+                <span class="director-signature-name" id="directorSignatureName"></span>
+              </span>
+              <a class="btn btn-primary" href="contact.html#reservationForm" data-target="#reservationForm">원장 1:1 상담 예약</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title reveal">각자의 전문 분야를 가진 전담 스태프</h2>
+        <p class="section-desc reveal">상담부터 관리, 사후 안내까지 한 분을 한 명의 담당자가 책임집니다.</p>
+        <div class="team-grid reveal" id="teamGrid"></div>
+      </div>
+    </section>
+
+    <section class="section-surface">
+      <div class="container">
+        <h2 class="section-title reveal">공간이 주는 편안함이 곧 케어의 시작입니다</h2>
+        <div class="clinic-photo-grid reveal">
+          <div class="img-placeholder clinic-photo-main">[관리실 전경]</div>
+          <div class="clinic-photo-sub-stack">
+            <div class="img-placeholder">[조제·위생 공간]</div>
+            <div class="img-placeholder">[대기 라운지]</div>
+          </div>
+        </div>
+        <div class="system-grid reveal">
+          <div class="step-card step-card--light">
+            <span class="step-card-title">청결 멸균 시스템</span>
+            <p class="step-card-desc">시술에 쓰는 모든 도구는 1회용으로 사용 후 폐기하며, 재사용 기구는 고온 멸균으로 관리합니다.</p>
+          </div>
+          <div class="step-card step-card--light">
+            <span class="step-card-title">저자극 제품 선별</span>
+            <p class="step-card-desc">민감성 피부에도 편안한 저자극 제품만 엄선해 사용합니다.</p>
+          </div>
+          <div class="step-card step-card--light">
+            <span class="step-card-title">1:1 프라이빗 예약제</span>
+            <p class="step-card-desc">하루 인원을 제한해 담당자가 온전히 집중할 수 있는 시간을 보장합니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title section-title--center reveal">처음부터 끝까지 투명한 관리 순서</h2>
+        <div class="process-grid reveal">
+          <div class="step-card">
+            <span class="ethos-label">STEP 01</span>
+            <span class="step-card-title">상담 및 피부 진단</span>
+            <p class="step-card-desc">피부 타입, 고민, 알레르기 유무를 꼼꼼히 확인합니다.</p>
+          </div>
+          <div class="step-card">
+            <span class="ethos-label">STEP 02</span>
+            <span class="step-card-title">맞춤 관리 설계</span>
+            <p class="step-card-desc">그날의 컨디션에 맞춰 꼭 필요한 관리만 제안합니다.</p>
+          </div>
+          <div class="step-card">
+            <span class="ethos-label">STEP 03</span>
+            <span class="step-card-title">멸균 환경 케어</span>
+            <p class="step-card-desc">1회용 도구와 저자극 제품으로 섬세하게 진행합니다.</p>
+          </div>
+          <div class="step-card">
+            <span class="ethos-label">STEP 04</span>
+            <span class="step-card-title">홈케어 안내</span>
+            <p class="step-card-desc">관리 후 유의사항과 홈케어 방법을 안내해 드립니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="container">
+        <div class="cta-banner-inner reveal">
+          <h2>당신에게 꼭 필요한 관리만을 권합니다</h2>
+          <p>상담만으로도 편하게 방문하실 수 있습니다. 여유로운 상담을 위해 예약을 권해 드려요.</p>
+          <div class="cta-banner-actions">
+            <a class="btn btn-secondary" href="programs.html">프로그램 및 가격 보기</a>
+            <a class="btn btn-primary" href="contact.html#reservationForm" data-target="#reservationForm">상담 예약하기</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="siteFooter">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" id="footerWordmark"></span>
+        <p class="footer-tagline" id="footerTagline"></p>
+        <div class="footer-social" id="footerSocial"></div>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul id="footerAbout"></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Info</h4>
+          <ul id="footerInfo"></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Other</h4>
+          <ul id="footerOther"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <p class="footer-legal" id="footerLegal"></p>
+    </div>
+  </footer>
+
+  <div class="sticky-bar" id="stickyBar">
+    <a class="btn btn-primary" id="stickyPrimaryBtn" href="contact.html#reservationForm" data-target="#reservationForm">예약하기</a>
+    <a class="btn btn-secondary" id="stickySecondaryBtn" href="contact.html#reservationForm" data-target="#reservationForm">문의</a>
+  </div>
+
+  <button type="button" class="chat-fab" id="chatFab" aria-label="빠른 문의 열기" aria-expanded="false" aria-controls="chatPanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    </svg>
+    <span class="chat-fab-label" aria-hidden="true">문의</span>
+  </button>
+
+  <div class="chat-panel" id="chatPanel" hidden>
+    <div class="chat-panel-header">
+      <div>
+        <p class="chat-panel-title" id="chatPanelTitle"></p>
+        <p class="chat-panel-subtitle" id="chatPanelSubtitle"></p>
+      </div>
+      <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="닫기">&times;</button>
+    </div>
+    <div class="chat-body">
+      <div class="chat-greeting" id="chatGreeting"></div>
+      <div class="chat-topics" id="chatTopics"></div>
+      <div class="chat-answer" id="chatAnswer" hidden></div>
+    </div>
+  </div>
+
+  <p class="fetch-error" id="fetchError" hidden></p>
+
+  <!-- 2026-10-16 외부 CDN 금지 규칙의 명시적 예외(사용자 확정) — motion.dev(Motion) -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
+  <script src="assets/js/script.js" defer></script>
+</body>
+</html>

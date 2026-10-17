@@ -2,6 +2,7 @@
 
 let siteData = null;
 const menuState = { activeCategory: null };
+const homeMenuState = { activeCategory: null };
 
 document.addEventListener('DOMContentLoaded', boot);
 
@@ -21,6 +22,8 @@ function boot() {
       siteData = data;
       renderAll(data);
       initMenuCategoryTabs(data);
+      initHomeMenuTabs(data);
+      initFaqAccordion();
       initScrollReveal('.reveal');
     })
     .catch(showFetchError);
@@ -36,6 +39,16 @@ function renderAll(data) {
   renderPricing(data);
   renderChatbotContent(data);
   renderFooter(data);
+  // 디자인 시안(draft) 페이지 전용 — 해당 컨테이너가 없는 페이지(index.html 등)에서는
+  // 각 함수 내부의 요소 존재 체크로 조용히 no-op된다.
+  renderHomeMenuCards(data);
+  renderReviewQuotes(data);
+  renderHomeQuote(data);
+  renderDirectorProfile(data);
+  renderCaseGrid(data);
+  renderServiceCatalog(data);
+  renderBookingServicePills(data);
+  renderDraftCtaLinks(data);
 }
 
 // 공용 유틸
@@ -141,14 +154,215 @@ function renderBeforeAfter(data) {
         <div class="before-after-pair">
           <p class="before-after-service">${esc(pair.service)}</p>
           <div class="before-after-photos">
-            <div class="img-placeholder">[${esc(pair.beforeLabel)}]</div>
-            <div class="img-placeholder">[${esc(pair.afterLabel)}]</div>
+            <div class="before-after-photo img-placeholder">
+              [사진]
+              <span class="before-after-tag">${esc(pair.beforeLabel)}</span>
+            </div>
+            <div class="before-after-photo before-after-photo--after img-placeholder">
+              [사진]
+              <span class="before-after-tag before-after-tag--after">${esc(pair.afterLabel)}</span>
+            </div>
           </div>
         </div>
       `
     )
     .join('');
   fill('beforeAfterGrid', html);
+}
+
+// 디자인 시안(draft) 페이지 전용 렌더 함수 — home.html의 카드형 시그니처 프로그램,
+// 후기 인용 밴드, 철학 섹션 인용구. 대상 컨테이너가 없으면(= index.html 등) 조용히 종료한다.
+
+function renderHomeMenuCards(data) {
+  const tabsEl = document.getElementById('homeMenuTabs');
+  const cardsEl = document.getElementById('homeMenuCards');
+  if (!tabsEl || !cardsEl) return;
+
+  if (!homeMenuState.activeCategory) {
+    homeMenuState.activeCategory = data.menu.categories[0];
+  }
+
+  const tabsHtml = data.menu.categories
+    .map((cat) => {
+      const activeClass = cat === homeMenuState.activeCategory ? ' is-active' : '';
+      return `<button type="button" class="pill-tab${activeClass}" data-category="${esc(cat)}">${esc(cat)}</button>`;
+    })
+    .join('');
+  tabsEl.innerHTML = tabsHtml;
+
+  const items = data.menu.items.filter((item) => item.category === homeMenuState.activeCategory);
+  const cardsHtml = items
+    .map((item) => {
+      const badge = item.badge ? `<span class="tag">${esc(item.badge)}</span>` : '';
+      return `
+        <div class="program-card">
+          <div class="img-placeholder program-card-thumb">[사진]</div>
+          <div class="program-card-body">
+            <div class="program-card-top">
+              <span class="tag tag--neutral">${esc(item.category)}</span>
+              ${badge}
+            </div>
+            <h3 class="program-card-name">${esc(item.name)}</h3>
+            <p class="program-card-desc">${esc(item.desc)}</p>
+          </div>
+          <div class="program-card-footer">
+            <span class="program-card-price">${won(item.price)}</span>
+            <a class="btn btn-secondary btn-sm" href="contact.html#reservationForm" data-target="#reservationForm">예약 선택</a>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+  cardsEl.innerHTML = cardsHtml;
+}
+
+function initHomeMenuTabs(data) {
+  const tabs = document.getElementById('homeMenuTabs');
+  if (!tabs) return;
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-category]');
+    if (!btn) return;
+    homeMenuState.activeCategory = btn.dataset.category;
+    renderHomeMenuCards(data);
+  });
+}
+
+function renderServiceCatalog(data) {
+  const el = document.getElementById('serviceCatalog');
+  if (!el) return;
+  const html = data.menu.categories
+    .map((cat, i) => {
+      const items = data.menu.items.filter((item) => item.category === cat);
+      const itemsHtml = items
+        .map((item) => {
+          const badge = item.badge ? `<span class="tag">${esc(item.badge)}</span>` : '';
+          return `
+            <div class="service-item-card">
+              <div class="service-item-top">
+                <p class="service-item-name">${esc(item.name)}</p>
+                ${badge}
+              </div>
+              <p class="service-item-desc">${esc(item.desc)}</p>
+              <div class="service-item-footer">
+                <span>${won(item.price)}</span>
+                <a class="btn btn-secondary btn-sm" href="contact.html#reservationForm" data-target="#reservationForm">예약 선택</a>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+      return `
+        <div class="service-category-block">
+          <div class="service-category-heading">
+            <h3><span class="service-category-number">0${i + 1}</span>${esc(cat)}</h3>
+          </div>
+          <div class="service-item-grid">${itemsHtml}</div>
+        </div>
+      `;
+    })
+    .join('');
+  el.innerHTML = html;
+}
+
+function renderBookingServicePills(data) {
+  const el = document.getElementById('bookingServicePills');
+  if (!el) return;
+  const html = data.menu.items
+    .map(
+      (item, i) => `
+        <label class="service-pill">
+          <span class="service-pill-left">
+            <input type="checkbox" name="bookingService" value="${esc(item.name)}" id="bookingService${i}" />
+            <span>
+              <span class="service-pill-name">${esc(item.name)}</span><br />
+              <span class="service-pill-desc">${esc(item.category)}</span>
+            </span>
+          </span>
+          <span class="service-pill-price">${won(item.price)}</span>
+        </label>
+      `
+    )
+    .join('');
+  el.innerHTML = html;
+}
+
+const STAR_SVG = '<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.8-4.3 4.1 1 5.8L10 14.6l-5.2 2.9 1-5.8L1.5 7.6l5.9-.8z"/></svg>';
+
+function renderReviewQuotes(data) {
+  const el = document.getElementById('reviewQuoteBand');
+  if (!el) return;
+  const html = data.reviews
+    .map(
+      (r) => `
+        <div class="review-quote-card">
+          <div class="review-quote-stars">${STAR_SVG.repeat(5)}</div>
+          <p class="review-quote-text">${esc(r.text)}</p>
+          <p class="review-quote-meta">${esc(r.service)} · ${esc(r.author)} · ${esc(r.month)}</p>
+        </div>
+      `
+    )
+    .join('');
+  el.innerHTML = html;
+}
+
+function renderHomeQuote(data) {
+  const textEl = document.getElementById('homeQuoteText');
+  if (!textEl) return;
+  setText('homeQuoteText', data.about.lead);
+  const lead = data.team && data.team[0] ? `${data.team[0].name} ${data.team[0].role}` : '';
+  setText('homeQuoteAuthor', lead);
+}
+
+function renderCaseGrid(data) {
+  const el = document.getElementById('caseGrid');
+  if (!el) return;
+  const html = data.beforeAfter
+    .map(
+      (pair) => `
+        <article class="case-card">
+          <div class="case-card-header">
+            <span class="tag">${esc(pair.service)}</span>
+          </div>
+          <p class="case-card-desc">${esc(pair.beforeLabel)} 대비 ${esc(pair.afterLabel)} 상태를 동일한 조명과 각도에서 기록했습니다.</p>
+          <div class="case-card-photos">
+            <div class="before-after-photo img-placeholder">
+              [사진]
+              <span class="before-after-tag">${esc(pair.beforeLabel)}</span>
+            </div>
+            <div class="before-after-photo before-after-photo--after img-placeholder">
+              [사진]
+              <span class="before-after-tag before-after-tag--after">${esc(pair.afterLabel)}</span>
+            </div>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+  el.innerHTML = html;
+}
+
+function renderDirectorProfile(data) {
+  const nameEl = document.getElementById('directorCaptionName');
+  if (!nameEl) return;
+  const director = data.team[0];
+  setText('directorCaptionName', director.name);
+  setText('directorCaptionRole', director.role);
+  setText('directorBio', director.bio);
+  setText('directorSignatureName', director.name);
+}
+
+function renderDraftCtaLinks(data) {
+  const callLink = document.getElementById('ctaCallLink');
+  if (callLink) {
+    callLink.href = `tel:${data.contact.phone}`;
+    callLink.textContent = `전화 상담 (${data.contact.phone})`;
+  }
+
+  const igLink = document.getElementById('contactInstagram');
+  if (igLink) {
+    igLink.href = data.contact.instagramUrl;
+    igLink.textContent = `인스타그램 ${data.contact.instagram}`;
+  }
 }
 
 function renderTeam(data) {
@@ -285,16 +499,44 @@ function initChatbot() {
 function initReservationForm() {
   const form = document.getElementById('reservationForm');
   const result = document.getElementById('formResult');
+  const success = document.getElementById('bookingSuccess');
   if (!form) return;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!form.checkValidity()) {
       if (result) result.textContent = '이름과 연락처를 입력해 주세요.';
+      if (success) success.hidden = true;
       return;
     }
     if (result) result.textContent = '문의가 접수되었습니다. 빠르게 연락드리겠습니다.';
+    if (success) success.hidden = false;
     form.reset();
+  });
+}
+
+// FAQ 아코디언 (contact.html 전용 — 요소 없으면 조용히 종료)
+
+function initFaqAccordion() {
+  const items = document.querySelectorAll('.faq-item');
+  if (!items.length) return;
+
+  items.forEach((item) => {
+    const trigger = item.querySelector('.faq-trigger');
+    const content = item.querySelector('.faq-content');
+    if (!trigger || !content) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.classList.contains('is-open');
+      items.forEach((other) => {
+        other.querySelector('.faq-trigger')?.classList.remove('is-open');
+        if (other.querySelector('.faq-content')) other.querySelector('.faq-content').hidden = true;
+      });
+      if (!isOpen) {
+        trigger.classList.add('is-open');
+        content.hidden = false;
+      }
+    });
   });
 }
 
@@ -317,7 +559,7 @@ function initSmoothScroll() {
       if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
     }
 
-    if (link.dataset.target === '#pricing') {
+    if (link.dataset.target === '#pricing' || link.dataset.target === '#reservationForm') {
       window.setTimeout(() => {
         const nameInput = document.getElementById('resName');
         if (nameInput) nameInput.focus();

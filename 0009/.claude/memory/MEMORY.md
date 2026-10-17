@@ -37,7 +37,8 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 디렉토리 자체가 형제 폴더에서 잘못 복제된 것으로 보인다(내용이 전부 고품격대패/든든김밥
 얘기이고 0009=연두 뷰티샵 얘기는 하나도 없었다). 아래가 0009 고유 메모리다.
 
-- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. 폰트 크기/웨이트·radius 재사용·backdrop-filter·CDN·워드마크 대소문자 등 6건 추가 재확인, 전부 "예외 선택"이었지만 그래도 매번 물을 것
+- [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. 폰트/CDN 등 미시적 규칙 6건에 이어, 2026-10-18 "1페이지 사이트" 아키텍처 자체와 충돌한 매크로 사례(Stitch 5화면 요청)까지 같은 절차로 확인·기록함
 - [크롬 자동화 캐시 함정, JS/JSON까지 확장](feedback_chrome-automation-stylesheet-cache.md) — 바로 위 0008 항목과 동일 파일. CSS뿐 아니라 script.js·content.json도 캐시되며, 새 탭을 열어도(프로필 공유) 재현됨 — `fetch(url,{cache:'no-store'})`로 서버 실제값 확인, `{cache:'reload'}`로 캐시 갱신
 - [grid item aspect-ratio가 fr 비율을 뭉갬](feedback_grid-aspect-ratio-fr-bug.md) — 서로 다른 fr의 grid-template-columns + 자식에 aspect-ratio를 걸면 4칸이 전부 동일 폭으로 렌더링되는 Chrome 특성. 고정 height로 대체해 해결
 - [실사진 2곳 도입됨](project_real-photos-introduced.md) — 히어로 배경·실제 후기 갤러리(reviewGallery, 12장)에 실사진 적용. realReviews/에 PNG 추가되면 확인 없이 sips 변환→경로 등록→원본 삭제가 확립된 루틴
+- [Stitch 다화면 구현엔 전체 HTML 필수](feedback_stitch-fidelity-full-html-required.md) — 썸네일만 보고 구현하면 과소구현됨(2026-10-18 사용자가 직접 지적) — 모든 화면의 HTML 소스를 먼저 다 읽고 시작할 것

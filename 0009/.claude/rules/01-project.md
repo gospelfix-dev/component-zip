@@ -38,6 +38,18 @@ Skin—clean(코스메톨로지 클리닉) 3개 레퍼런스를 분석해 섹션
   `[이미지 설명]` 텍스트 placeholder 블록으로 대체한다(`docs/08-guidelines.md` "이미지"
   규칙 그대로). 실사진이 들어오면 `data/content.json`에 `image` 필드를 추가하고 해당
   render 함수에 분기를 넣는다.
+- **1페이지 사이트 원칙.** 기본적으로 `index.html` 하나가 전체 사이트이며, nav는 같은
+  페이지 안의 섹션 앵커(`#menu`, `#pricing` 등)로만 이동한다.
+  - **예외(2026-10-18, 사용자 확정)**: Stitch 디자인 시안 5개 화면(홈/전문가 소개/
+    포트폴리오·갤러리/프로그램·가격/예약·오시는 길)을 `home.html`/`specialists.html`/
+    `portfolio.html`/`programs.html`/`contact.html` 5개의 **실제 별도 HTML 파일**로
+    분리 제작했다. `index.html`은 여전히 유일한 프로덕션 1페이지이며 이 5개와 nav를
+    공유하지 않는다 — 5개는 서로만 링크로 연결되는 독립된 **디자인 시안(draft)
+    페이지군**이고, `index.html`에서는 눈에 띄지 않는 한 곳(푸터)에만 진입 링크를
+    둔다. 다른 절대 규칙(빌드 도구 금지·외부 CDN 금지·실사진 금지·브랜드명 연두 유지·
+    색상 토큰·그림자 금지·단일 브레이크포인트 등)은 이 5개 페이지에도 예외 없이
+    그대로 적용된다. 이 5개를 더 늘리거나 index.html의 섹션 앵커 nav를 다중 페이지
+    라우팅으로 바꾸는 추가 확장은 이번 예외 범위 밖이다 — 필요해지면 다시 확인한다.
 
 ## 정본 문서
 
@@ -62,7 +74,12 @@ Skin—clean(코스메톨로지 클리닉) 3개 레퍼런스를 분석해 섹션
 ## 파일 구조
 
 ```
-index.html                  마크업 (빈 data-content 컨테이너, JS가 fetch로 채움)
+index.html                  마크업 (빈 data-content 컨테이너, JS가 fetch로 채움) — 프로덕션 1페이지
+home.html                    디자인 시안(draft) — Stitch "홈" 화면 재현, index.html과 별개
+specialists.html             디자인 시안(draft) — Stitch "전문가 소개" 화면 재현
+portfolio.html                디자인 시안(draft) — Stitch "포트폴리오 및 갤러리" 화면 재현
+programs.html                 디자인 시안(draft) — Stitch "프로그램 및 가격" 화면 재현
+contact.html                  디자인 시안(draft) — Stitch "예약 및 오시는 길" 화면 재현
 docs/                        정본 디자인 문서 (위 표 참고)
 data/content.json           콘텐츠 단일 진실 공급원 (브랜드·연락처·내비·히어로·메뉴·
                              전후사진·팀·후기·가격·챗봇·푸터)

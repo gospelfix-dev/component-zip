@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>연두 — 포트폴리오 및 갤러리 (디자인 시안)</title>
+  <meta name="description" content="Stitch 디자인 시안을 재현한 연두 포트폴리오 및 갤러리 페이지입니다." />
+  <link rel="stylesheet" href="assets/css/init.css" />
+  <link rel="stylesheet" href="assets/css/fonts.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+
+  <header class="site-header site-header--solid" id="siteHeader">
+    <div class="header-inner container">
+      <a class="brand-mark" href="index.html" id="brandWordmark">yeondu</a>
+
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list" id="draftNavList">
+          <li><a class="nav-link" href="home.html">홈</a></li>
+          <li><a class="nav-link" href="specialists.html">전문가 소개</a></li>
+          <li><a class="nav-link" href="programs.html">프로그램·가격</a></li>
+          <li><a class="nav-link is-active" href="portfolio.html">포트폴리오</a></li>
+          <li><a class="nav-link" href="contact.html">예약·오시는 길</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-primary btn-sm" href="contact.html#reservationForm" data-target="#reservationForm">예약하기</a>
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mainNav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero" id="hero">
+      <div class="container">
+        <p class="draft-notice reveal">
+          <span class="draft-badge">디자인 시안</span>
+          <a href="index.html">실제 홈페이지 보기 →</a>
+        </p>
+        <h1 class="reveal">변화의 과정을 있는 그대로 보여드립니다</h1>
+        <p class="reveal">같은 조명과 각도로 기록한 전후 비교, 그리고 실제 방문객이 남겨주신 후기 사진입니다. 과장 없이, 기록한 그대로 공유합니다.</p>
+
+        <div class="metric-counter reveal">
+          <div>
+            <p class="metric-value">4</p>
+            <p class="metric-label">관리 영역별 전후 기록</p>
+          </div>
+          <div class="metric-counter-divider"></div>
+          <div>
+            <p class="metric-value">12</p>
+            <p class="metric-label">실제 방문객 후기 사진</p>
+          </div>
+          <div class="metric-counter-divider"></div>
+          <div>
+            <p class="metric-value">1:1</p>
+            <p class="metric-label">프라이빗 케어 원칙</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title reveal">케이스 스터디</h2>
+        <p class="section-desc reveal">관리 전후를 같은 조명과 각도에서 그대로 기록했습니다.</p>
+        <div class="case-grid reveal" id="caseGrid"></div>
+      </div>
+    </section>
+
+    <section class="section-surface">
+      <div class="container">
+        <h2 class="section-title reveal">실제 방문객이 남긴 순간들</h2>
+        <p class="section-desc reveal">연출 없이, 방문해 주신 분들이 직접 남겨주신 사진입니다.</p>
+        <div class="mosaic-gallery reveal" id="reviewPhotoGrid"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2 class="section-title reveal">다녀가신 분들의 이야기</h2>
+        <div class="review-quote-band reveal" id="reviewQuoteBand"></div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="container">
+        <div class="cta-banner-inner reveal">
+          <h2>나에게 맞는 변화를 찾아보세요</h2>
+          <p>원하시는 결과를 말씀해 주시면 가능한 범위를 솔직하게 안내해 드립니다.</p>
+          <div class="cta-banner-actions">
+            <a class="btn btn-primary" href="contact.html#reservationForm" data-target="#reservationForm">상담 예약하기</a>
+            <a class="btn btn-secondary" id="ctaCallLink" href="#"></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="siteFooter">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" id="footerWordmark"></span>
+        <p class="footer-tagline" id="footerTagline"></p>
+        <div class="footer-social" id="footerSocial"></div>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul id="footerAbout"></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Info</h4>
+          <ul id="footerInfo"></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Other</h4>
+          <ul id="footerOther"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <p class="footer-legal" id="footerLegal"></p>
+    </div>
+  </footer>
+
+  <div class="sticky-bar" id="stickyBar">
+    <a class="btn btn-primary" id="stickyPrimaryBtn" href="contact.html#reservationForm" data-target="#reservationForm">예약하기</a>
+    <a class="btn btn-secondary" id="stickySecondaryBtn" href="contact.html#reservationForm" data-target="#reservationForm">문의</a>
+  </div>
+
+  <button type="button" class="chat-fab" id="chatFab" aria-label="빠른 문의 열기" aria-expanded="false" aria-controls="chatPanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    </svg>
+    <span class="chat-fab-label" aria-hidden="true">문의</span>
+  </button>
+
+  <div class="chat-panel" id="chatPanel" hidden>
+    <div class="chat-panel-header">
+      <div>
+        <p class="chat-panel-title" id="chatPanelTitle"></p>
+        <p class="chat-panel-subtitle" id="chatPanelSubtitle"></p>
+      </div>
+      <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="닫기">&times;</button>
+    </div>
+    <div class="chat-body">
+      <div class="chat-greeting" id="chatGreeting"></div>
+      <div class="chat-topics" id="chatTopics"></div>
+      <div class="chat-answer" id="chatAnswer" hidden></div>
+    </div>
+  </div>
+
+  <p class="fetch-error" id="fetchError" hidden></p>
+
+  <!-- 2026-10-16 외부 CDN 금지 규칙의 명시적 예외(사용자 확정) — motion.dev(Motion) -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
+  <script src="assets/js/script.js" defer></script>
+</body>
+</html>
