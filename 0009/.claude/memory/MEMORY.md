@@ -40,4 +40,4 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 - [하드 규칙 충돌 시 먼저 확인](feedback_hard-rule-conflict-ask-first.md) — 바로 위 0008 항목과 동일 파일. 폰트 크기/웨이트·radius 재사용·backdrop-filter·CDN·워드마크 대소문자 등 6건 추가 재확인, 전부 "예외 선택"이었지만 그래도 매번 물을 것
 - [크롬 자동화 캐시 함정, JS/JSON까지 확장](feedback_chrome-automation-stylesheet-cache.md) — 바로 위 0008 항목과 동일 파일. CSS뿐 아니라 script.js·content.json도 캐시되며, 새 탭을 열어도(프로필 공유) 재현됨 — `fetch(url,{cache:'no-store'})`로 서버 실제값 확인, `{cache:'reload'}`로 캐시 갱신
 - [grid item aspect-ratio가 fr 비율을 뭉갬](feedback_grid-aspect-ratio-fr-bug.md) — 서로 다른 fr의 grid-template-columns + 자식에 aspect-ratio를 걸면 4칸이 전부 동일 폭으로 렌더링되는 Chrome 특성. 고정 height로 대체해 해결
-- [실사진 2곳 도입됨](project_real-photos-introduced.md) — 히어로 배경·실제 후기 갤러리(reviewGallery)에 실사진 적용, "전부 placeholder" 전제가 더 이상 전역 사실 아님. sips로 리사이즈·JPEG 변환 후 연결하는 절차 포함
+- [실사진 2곳 도입됨](project_real-photos-introduced.md) — 히어로 배경·실제 후기 갤러리(reviewGallery, 12장)에 실사진 적용. realReviews/에 PNG 추가되면 확인 없이 sips 변환→경로 등록→원본 삭제가 확립된 루틴

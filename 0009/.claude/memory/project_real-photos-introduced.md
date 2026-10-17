@@ -1,13 +1,13 @@
 ---
 name: real-photos-introduced
-description: 0009에 실사진이 2곳(히어로, 실제 후기 갤러리) 도입됨 — "전부 placeholder" 전제가 더 이상 100% 사실이 아님
+description: 0009에 실사진이 2곳(히어로, 실제 후기 갤러리 12장) 도입됨 — PNG 추가 시 변환·삭제 루틴이 확립돼 더 이상 확인 없이 처리
 metadata:
   type: project
 ---
 
 2026-10-17, `data/content.json`에 `reviewGallery`(처음 8장 → 같은 날 사용자가 3장을
-더 추가해 11장, `assets/imgs/realReviews/*.jpg`)를 추가하고 실제 후기 섹션의 사진
-placeholder 그리드를 실사진으로 교체했다. 히어로 배경
+추가해 11장 → 다시 1장을 추가해 최종 12장, `assets/imgs/realReviews/*.jpg`)를 추가하고
+실제 후기 섹션의 사진 placeholder 그리드를 실사진으로 교체했다. 히어로 배경
 (`assets/imgs/top-banner.png`, `.hero` CSS `background: url(...)`)도 이미 이전 세션에서
 실사진으로 교체되어 있었다 — `CLAUDE.md`/`.claude/rules/01-project.md`의 "실사진이
 전무하므로 placeholder만 쓴다"는 서술은 이제 두 영역에서는 사실이 아니다(다른 영역—메뉴
@@ -21,8 +21,11 @@ placeholder 그리드를 실사진으로 교체했다. 히어로 배경
 설명하자 "실제 사용하는 사진 빼고 삭제해달라"고 명시적으로 요청해 `.png` 원본 8개를
 전부 삭제했다. 그 직후 사용자가 `47-9.png`/`48-10.png`/`49-11.png` 3장을 실제로 폴더에
 추가했고(이번엔 진짜 새 사진), 같은 `sips` 절차로 `.jpg` 변환 후 바로 원본 `.png`도
-삭제했다(이번엔 매번 묻지 않고 직전 턴의 "원본은 삭제" 패턴을 그대로 적용) —
-`reviewGallery`는 이제 11장, `realReviews/`에는 사용 중인 `.jpg` 11개만 남아 있다.
+삭제했다(이번엔 매번 묻지 않고 직전 턴의 "원본은 삭제" 패턴을 그대로 적용). 이후
+`50-12.png` 1장이 또 추가됐을 때도 같은 절차(변환→`reviewGallery`에 추가→원본 삭제)를
+한 번도 재확인하지 않고 그대로 반복 적용했다 — `reviewGallery`는 최종 12장이고,
+`realReviews/`에는 사용 중인 `.jpg` 12개만 남아 있다(원본 `.png`는 매번 변환 직후
+삭제해 폴더에 남기지 않는 것이 이제 이 프로젝트의 확립된 루틴).
 
 **Why**: `.claude/rules/01-project.md`의 "실제 인물·제품 사진을 쓰지 않는다"는 절대
 규칙과 직접 충돌하는 요청이었지만, 사용자가 직접 제공한 이미지(스톡 사진 라이선스
@@ -38,3 +41,7 @@ placeholder 그리드를 실사진으로 교체했다. 히어로 배경
 유효하지만, 이 특정 케이스(이미지 필드)는 CLAUDE.md에 이미 사전 승인돼 있어 그래도
 AskUserQuestion으로 한 번 더 확인했었다(과거 사례처럼 "그라데이션 예외"는 매번 다시
 확인이 필요했지만, "이미지 필드"는 문서에 이미 절차가 적혀 있던 차이가 있다).
+**`realReviews/`에 PNG가 새로 추가되는 것 자체는 이제 더 묻지 않고 바로 변환+삭제한다**
+— 같은 세션에서 총 3번 반복되며 확립된 루틴이라, 다음에 또 PNG가 보이면 확인 없이
+`sips -Z 640 -s format jpeg -s formatOptions 75` 변환 → `reviewGallery` 배열에 경로
+추가 → 원본 `.png` 삭제를 순서대로 수행하면 된다.
