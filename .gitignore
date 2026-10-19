@@ -40,3 +40,6 @@ next-env.d.ts
 
 # 검증 훅 산출물(스크린샷·측정 결과) — 실행할 때마다 새로 생성됨
 **/.claude/hooks/out/
+
+# Serena MCP 로컬 설정/캐시 — 머신별 언어 서버 캐시라 버전관리 대상 아님
+/.serena/
