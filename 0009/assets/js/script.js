@@ -3,6 +3,7 @@
 let siteData = null;
 const menuState = { activeCategory: null };
 const homeMenuState = { activeCategory: null };
+const HOME_MENU_ALL = '전체 보기';
 
 document.addEventListener('DOMContentLoaded', boot);
 
@@ -179,10 +180,11 @@ function renderHomeMenuCards(data) {
   if (!tabsEl || !cardsEl) return;
 
   if (!homeMenuState.activeCategory) {
-    homeMenuState.activeCategory = data.menu.categories[0];
+    homeMenuState.activeCategory = HOME_MENU_ALL;
   }
 
-  const tabsHtml = data.menu.categories
+  const tabCategories = [HOME_MENU_ALL, ...data.menu.categories];
+  const tabsHtml = tabCategories
     .map((cat) => {
       const activeClass = cat === homeMenuState.activeCategory ? ' is-active' : '';
       return `<button type="button" class="pill-tab${activeClass}" data-category="${esc(cat)}">${esc(cat)}</button>`;
@@ -190,17 +192,23 @@ function renderHomeMenuCards(data) {
     .join('');
   tabsEl.innerHTML = tabsHtml;
 
-  const items = data.menu.items.filter((item) => item.category === homeMenuState.activeCategory);
+  const items =
+    homeMenuState.activeCategory === HOME_MENU_ALL
+      ? data.menu.items
+      : data.menu.items.filter((item) => item.category === homeMenuState.activeCategory);
   const cardsHtml = items
     .map((item) => {
-      const badge = item.badge ? `<span class="tag">${esc(item.badge)}</span>` : '';
+      const meta = item.duration ? `<span class="program-card-meta">${item.duration}분 소요</span>` : '';
+      const thumb = item.image
+        ? `<img class="program-card-thumb" src="${esc(item.image)}" alt="${esc(item.name)}" />`
+        : `<div class="img-placeholder program-card-thumb">[사진]</div>`;
       return `
         <div class="program-card">
-          <div class="img-placeholder program-card-thumb">[사진]</div>
+          ${thumb}
           <div class="program-card-body">
             <div class="program-card-top">
-              <span class="tag tag--neutral">${esc(item.category)}</span>
-              ${badge}
+              <span class="tag">${esc(item.category)}</span>
+              ${meta}
             </div>
             <h3 class="program-card-name">${esc(item.name)}</h3>
             <p class="program-card-desc">${esc(item.desc)}</p>

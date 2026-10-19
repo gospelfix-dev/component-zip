@@ -29,15 +29,15 @@
   "menu": {
     "categories": ["스킨케어", "왁싱", "속눈썹"],
     "items": [
-      { "category": "스킨케어", "name": "수분 진정 페이셜", "desc": "건조하고 예민해진 피부결을 가라앉히는 기본 관리입니다.", "price": 70000, "badge": "인기" },
-      { "category": "스킨케어", "name": "모공 딥클렌징 케어", "desc": "피지와 각질을 정리해 피부결을 정돈합니다.", "price": 85000, "badge": "" },
-      { "category": "스킨케어", "name": "브라이트닝 앰플 케어", "desc": "칙칙한 톤을 환하게 가꾸는 집중 관리입니다.", "price": 95000, "badge": "신규" },
-      { "category": "왁싱", "name": "팔 왁싱", "desc": "매끈한 팔 라인을 위한 기본 왁싱입니다.", "price": 30000, "badge": "" },
-      { "category": "왁싱", "name": "다리 왁싱", "desc": "부담 없는 가격의 다리 전체 왁싱입니다.", "price": 45000, "badge": "" },
-      { "category": "왁싱", "name": "얼굴 솜털 정리", "desc": "화장이 잘 받는 매끈한 피부결을 만듭니다.", "price": 25000, "badge": "추천" },
-      { "category": "속눈썹", "name": "속눈썹 펌", "desc": "자연스럽게 올라간 눈매를 연출합니다.", "price": 40000, "badge": "" },
-      { "category": "속눈썹", "name": "속눈썹 연장(내추럴)", "desc": "또렷하지만 과하지 않은 자연스러운 연장입니다.", "price": 60000, "badge": "" },
-      { "category": "속눈썹", "name": "속눈썹 연장(볼륨)", "desc": "풍성한 밀도감을 더한 볼륨 연장입니다.", "price": 80000, "badge": "인기" }
+      { "category": "스킨케어", "name": "수분 진정 페이셜", "desc": "건조하고 예민해진 피부결을 가라앉히는 기본 관리입니다.", "price": 70000, "badge": "인기", "duration": 60, "image": "assets/imgs/home/skincare-hydrating-facial.jpg" },
+      { "category": "스킨케어", "name": "모공 딥클렌징 케어", "desc": "피지와 각질을 정리해 피부결을 정돈합니다.", "price": 85000, "badge": "", "duration": 50, "image": "assets/imgs/home/skincare-deep-cleansing.jpg" },
+      { "category": "스킨케어", "name": "브라이트닝 앰플 케어", "desc": "칙칙한 톤을 환하게 가꾸는 집중 관리입니다.", "price": 95000, "badge": "신규", "duration": 70, "image": "assets/imgs/home/skincare-brightening-ampoule.jpg" },
+      { "category": "왁싱", "name": "팔 왁싱", "desc": "매끈한 팔 라인을 위한 기본 왁싱입니다.", "price": 30000, "badge": "", "duration": 20, "image": "assets/imgs/home/waxing-arm.jpg" },
+      { "category": "왁싱", "name": "다리 왁싱", "desc": "부담 없는 가격의 다리 전체 왁싱입니다.", "price": 45000, "badge": "", "duration": 40, "image": "assets/imgs/home/waxing-leg.jpg" },
+      { "category": "왁싱", "name": "얼굴 솜털 정리", "desc": "화장이 잘 받는 매끈한 피부결을 만듭니다.", "price": 25000, "badge": "추천", "duration": 15, "image": "assets/imgs/home/waxing-facial.jpg" },
+      { "category": "속눈썹", "name": "속눈썹 펌", "desc": "자연스럽게 올라간 눈매를 연출합니다.", "price": 40000, "badge": "", "duration": 40, "image": "assets/imgs/home/eyelash-perm.jpg" },
+      { "category": "속눈썹", "name": "속눈썹 연장(내추럴)", "desc": "또렷하지만 과하지 않은 자연스러운 연장입니다.", "price": 60000, "badge": "", "duration": 90, "image": "assets/imgs/home/eyelash-extension-natural.jpg" },
+      { "category": "속눈썹", "name": "속눈썹 연장(볼륨)", "desc": "풍성한 밀도감을 더한 볼륨 연장입니다.", "price": 80000, "badge": "인기", "duration": 120, "image": "assets/imgs/home/eyelash-extension-volume.jpg" }
     ]
   },
   "about": {
