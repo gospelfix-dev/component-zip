@@ -14,7 +14,7 @@ function boot() {
   initChatbot();
   initReservationForm();
 
-  fetch('data/content.json')
+  fetch('data/content.json', { cache: 'no-cache' })
     .then((res) => {
       if (!res.ok) throw new Error('content.json fetch 실패');
       return res.json();
@@ -50,6 +50,7 @@ function renderAll(data) {
   renderServiceCatalog(data);
   renderBookingServicePills(data);
   renderDraftCtaLinks(data);
+  initNaverMap(data);
 }
 
 // 공용 유틸
@@ -85,10 +86,14 @@ function showFetchError() {
 // 렌더 함수
 
 function renderHeader(data) {
-  setText('brandWordmark', data.brand.wordmark);
 
   const navHtml = data.nav
-    .map((item) => `<li><a class="nav-link" href="${esc(item.target)}" data-target="${esc(item.target)}">${esc(item.label)}</a></li>`)
+    .map((item) => {
+      // '#'로 시작하면 같은 페이지 섹션 앵커(스무스스크롤), 아니면 별도 페이지 링크
+      const isAnchor = item.target.startsWith('#');
+      const dataAttr = isAnchor ? ` data-target="${esc(item.target)}"` : '';
+      return `<li><a class="nav-link" href="${esc(item.target)}"${dataAttr}>${esc(item.label)}</a></li>`;
+    })
     .join('');
   fill('navList', navHtml);
 }
@@ -122,9 +127,12 @@ function renderMenuList(data) {
   const html = items
     .map((item) => {
       const badge = item.badge ? `<span class="tag">${esc(item.badge)}</span>` : '';
+      const thumb = item.menuImage
+        ? `<img class="menu-row-thumb" src="${esc(item.menuImage)}" alt="${esc(item.name)}" />`
+        : '<div class="img-placeholder menu-row-thumb">[사진]</div>';
       return `
         <li class="menu-row">
-          <div class="img-placeholder menu-row-thumb">[사진]</div>
+          ${thumb}
           <div class="menu-row-body">
             <p class="menu-row-name">${esc(item.name)}${badge}</p>
             <p class="menu-row-desc">${esc(item.desc)}</p>
@@ -155,14 +163,8 @@ function renderBeforeAfter(data) {
         <div class="before-after-pair">
           <p class="before-after-service">${esc(pair.service)}</p>
           <div class="before-after-photos">
-            <div class="before-after-photo img-placeholder">
-              [사진]
-              <span class="before-after-tag">${esc(pair.beforeLabel)}</span>
-            </div>
-            <div class="before-after-photo before-after-photo--after img-placeholder">
-              [사진]
-              <span class="before-after-tag before-after-tag--after">${esc(pair.afterLabel)}</span>
-            </div>
+            ${casePhoto(pair.beforeImage, `${pair.service} ${pair.beforeLabel}`, pair.beforeLabel, false)}
+            ${casePhoto(pair.afterImage, `${pair.service} ${pair.afterLabel}`, pair.afterLabel, true)}
           </div>
         </div>
       `
@@ -239,7 +241,7 @@ function renderServiceCatalog(data) {
   const el = document.getElementById('serviceCatalog');
   if (!el) return;
   const html = data.menu.categories
-    .map((cat, i) => {
+    .map((cat) => {
       const items = data.menu.items.filter((item) => item.category === cat);
       const itemsHtml = items
         .map((item) => {
@@ -262,7 +264,7 @@ function renderServiceCatalog(data) {
       return `
         <div class="service-category-block">
           <div class="service-category-heading">
-            <h3><span class="service-category-number">0${i + 1}</span>${esc(cat)}</h3>
+            <h3>${esc(cat)}</h3>
           </div>
           <div class="service-item-grid">${itemsHtml}</div>
         </div>
@@ -321,6 +323,15 @@ function renderHomeQuote(data) {
   setText('homeQuoteAuthor', lead);
 }
 
+function casePhoto(src, alt, label, isAfter) {
+  const mod = isAfter ? ' before-after-photo--after' : '';
+  const tagMod = isAfter ? ' before-after-tag--after' : '';
+  const media = src
+    ? `<img class="case-photo-img" src="${esc(src)}" alt="${esc(alt)}" loading="lazy" />`
+    : '[사진]';
+  return `<div class="before-after-photo${mod}${src ? '' : ' img-placeholder'}">${media}<span class="before-after-tag${tagMod}">${esc(label)}</span></div>`;
+}
+
 function renderCaseGrid(data) {
   const el = document.getElementById('caseGrid');
   if (!el) return;
@@ -333,14 +344,8 @@ function renderCaseGrid(data) {
           </div>
           <p class="case-card-desc">${esc(pair.beforeLabel)} 대비 ${esc(pair.afterLabel)} 상태를 동일한 조명과 각도에서 기록했습니다.</p>
           <div class="case-card-photos">
-            <div class="before-after-photo img-placeholder">
-              [사진]
-              <span class="before-after-tag">${esc(pair.beforeLabel)}</span>
-            </div>
-            <div class="before-after-photo before-after-photo--after img-placeholder">
-              [사진]
-              <span class="before-after-tag before-after-tag--after">${esc(pair.afterLabel)}</span>
-            </div>
+            ${casePhoto(pair.beforeImage, `${pair.service} ${pair.beforeLabel}`, pair.beforeLabel, false)}
+            ${casePhoto(pair.afterImage, `${pair.service} ${pair.afterLabel}`, pair.afterLabel, true)}
           </div>
         </article>
       `
@@ -357,6 +362,39 @@ function renderDirectorProfile(data) {
   setText('directorCaptionRole', director.role);
   setText('directorBio', director.bio);
   setText('directorSignatureName', director.name);
+}
+
+// 네이버 지도 (contact.html 전용) — 2026-11-02 사용자 요청으로 외부 스크립트(oapi.map.naver.com)
+// 예외 허용. contact.naverMapClientId(NCP Maps 클라이언트 ID)가 비어 있거나 인증·지오코딩이
+// 실패하면 기본 "네이버 지도에서 보기" 링크 카드가 그대로 남는다.
+function initNaverMap(data) {
+  const mapEl = document.getElementById('naverMap');
+  const card = document.getElementById('mapLinkCard');
+  const clientId = data.contact.naverMapClientId;
+  if (!mapEl || !card || !clientId) return;
+
+  const showMap = (lat, lng) => {
+    const pos = new window.naver.maps.LatLng(lat, lng);
+    mapEl.hidden = false;
+    card.classList.add('map-link-card--compact');
+    const map = new window.naver.maps.Map(mapEl, { center: pos, zoom: 17 });
+    new window.naver.maps.Marker({ position: pos, map });
+  };
+
+  window.navermap_authFailure = () => {
+    mapEl.hidden = true;
+    card.classList.remove('map-link-card--compact');
+  };
+
+  const script = document.createElement('script');
+  script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(clientId)}&submodules=geocoder`;
+  script.onload = () => {
+    window.naver.maps.Service.geocode({ query: data.contact.address }, (status, res) => {
+      const hit = status === window.naver.maps.Service.Status.OK && res.v2.addresses[0];
+      if (hit) showMap(Number(hit.y), Number(hit.x));
+    });
+  };
+  document.head.appendChild(script);
 }
 
 function renderDraftCtaLinks(data) {
@@ -377,11 +415,15 @@ function renderTeam(data) {
   setText('aboutLead', data.about.lead);
   fill('aboutBody', data.about.body);
 
+  // team[0]은 원장(별도 인터뷰 섹션에서 소개) — 스태프 카드에는 나머지만 노출
   const html = data.team
+    .slice(1)
     .map(
       (member) => `
         <div class="team-card">
-          <div class="img-placeholder">[팀 사진]</div>
+          ${member.image
+            ? `<img class="team-photo" src="${esc(member.image)}" alt="${esc(member.name)} ${esc(member.role)}" loading="lazy" />`
+            : '<div class="img-placeholder">[팀 사진]</div>'}
           <p class="team-name">${esc(member.name)}</p>
           <p class="team-role">${esc(member.role)}</p>
           <p class="team-bio">${esc(member.bio)}</p>
@@ -393,9 +435,13 @@ function renderTeam(data) {
 }
 
 function renderReviews(data) {
-  const photoHtml = data.reviewGallery
-    .map((file, i) => {
-      const review = data.reviews[i % data.reviews.length];
+  // portfolio.html의 모자이크 갤러리는 별도 사진 세트(portfolioGallery)를 쓴다
+  const gallery = document.querySelector('.mosaic-gallery') ? data.portfolioGallery : data.reviewGallery;
+  const photoHtml = gallery
+    .map((item, i) => {
+      // 항목이 객체면 사진 전용 후기(src + author/service/month/text)를 쓴다
+      const file = typeof item === 'string' ? item : item.src;
+      const review = typeof item === 'string' ? data.reviews[i % data.reviews.length] : item;
       return `
         <div class="review-photo-cell">
           <img class="review-photo-img" src="assets/imgs/${esc(file)}" alt="고객 후기 사진" loading="lazy" />
@@ -429,7 +475,6 @@ function renderPricing(data) {
 }
 
 function renderFooter(data) {
-  setText('footerWordmark', data.brand.wordmark);
   setText('footerTagline', data.brand.tagline);
 
   fill('footerSocial', `<a href="${esc(data.contact.instagramUrl)}" target="_blank" rel="noopener">${esc(data.contact.instagram)}</a>`);

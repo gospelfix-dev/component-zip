@@ -69,6 +69,13 @@ python3 -c "import json; json.load(open('data/content.json'))"  # JSON 문법 �
    실제로 따라야 할 1차 레퍼런스다.
 4. **`data/content.json`** + **`docs/10-data-contract.md`** — 실제 카피·수치의 단일
    진실 공급원과 그 스키마.
+5. **`docs/11-ai-image-workflow.md`** + **`.claude/agents/brand-image-generator.md`** —
+   CI 로고·배너·SNS 광고 소재 등 **웹사이트 밖 브랜드 이미지**를 ChatGPT(Codex CLI 또는
+   chatgpt.com 브라우저)로 생성하는 워크플로우와 그 전용 서브에이전트. "이미지 만들어줘 /
+   로고 시안 / 배너 / 인스타 소재" 요청은 이 에이전트에 위임하고, 프롬프트에는 문서의 공통
+   접두어(팔레트 HEX·금지사항)를 넣는다. 결과물은 `brand-assets/`에 두고 `assets/imgs/`와
+   섞지 않는다(사이트에 쓸 것만 리사이즈해서 옮긴다). 서브에이전트는 브라우저 도구가 없으므로
+   chatgpt.com 브라우저 경유 생성은 메인 세션이 직접 한다.
 
 ### 렌더링 파이프라인 (`assets/js/script.js`)
 

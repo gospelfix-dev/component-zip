@@ -6,23 +6,24 @@
   <title>연두 — 포트폴리오 및 갤러리 (디자인 시안)</title>
   <meta name="description" content="Stitch 디자인 시안을 재현한 연두 포트폴리오 및 갤러리 페이지입니다." />
   <link rel="stylesheet" href="assets/css/init.css" />
-  <link rel="stylesheet" href="assets/css/fonts.css" />
-  <link rel="stylesheet" href="assets/css/animations.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/fonts.css?v=2" />
+  <link rel="stylesheet" href="assets/css/animations.css?v=2" />
+  <link rel="stylesheet" href="assets/css/style.css?v=20261102zt" />
 </head>
 <body>
   <a class="skip-link" href="#main">본문 바로가기</a>
 
-  <header class="site-header site-header--solid" id="siteHeader">
+  <header class="site-header site-header--clear" id="siteHeader">
     <div class="header-inner container">
-      <a class="brand-mark" href="index.html" id="brandWordmark">yeondu</a>
+      <a class="brand-mark" href="index.html" id="brandWordmark" aria-label="연두 홈"><img class="brand-logo" src="assets/imgs/story/logo-mark-dark.png" alt="YEONDU" /></a>
 
       <nav class="main-nav" id="mainNav">
         <ul class="nav-list" id="draftNavList">
-          <li><a class="nav-link" href="home.html">홈</a></li>
+          <li><a class="nav-link" href="index.html">홈</a></li>
           <li><a class="nav-link" href="specialists.html">전문가 소개</a></li>
           <li><a class="nav-link" href="programs.html">프로그램·가격</a></li>
           <li><a class="nav-link is-active" href="portfolio.html">포트폴리오</a></li>
+          <li><a class="nav-link" href="story.html">STORY</a></li>
           <li><a class="nav-link" href="contact.html">예약·오시는 길</a></li>
         </ul>
       </nav>
@@ -43,10 +44,6 @@
   <main id="main">
     <section class="page-hero" id="hero">
       <div class="container">
-        <p class="draft-notice reveal">
-          <span class="draft-badge">디자인 시안</span>
-          <a href="index.html">실제 홈페이지 보기 →</a>
-        </p>
         <h1 class="reveal">변화의 과정을 있는 그대로 보여드립니다</h1>
         <p class="reveal">같은 조명과 각도로 기록한 전후 비교, 그리고 실제 방문객이 남겨주신 후기 사진입니다. 과장 없이, 기록한 그대로 공유합니다.</p>
 
@@ -109,20 +106,12 @@
   <footer class="site-footer" id="siteFooter">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <span class="brand-mark" id="footerWordmark"></span>
+        <span class="brand-mark" id="footerWordmark"><img class="brand-logo" src="assets/imgs/story/logo-mark-dark.png" alt="YEONDU" /></span>
         <p class="footer-tagline" id="footerTagline"></p>
         <div class="footer-social" id="footerSocial"></div>
       </div>
 
       <div class="footer-links">
-        <div class="footer-col">
-          <h4>About</h4>
-          <ul id="footerAbout"></ul>
-        </div>
-        <div class="footer-col">
-          <h4>Info</h4>
-          <ul id="footerInfo"></ul>
-        </div>
         <div class="footer-col">
           <h4>Other</h4>
           <ul id="footerOther"></ul>
@@ -132,6 +121,10 @@
 
     <div class="container">
       <p class="footer-legal" id="footerLegal"></p>
+      <div class="footer-bottom">
+        <p class="footer-copyright">Copyrights ©yeondu. All Right Reserved</p>
+        <p class="footer-credit"><a href="https://gospelfix-ashy.vercel.app/layer" target="_blank" rel="noopener noreferrer">CREATED BY GOSPELFIX</a></p>
+      </div>
     </div>
   </footer>
 
@@ -166,6 +159,6 @@
 
   <!-- 2026-10-16 외부 CDN 금지 규칙의 명시적 예외(사용자 확정) — motion.dev(Motion) -->
   <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
-  <script src="assets/js/script.js" defer></script>
+  <script src="assets/js/script.js?v=20261102j" defer></script>
 </body>
 </html>

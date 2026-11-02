@@ -43,3 +43,4 @@ A 전용 시각 구현 디테일(골드/레드 토큰, RixYeoljeongdo, 영수증
 - [실사진 도입 범위 확장](project_real-photos-introduced.md) — index.html(히어로·후기 12장) + home.html(철학 섹션 3장, 메뉴 카드 9장)에 실사진 적용. PNG 추가 시 확인 없이 sips 변환→경로 등록→원본 삭제. menu.items에 image/duration 필드 추가(새 콘텐츠 카테고리가 아닌 기존 배열의 선택적 필드 확장은 스키마 동결 규칙의 예외로 처리)
 - [Stitch 다화면 구현엔 전체 HTML 필수](feedback_stitch-fidelity-full-html-required.md) — 썸네일만 보고 구현하면 과소구현됨(2026-10-18 사용자가 직접 지적) — 모든 화면의 HTML 소스를 먼저 다 읽고 시작할 것
 - ["모든 변경 파일 커밋"의 예외: 로컬 MCP 툴 캐시](feedback_commit-all-means-literal.md) — 위 0007-B 항목과 동일 파일. 2026-10-19, 저장소 루트의 `.serena/`(설치된 MCP 서버 이름과 일치 + 자체 .gitignore 보유)는 "모두 커밋" 반복 요청에도 AskUserQuestion으로 먼저 확인 — 프로젝트 산출물이 아닌 로컬 툴 상태는 예외
+- [연두 로고 시안 I 확정](project_yeondu-logo-selection.md) — 2026-10-26 시안 10개 중 I(Y 새싹+YEONDU) 확정·4버전 생성, 저장/벡터화/Codex 세팅은 미완, 대화 URL 포함
