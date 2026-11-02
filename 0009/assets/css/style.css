@@ -716,7 +716,7 @@ section {
 
 .pricing-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-6);
   align-items: start;
 }
@@ -839,7 +839,7 @@ section {
 
 @media (max-width: 1024px) {
   .pricing-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -949,6 +949,10 @@ section {
 @media (max-width: 1024px) {
   .footer-inner {
     grid-template-columns: 1fr;
+  }
+
+  .footer-credit {
+    margin-left: 0;
   }
 }
 
@@ -2630,8 +2634,14 @@ img.program-card-thumb {
 
 .channel-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-1);
+}
+
+@media (max-width: 1024px) {
+  .channel-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* 예약·오시는 길: 분위기 소개 */
