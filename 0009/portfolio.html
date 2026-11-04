@@ -141,17 +141,26 @@
   </button>
 
   <div class="chat-panel" id="chatPanel" hidden>
-    <div class="chat-panel-header">
-      <div>
-        <p class="chat-panel-title" id="chatPanelTitle"></p>
-        <p class="chat-panel-subtitle" id="chatPanelSubtitle"></p>
-      </div>
-      <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="닫기">&times;</button>
+    <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="닫기">&times;</button>
+    <div class="chat-head">
+      <img class="chat-head-avatar" src="assets/imgs/story/chat-avatar.png" alt="" width="64" height="64" />
+      <p class="chat-panel-title" id="chatPanelTitle"></p>
+      <p class="chat-panel-subtitle" id="chatPanelSubtitle"></p>
     </div>
-    <div class="chat-body">
-      <div class="chat-greeting" id="chatGreeting"></div>
-      <div class="chat-topics" id="chatTopics"></div>
-      <div class="chat-answer" id="chatAnswer" hidden></div>
+    <div class="chat-body" id="chatBody">
+      <div class="chat-msg">
+        <img class="chat-msg-avatar" src="assets/imgs/story/chat-avatar.png" alt="" width="32" height="32" />
+        <div class="chat-msg-col">
+          <div class="chat-bubble" id="chatGreeting"></div>
+          <div class="chat-topics" id="chatTopics"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-bar" aria-hidden="true">
+      <span class="chat-input-field">아래 버튼을 선택해주세요</span>
+      <span class="chat-send-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4 20-7z" /></svg>
+      </span>
     </div>
   </div>
 
@@ -159,6 +168,6 @@
 
   <!-- 2026-10-16 외부 CDN 금지 규칙의 명시적 예외(사용자 확정) — motion.dev(Motion) -->
   <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
-  <script src="assets/js/script.js?v=20261102j" defer></script>
+  <script src="assets/js/script.js?v=20261104a" defer></script>
 </body>
 </html>

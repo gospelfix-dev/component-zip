@@ -520,7 +520,7 @@ function initChatbot() {
   const panel = document.getElementById('chatPanel');
   const closeBtn = document.getElementById('chatCloseBtn');
   const topics = document.getElementById('chatTopics');
-  const answer = document.getElementById('chatAnswer');
+  const body = document.getElementById('chatBody');
 
   if (!fab || !panel) return;
 
@@ -537,12 +537,15 @@ function initChatbot() {
 
   if (closeBtn) closeBtn.addEventListener('click', closePanel);
 
-  if (topics) {
+  if (topics && body) {
     topics.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-topic]');
       if (!btn || !siteData) return;
-      answer.hidden = false;
-      answer.textContent = buildChatReply(btn.dataset.topic, siteData);
+      const avatar = body.querySelector('.chat-msg-avatar').getAttribute('src');
+      const userHtml = `<div class="chat-msg chat-msg-user"><div class="chat-bubble">${esc(btn.textContent)}</div></div>`;
+      const botHtml = `<div class="chat-msg"><img class="chat-msg-avatar" src="${esc(avatar)}" alt="" width="32" height="32" /><div class="chat-msg-col"><div class="chat-bubble">${esc(buildChatReply(btn.dataset.topic, siteData))}</div></div></div>`;
+      body.insertAdjacentHTML('beforeend', userHtml + botHtml);
+      body.scrollTop = body.scrollHeight;
     });
   }
 }
