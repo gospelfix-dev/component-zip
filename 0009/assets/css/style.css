@@ -1176,6 +1176,55 @@ section {
   height: 18px;
 }
 
+/* 배경 블러 — PC 중앙 모달에서만 노출 */
+.chat-backdrop {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  .chat-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 94;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .chat-backdrop[hidden] {
+    display: none;
+  }
+
+  .chat-panel {
+    inset: 0;
+    margin: auto;
+    width: min(720px, calc(100vw - 96px));
+    height: min(680px, calc(100vh - 96px));
+  }
+
+  .chat-head {
+    padding-top: var(--space-6);
+  }
+
+  .chat-head-avatar {
+    width: 96px;
+    height: 96px;
+  }
+
+  .chat-panel-title {
+    font-size: 20px;
+  }
+
+  .chat-panel-subtitle {
+    font-size: 14px;
+  }
+
+  .chat-body {
+    padding: var(--space-2) var(--space-6);
+  }
+}
+
 @media (max-width: 1024px) {
   .chat-panel {
     right: var(--space-3);

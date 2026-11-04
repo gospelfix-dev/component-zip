@@ -524,16 +524,17 @@ function initChatbot() {
 
   if (!fab || !panel) return;
 
-  const closePanel = () => {
-    panel.hidden = true;
-    fab.setAttribute('aria-expanded', 'false');
-  };
+  const backdrop = document.getElementById('chatBackdrop');
 
-  fab.addEventListener('click', () => {
-    const isOpen = !panel.hidden;
-    panel.hidden = isOpen;
-    fab.setAttribute('aria-expanded', String(!isOpen));
-  });
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    if (backdrop) backdrop.hidden = !open;
+    fab.setAttribute('aria-expanded', String(open));
+  };
+  const closePanel = () => setOpen(false);
+
+  fab.addEventListener('click', () => setOpen(panel.hidden));
+  if (backdrop) backdrop.addEventListener('click', closePanel);
 
   if (closeBtn) closeBtn.addEventListener('click', closePanel);
 
