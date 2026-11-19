@@ -1,0 +1,4 @@
+- [사용자 프로필](user_profile.md) — 한국어 웹 개발자, 참고 이미지로 기능을 하나씩 요청, Live Server 5500으로 확인. 즉시 재생보다 단순함을 택함
+- [웹 버전만](feedback_web-only.md) — 터미널 Python 버전은 폐기, 옛 plan 파일(fluttering-painting-pine)은 낡음. 현재는 html/css/js 세 파일
+- [메모리 위치](feedback_memory-location.md) — 메모리는 프로젝트 .claude/memory/에 저장 (기본 auto-memory 폴더 아님)
+- [프로젝트를 작게](feedback_lean-project.md) — 보조 스크립트나 런처는 묻고 추가. 지운 파일은 문서에서도 지움
