@@ -1,3 +1,14 @@
+---
+name: namecard-decisions
+description: >
+  세션 시작 시 주입되는 0004 모바일 명함 컴포넌트의 설계 결정 기록. 무빌드 정적 사이트,
+  Swiper 벤더링, 테마 = 레이아웃 조합, FALLBACK 데이터 중복, 페이지 스크롤 하나로 통일,
+  index.html(기기 틀 셸)과 card.html(명함 본체) 분리 등 "왜 그렇게 했는지"를 담는다.
+  이 결정들을 뒤집거나 리팩터링하기 전에 반드시 먼저 읽는다. 이유만 적으며,
+  코드 구조 설명은 CLAUDE.md 와 .claude/rules/ 에 있다.
+version: 1.0.0
+---
+
 # 설계 결정 기록
 
 세션 시작 시 `.claude/hooks/load-memory.sh` 가 이 파일을 컨텍스트로 주입한다.
