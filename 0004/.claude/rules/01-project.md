@@ -24,7 +24,7 @@
 
 ```
 index.html       진입점 — card.html 을 PC/모바일 틀 안에 띄우는 미리보기 셸
-card.html        마크업 + SVG 아이콘 스프라이트 + <template> 7종
+card.html        마크업 + SVG 아이콘 스프라이트 + <template> 8종
 css/swiper.css    Swiper 8.4.7 (벤더 파일 — 수정 금지)
 css/style.css     토큰 → 리셋 → 배경 → 페이지 → 갤러리 → 카드 → 블록 → 테마 → 반응형
 js/swiper.js      Swiper 8.4.7 (벤더 파일 — 수정 금지)

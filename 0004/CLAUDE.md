@@ -10,10 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 테마 하나(`dark` `paper` `light` `blue` `navy`)로 명함 레이아웃 전체가 바뀐다.
 
 **진입점은 `index.html`(PC/모바일 기기 틀 미리보기 셸)이고, 명함 컴포넌트 본체는 `card.html` 이다.**
-`index.html` 은 `card.html?embed=1` 을 iframe 으로 띄워 틀 안에 보여 주며, 폭 ≤640px 에서는 PC 틀 토글을 숨기고 폰 틀만
-(베젤을 얇게 줄여) 보여 준다.
-폰 틀 높이는 카드 높이를 따른다 — `card.html` 이 `namecard:state` 에 `height`(body 높이)를 실어 보내고,
-`index.html` 이 iframe 높이를 거기에 맞춘다. 그래서 스크롤은 바깥 페이지 하나뿐이다.
+둘의 관계는 아래 "진입점과 임베드 모드" 참고. 카드 마크업·테마·슬라이더를 고칠 때는 `card.html` 쪽이다.
 
 이 폴더는 `component-zip` 저장소의 독립 컴포넌트 하나다. 형제 폴더(`0001`~`0003`)는
 서로 의존하지 않는다. `Swiper` 는 `0002` 에서 가져온 같은 벤더 파일이다.
@@ -34,11 +31,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # 로컬 서버 — fetch 경로로 렌더된다
-python3 -m http.server 8765     # http://localhost:8765/card.html
+python3 -m http.server 8765     # 틀 셸: /index.html · 본체 단독: /card.html
 
 # file:// 경로 — FALLBACK 상수로 렌더된다. 반드시 둘 다 확인할 것
+open index.html
 open card.html
 ```
+
+`card.html` 을 단독으로 열면 머리글·컨트롤이 카드 쪽에 보이고, `?embed=1` 을 붙이면 그것들이 숨겨진다
+(틀 안에서 보이는 모습). 임베드 쪽 CSS/JS 를 고쳤다면 `index.html` 에서 확인한다.
 
 **두 경로가 같은 화면이어야 한다.** 다르면 `data/cards.json` 과 `js/app.js` 의 `FALLBACK` 이
 어긋난 것이다. 테스트 러너·린터·빌드는 없다. 검증은 아래 세 가지가 전부다.
@@ -111,6 +112,23 @@ jq -e '.cards | length' data/cards.json
 
 `--card-w` 는 `.swiper-slide` 와 `.namecard` 가 함께 읽으므로 **`:root` 에서만** 바꾼다.
 
+### 진입점과 임베드 모드
+
+```
+index.html (셸)                          card.html?embed=1 (iframe, 본체)
+  PC 브라우저 틀 / 폰 틀 · 토글(localStorage)   html.is-embed → 머리글·상단 컨트롤 숨김
+  머리글·이전/다음·점 = 틀 밖에서 직접 그림    ◀── postMessage  namecard:state {section,index,count,isBeginning,isEnd,height}
+                                          ──▶ postMessage  namecard:hello | namecard:go {to: prev|next|index}
+```
+
+- `file://` 에서는 iframe 끼리 DOM 접근이 막혀서 **`postMessage` 만** 쓴다. `window.parent` 직접 접근 금지.
+- 폰 틀 높이는 카드를 따른다. `card.html` 이 `body` 높이(`scrollHeight` 아님 — 뷰포트 밑으로 줄지 못한다)를
+  `height` 로 보내고 `index.html` 이 iframe 높이를 맞춘다. 그래서 스크롤은 바깥 페이지 **하나**다.
+  임베드 안에서는 `100vh` 에 기대지 않는다 — iframe 높이가 다시 내용 높이를 정하는 순환이 생긴다.
+- 폰 틀(≤580px 임베드)은 `html.is-embed { --card-w: 100vw; --radius-card: 0 }` 로 카드를 가장자리까지 채운다.
+  단독 `card.html` 의 "이웃 카드 비침" 모양과 다르다 — 의도된 차이다.
+- 셸은 폭 ≤640px 에서 PC 틀 토글을 숨기고 폰 틀만 보여 준다.
+
 ### 렌더 파이프라인
 
 ```
@@ -151,6 +169,9 @@ Swiper 는 복합 선택자를 자주 써서 클래스 하나(0-1-0)로는 못 �
 `!important` 대신 특정성을 같은 무게로 맞춘다.
 
 - `initSwiper()` 는 `render()` 가 `.swiper-wrapper` 를 채운 **뒤에** 부른다.
+- `autoHeight` 는 `breakpoints` 의 모바일(≤580px)에서만 켠다. `slidesPerView: "auto"` 에서는 활성 슬라이드
+  한 장의 높이만 따라가 데스크톱에서 더 큰 카드를 잘라 낸다. 켜 둔 동안 남은 인라인 높이는 `breakpoint` 이벤트에서 지운다.
+- 카드는 `--card-h: auto` 이고 카드 안 세로 스크롤은 없다. 카드 안에 `overflow-y` 를 다시 넣지 않는다.
 - 이전/다음은 반드시 `<button>` — Swiper 는 `BUTTON` 일 때만 끝단에서 `disabled` 를 건다.
   우리가 다시 걸지 않는다. 포커스 튕김만 `keepNavFocus()` 가 `focusout` 으로 처리한다.
 
