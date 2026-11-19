@@ -13,7 +13,7 @@ metadata:
 - 수정을 마치면 커밋 후 `git push origin main`, 그다음 `curl`로 Pages에 새 내용이 떴는지 확인한다. 커밋 메시지는 `feat: 0010 …` / `style: 0010 …`처럼 한국어로 쓴다.
 - 사용자가 "안 바뀌었다"고 하면 먼저 강력 새로고침(Cmd+Shift+R)을 안내한다.
 - CLAUDE.md의 "git 아님" 문장과 Publishing 절은 2026-11-19에 고쳐졌다.
-- 이 주소는 폰에서도 열린다. 레이아웃에 영향을 주는 수정이라면 푸시 전에 폰 화면 크기로도 확인한다. 2026-11-19에 폰에서만 트리 쌓기가 끝없이 다시 시작되는 버그가 있었다. 확인 방법은 CLAUDE.md의 Mobile check에 있다.
+- 이 주소는 폰에서도 열린다. 레이아웃에 영향을 주는 수정이라면 푸시 전에 폰 화면 크기로도 확인한다. 2026-11-19에 폰에서만 트리 쌓기가 끝없이 다시 시작되는 버그가 있었다. 확인 방법은 CLAUDE.md의 Mobile check에 있다. 같은 날 사용자가 실제 폰에서도 수정이 잘 된다고 확인해 줘서, 이 headless 흉내 검사를 믿을 만하다.
 - 배포는 이 Pages 하나뿐이다. claude.ai 아티팩트 사본은 2026-11-19에 모두 삭제했다. [[feedback-no-artifact]]
 
 관련: [[feedback-start-gate]], [[feedback-fix-and-push]], [[user-profile]]
