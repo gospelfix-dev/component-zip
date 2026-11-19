@@ -195,6 +195,40 @@
   const SWIPER_SPEED = 480;
   let swiper = null;
 
+  /**
+   * preview.html 임베드 모드(?embed=1) — 머리글·컨트롤은 부모가 틀 밖에 그린다.
+   * 여기서는 상태(섹션 문구·현재 위치)를 부모에게 알리고, 이전/다음/이동 명령만 받는다.
+   * file:// 에서는 iframe 끼리 DOM 접근이 막히므로 postMessage 로만 주고받는다.
+   */
+  const EMBED = /[?&]embed=1(&|$)/.test(location.search) && global.parent !== global;
+  let sectionData = null;
+
+  const notifyParent = () => {
+    if (!EMBED || !swiper) return;
+    global.parent.postMessage({
+      type: "namecard:state",
+      section: sectionData,
+      index: swiper.snapIndex,
+      count: swiper.snapGrid.length,
+      isBeginning: swiper.isBeginning,
+      isEnd: swiper.isEnd
+    }, "*");
+  };
+
+  if (EMBED) {
+    document.documentElement.classList.add("is-embed");
+    global.addEventListener("message", (event) => {
+      const msg = event.data || {};
+      if (event.source !== global.parent || !swiper) return;
+      if (msg.type === "namecard:hello") notifyParent();
+      else if (msg.type === "namecard:go") {
+        if (msg.to === "prev") swiper.slidePrev();
+        else if (msg.to === "next") swiper.slideNext();
+        else if (Number.isInteger(msg.to)) swiper.slideTo(msg.to);
+      }
+    });
+  }
+
   /* ---------- 유틸 ---------- */
 
   const digits = (value) => String(value).replace(/[^0-9+]/g, "");
@@ -536,6 +570,12 @@
         enabled: true,
         onlyInViewport: true
       },
+      on: {
+        slideChange: notifyParent,
+        resize: notifyParent,
+        breakpoint: notifyParent,
+        snapGridLengthChange: notifyParent
+      },
       a11y: {
         enabled: true,
         containerMessage: "디지털 명함 목록",
@@ -544,9 +584,12 @@
         paginationBulletMessage: "{{index}}번째 명함으로 이동"
       }
     });
+
+    notifyParent();
   };
 
   const render = (data) => {
+    sectionData = data.section || null;
     renderHead(data.section);
 
     const cards = data.cards || [];

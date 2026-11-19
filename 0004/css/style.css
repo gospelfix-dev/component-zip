@@ -769,6 +769,15 @@ li { list-style: none; }
   }
 }
 
+/* 미리보기 임베드(?embed=1) — 머리글·컨트롤은 틀 밖(preview.html)에 있다 */
+.is-embed .page__head,
+.is-embed .gallery__controls--top { display: none; }
+.is-embed .page { padding-top: 24px; }
+
+/* 틀 안에서는 페이지 스크롤바를 감춘다 (스크롤은 그대로 동작) */
+.is-embed { scrollbar-width: none; }
+.is-embed::-webkit-scrollbar { width: 0; height: 0; }
+
 /* ---------- 14. 모션 축소 ---------- */
 @media (prefers-reduced-motion: reduce) {
   .namecard,
