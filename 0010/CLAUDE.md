@@ -10,7 +10,7 @@ Project memory (user profile, decisions; index only, open linked files when rele
 
 A browser page that renders a rotating 3D Christmas tree out of ASCII glyphs on a `<canvas>`. Around the tree there is snow and presents falling from the sky. A glass-style music player plays a looping carol.
 
-The app is three files with no build step: `index.html` (markup only), `style.css` and `script.js` (one IIFE, loaded by a plain `<script src>` at the end of `<body>`, so the DOM already exists when it runs). There is no build step, no package manager, no dependencies and no test suite. The only external loads are Google Fonts. The folder is not a git repository, so deletions cannot be undone. Move files to the Trash with `/usr/bin/trash` instead of using `rm`.
+The app is three files with no build step: `index.html` (markup only), `style.css` and `script.js` (one IIFE, loaded by a plain `<script src>` at the end of `<body>`, so the DOM already exists when it runs). There is no build step, no package manager, no dependencies and no test suite. The only external loads are Google Fonts. The folder is `0010/` inside the `gospelfix-dev/component-zip` git repository (the repo root is the parent folder). Uncommitted files are not in git, so move files to the Trash with `/usr/bin/trash` instead of using `rm`.
 
 The user communicates in Korean. UI strings and README.md are written in Korean, while code comments are in English.
 
@@ -25,6 +25,8 @@ The user communicates in Korean. UI strings and README.md are written in Korean,
 - **Determinism.** `?seed=N` fixes the layout (mulberry32 RNG) and `?speed=N` scales the intro.
 
 ## Publishing
+
+The live page is GitHub Pages: https://gospelfix-dev.github.io/component-zip/0010/. Pages serves `main`, so commit and `git push origin main`; the change appears about a minute later. Confirm with `curl` that the new content is served. If the user still sees the old page, suggest a hard refresh (Cmd+Shift+R). Commit messages are in Korean with a folder prefix, e.g. `feat: 0010 …`, `style: 0010 …`.
 
 `index.html` is also published as a claude.ai artifact at https://claude.ai/artifact/QU74eET2PagUCeT6cP9QSh.
 

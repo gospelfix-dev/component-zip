@@ -12,6 +12,6 @@ metadata:
 **How to apply:**
 - 수정을 마치면 커밋 후 `git push origin main`, 그다음 `curl`로 Pages에 새 내용이 떴는지 확인한다. 커밋 메시지는 `feat: 0010 …` / `style: 0010 …`처럼 한국어로 쓴다.
 - 사용자가 "안 바뀌었다"고 하면 먼저 강력 새로고침(Cmd+Shift+R)을 안내한다.
-- ⚠️ 후속 조치 필요: `CLAUDE.md`의 "The folder is not a git repository, so deletions cannot be undone" 문장은 이제 틀렸다. 저장소 루트는 상위 `component-zip/`이다. 다음 세션에서 이 문장과 Publishing 절(아티팩트만 언급)을 고치자고 제안할 것.
+- CLAUDE.md의 "git 아님" 문장과 Publishing 절은 2026-11-19에 고쳐졌다.
 
 관련: [[feedback-start-gate]], [[user-profile]]
