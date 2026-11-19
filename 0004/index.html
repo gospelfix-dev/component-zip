@@ -1,209 +1,298 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Digital Name Card — 모바일 명함</title>
-  <meta name="description" content="JSON 하나로 관리하는 모바일 디지털 명함 컴포넌트" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Name Card — 미리보기</title>
+  <style>
+    /* card.html 을 PC / 모바일 틀 안에 띄워 보는 미리보기 셸.
+       iframe 의 폭이 곧 뷰포트라서 모바일 틀에서는 ≤580px 레이아웃이 그대로 적용된다. */
+    :root {
+      --bg: #eef1f8;
+      --ink: #16181d;
+      --ink-soft: #6b7280;
+      --frame: #f7f8fa;
+      --frame-line: rgba(20, 30, 60, 0.12);
+      --bezel: #15171c;
+      --accent: #e8502e;
+      --shadow: 0 30px 70px -30px rgba(20, 30, 60, 0.5), 0 4px 14px -4px rgba(20, 30, 60, 0.15);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-  <!-- 웹폰트 (외부 리소스는 폰트만 허용) -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+    * { box-sizing: border-box; }
 
-  <link rel="stylesheet" href="./css/swiper.css" />
-  <link rel="stylesheet" href="./css/style.css" />
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 16px 40px;
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+        "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    /* 기기 전환 토글 */
+    .switch {
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 0 0 1px var(--frame-line);
+    }
+
+    .switch__btn {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 44px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: background-color 0.25s var(--ease), color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+
+    .switch__btn svg { width: 22px; height: 22px; }
+
+    .switch__btn[aria-pressed="true"] {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 4px 12px -6px rgba(20, 30, 60, 0.5);
+    }
+
+    .switch__btn:focus-visible { outline: 2px solid #1a50d8; outline-offset: 2px; }
+
+    /* 틀 밖 머리글 — card.html 의 .page__head 와 같은 모양 */
+    .head { text-align: center; }
+    .head__eyebrow { margin: 0 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-soft); }
+    .head__title { margin: 0; font-size: clamp(26px, 4vw, 40px); font-weight: 800; letter-spacing: -0.02em; }
+    .head__subtitle { margin: 8px 0 0; font-size: clamp(13px, 1.4vw, 15px); color: var(--ink-soft); }
+
+    /* 틀 밖 컨트롤 — 이전/다음 + 페이지네이션 */
+    .controls { display: flex; align-items: center; justify-content: center; gap: 14px; }
+
+    .controls__nav {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid rgba(20, 30, 60, 0.12);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 6px 16px -10px rgba(20, 30, 60, 0.5);
+      transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+    }
+
+    .controls__nav svg { width: 18px; height: 18px; }
+    .controls__nav--prev svg { transform: rotate(180deg); }
+    .controls__nav:hover:not(:disabled) { transform: translateY(-2px); }
+    .controls__nav:disabled { opacity: 0.32; cursor: default; }
+    .controls__nav:focus-visible, .controls__dot:focus-visible { outline: 2px solid #1a50d8; outline-offset: 2px; }
+
+    .controls__dots { display: flex; align-items: center; gap: 8px; }
+
+    .controls__dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 99px;
+      background: rgba(20, 30, 60, 0.2);
+      cursor: pointer;
+      transition: width 0.3s var(--ease), background-color 0.3s var(--ease);
+    }
+
+    .controls__dot[aria-current="true"] { width: 24px; background: var(--ink); }
+
+    .stage { width: 100%; display: flex; justify-content: center; }
+
+    /* ---------- PC : 브라우저 창 ---------- */
+    .browser {
+      width: min(1180px, 100%);
+      /* 카드 한 장이 통째로 보이도록 화면보다 크게 잡는다 — 모자라면 페이지가 스크롤된다 */
+      height: clamp(880px, calc(100vh - 80px), 980px);
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      background: var(--frame);
+      box-shadow: var(--shadow), 0 0 0 1px var(--frame-line);
+      overflow: hidden;
+    }
+
+    .browser__bar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--frame-line);
+      background: #fff;
+    }
+
+    .browser__dot { width: 12px; height: 12px; border-radius: 50%; background: #d9dce3; }
+
+    /* ---------- 모바일 : 휴대폰 ---------- */
+    .phone {
+      width: 430px;
+      max-width: 100%;
+      /* 높이는 카드 높이를 따라간다 — 스크롤은 바깥 페이지 하나뿐이다 */
+      height: auto;
+      padding: 14px;
+      border-radius: 54px;
+      background: var(--bezel);
+      box-shadow: var(--shadow), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+    }
+
+    .phone__screen {
+      position: relative;
+      padding-top: 0; /* 카드가 화면 맨 위까지 채운다 */
+      border-radius: 42px;
+      background: #fbfcfe;
+      overflow: hidden;
+    }
+
+    .phone .frame-view { height: 640px; } /* 카드 높이를 받기 전 임시값 — 이후 부모 스크립트가 덮어쓴다 */
+    .frame-view { flex: 1; display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+
+    [hidden] { display: none !important; }
+
+    /* 좁은 화면 — PC 틀은 의미가 없어 토글을 숨기고, 폰 틀은 유지하되 베젤만 얇게 줄인다 */
+    @media (max-width: 640px) {
+      body { padding: 16px 12px 32px; gap: 16px; }
+      .switch { display: none; }
+      .phone { padding: 10px; border-radius: 44px; }
+      .phone__screen { border-radius: 34px; }
+    }
+  </style>
 </head>
 <body>
-  <!-- 배경 장식 -->
-  <div class="bg-decor" aria-hidden="true">
-    <span class="bg-decor__blob bg-decor__blob--a"></span>
-    <span class="bg-decor__blob bg-decor__blob--b"></span>
+  <div class="switch" role="group" aria-label="미리보기 기기 선택">
+    <button class="switch__btn" type="button" data-device="pc" aria-pressed="true" aria-label="PC 화면">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>
+      </svg>
+    </button>
+    <button class="switch__btn" type="button" data-device="mobile" aria-pressed="false" aria-label="모바일 화면">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>
+      </svg>
+    </button>
   </div>
 
-  <!-- ── 아이콘 스프라이트 ─────────────────────────────────────── -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="ico-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M6.4 3.5h3.1l1.5 3.9-2 1.4a12.4 12.4 0 0 0 6.2 6.2l1.4-2 3.9 1.5v3.1a2 2 0 0 1-2.2 2A16.6 16.6 0 0 1 4.4 5.7a2 2 0 0 1 2-2.2Z" />
-    </symbol>
+  <header class="head">
+    <p class="head__eyebrow" id="headEyebrow"></p>
+    <h1 class="head__title" id="headTitle">&nbsp;</h1>
+    <p class="head__subtitle" id="headSubtitle"></p>
+  </header>
 
-    <symbol id="ico-message" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20.2 11.6c0 3.6-3.5 6.5-7.9 6.5a9.9 9.9 0 0 1-2.7-.4L5 19.4l1.4-3.3a6 6 0 0 1-2.6-4.5c0-3.6 3.6-6.5 8-6.5s8.4 2.9 8.4 6.5Z" />
-    </symbol>
+  <div class="controls" id="controls">
+    <button class="controls__nav controls__nav--prev" type="button" id="goPrev" aria-label="이전 명함" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+    <div class="controls__dots" id="dots"></div>
+    <button class="controls__nav controls__nav--next" type="button" id="goNext" aria-label="다음 명함" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+  </div>
 
-    <symbol id="ico-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3.2" y="5.4" width="17.6" height="13.2" rx="2.4" />
-      <path d="m3.8 7.4 7.2 5.1a1.8 1.8 0 0 0 2 0l7.2-5.1" />
-    </symbol>
-
-    <symbol id="ico-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="8.6" />
-      <path d="M3.4 12h17.2" />
-      <path d="M12 3.4c2.2 2.3 3.4 5.4 3.4 8.6S14.2 18.3 12 20.6c-2.2-2.3-3.4-5.4-3.4-8.6S9.8 5.7 12 3.4Z" />
-    </symbol>
-
-    <symbol id="ico-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 21.2c4.4-4.4 6.6-7.8 6.6-10.4a6.6 6.6 0 1 0-13.2 0c0 2.6 2.2 6 6.6 10.4Z" />
-      <circle cx="12" cy="10.4" r="2.5" />
-    </symbol>
-
-    <symbol id="ico-link" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M10.3 13.7a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0-5.7-5.7l-1.4 1.4" />
-      <path d="M13.7 10.3a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 5.7 5.7l1.4-1.4" />
-    </symbol>
-
-    <symbol id="ico-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m9.5 5.5 6.5 6.5-6.5 6.5" />
-    </symbol>
-
-    <!-- 카카오톡은 브랜드 색을 유지해야 하므로 채움 도형으로 그린다 -->
-    <symbol id="ico-kakao" viewBox="0 0 24 24">
-      <rect width="24" height="24" rx="7" fill="#FEE500" />
-      <path fill="#3C1E1E"
-        d="M12 5.2c-3.9 0-7 2.4-7 5.4 0 1.9 1.3 3.6 3.2 4.6l-.8 3 3.4-2.2c.4.05.8.08 1.2.08 3.9 0 7-2.4 7-5.4S15.9 5.2 12 5.2Z" />
-    </symbol>
-  </svg>
-
-  <!-- ── 페이지 ───────────────────────────────────────────────── -->
-  <main class="page">
-    <header class="page__head">
-      <p class="page__eyebrow" data-bind="eyebrow"></p>
-      <h1 class="page__title" data-bind="title"></h1>
-      <p class="page__subtitle" data-bind="subtitle"></p>
-    </header>
-
-    <!-- 슬라이더 컨트롤 — 서브타이틀 아래. 조작 대상은 아래 #cardGallery 다 -->
-    <div class="gallery__controls gallery__controls--top">
-      <button type="button" class="gallery__nav gallery__nav--prev" id="cardPrev"
-        aria-label="이전 명함" aria-controls="cardGallery">
-        <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
-      </button>
-      <div class="gallery__pagination" id="cardPagination"></div>
-      <button type="button" class="gallery__nav gallery__nav--next" id="cardNext"
-        aria-label="다음 명함" aria-controls="cardGallery">
-        <svg class="gallery__nav-icon" aria-hidden="true"><use href="#ico-chevron" /></svg>
-      </button>
-    </div>
-
-    <!-- 명함 슬라이더 — 카드는 .swiper-wrapper 안에 렌더링됩니다 -->
-    <section class="gallery-shell" aria-label="디지털 명함 목록">
-      <div class="gallery swiper" id="cardGallery">
-        <div class="swiper-wrapper" id="cardTrack"></div>
+  <main class="stage">
+    <section class="browser" id="viewPc" aria-label="PC 미리보기">
+      <div class="browser__bar" aria-hidden="true">
+        <span class="browser__dot"></span><span class="browser__dot"></span><span class="browser__dot"></span>
       </div>
+      <iframe class="frame-view" title="디지털 명함 — PC 화면" data-src="./card.html?embed=1"></iframe>
+    </section>
 
-      <p class="gallery__message" id="galleryMessage"></p>
+    <section class="phone" id="viewMobile" aria-label="모바일 미리보기" hidden>
+      <div class="phone__screen">
+        <iframe class="frame-view" title="디지털 명함 — 모바일 화면" data-src="./card.html?embed=1"></iframe>
+      </div>
     </section>
   </main>
 
-  <!-- 복사 알림 -->
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => {
+      "use strict";
 
-  <!-- ── 템플릿 ───────────────────────────────────────────────── -->
+      const views = { pc: document.getElementById("viewPc"), mobile: document.getElementById("viewMobile") };
+      const buttons = document.querySelectorAll(".switch__btn");
+      const $ = (id) => document.getElementById(id);
+      let active = "pc";
 
-  <!-- 카드 셸 -->
-  <template id="cardTemplate">
-    <article class="namecard">
-      <div class="namecard__scroll">
-        <div class="namecard__frame">
-          <div class="namecard__hero">
-            <div class="namecard__photo"></div>
-            <div class="namecard__glass"></div>
-          </div>
-        </div>
-        <div class="namecard__body">
-          <ul class="namecard__contacts"></ul>
-          <ul class="namecard__links"></ul>
-          <section class="namecard__about">
-            <h3 class="namecard__about-title"></h3>
-            <div class="namecard__about-body"></div>
-          </section>
-        </div>
-        <p class="namecard__slogan"></p>
-      </div>
-    </article>
-  </template>
+      const activeFrame = () => views[active].querySelector("iframe");
+      const send = (msg) => { const w = activeFrame().contentWindow; if (w) w.postMessage(msg, "*"); };
 
-  <!-- 아이덴티티: 아바타 + 이름/직무/회사 + 로고 -->
-  <template id="identityTemplate">
-    <header class="identity">
-      <div class="identity__avatar"></div>
-      <div class="identity__text">
-        <h2 class="identity__name"></h2>
-        <p class="identity__role"></p>
-        <p class="identity__company"></p>
-      </div>
-      <div class="identity__logo">
-        <span class="identity__logo-mark"></span>
-        <span class="identity__logo-text">
-          <b class="identity__logo-name"></b>
-          <i class="identity__logo-sub"></i>
-        </span>
-      </div>
-    </header>
-  </template>
+      // iframe 은 처음 보여질 때 한 번만 읽는다
+      const show = (device) => {
+        active = device;
+        Object.entries(views).forEach(([key, el]) => {
+          el.hidden = key !== device;
+          const frame = el.querySelector("iframe");
+          if (key === device) {
+            if (!frame.src) frame.src = frame.dataset.src;
+            else send({ type: "namecard:hello" }); // 이미 떠 있는 쪽은 현재 상태를 다시 받는다
+          }
+        });
+        buttons.forEach((btn) => btn.setAttribute("aria-pressed", String(btn.dataset.device === device)));
+        try { localStorage.setItem("namecard-preview-device", device); } catch (e) { /* 저장 불가 환경은 건너뛴다 */ }
+      };
 
-  <!-- 태그 칩 -->
-  <template id="tagTemplate">
-    <li class="chip"></li>
-  </template>
+      buttons.forEach((btn) => btn.addEventListener("click", () => show(btn.dataset.device)));
 
-  <!-- 부서/직책 메타 (blue 테마) -->
-  <template id="metaTemplate">
-    <div class="meta__cell">
-      <dt class="meta__label"></dt>
-      <dd class="meta__value"></dd>
-    </div>
-  </template>
+      // 틀 안의 명함 페이지가 알려 주는 상태로 머리글·컨트롤을 그린다
+      const render = (state) => {
+        const sec = state.section || {};
+        $("headEyebrow").textContent = sec.eyebrow || "";
+        $("headTitle").textContent = sec.title || "";
+        $("headSubtitle").textContent = sec.subtitle || "";
 
-  <!-- 연락처 — row 형(dark / paper / navy) -->
-  <template id="contactRowTemplate">
-    <li class="contact contact--row">
-      <a class="contact__link">
-        <span class="contact__label"></span>
-        <span class="contact__value"></span>
-        <svg class="contact__chevron" aria-hidden="true"><use href="#ico-chevron" /></svg>
-      </a>
-    </li>
-  </template>
+        $("goPrev").disabled = state.isBeginning;
+        $("goNext").disabled = state.isEnd;
 
-  <!-- 연락처 — stack 형(light / blue) -->
-  <template id="contactStackTemplate">
-    <li class="contact contact--stack">
-      <span class="contact__text">
-        <span class="contact__label"></span>
-        <button type="button" class="contact__value contact__value--copy"></button>
-      </span>
-      <span class="contact__actions"></span>
-    </li>
-  </template>
+        const dots = $("dots");
+        if (dots.children.length !== state.count) {
+          dots.textContent = "";
+          for (let i = 0; i < state.count; i++) {
+            const dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "controls__dot";
+            dot.setAttribute("aria-label", (i + 1) + "번째 명함으로 이동");
+            dot.addEventListener("click", () => send({ type: "namecard:go", to: i }));
+            dots.appendChild(dot);
+          }
+        }
+        [...dots.children].forEach((dot, i) => {
+          if (i === state.index) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+      };
 
-  <!-- 액션 아이콘 버튼 -->
-  <template id="actionTemplate">
-    <a class="action">
-      <svg class="action__icon" aria-hidden="true"><use /></svg>
-    </a>
-  </template>
+      window.addEventListener("message", (event) => {
+        const msg = event.data || {};
+        // 지금 보이는 틀에서 온 메시지만 받는다
+        if (msg.type !== "namecard:state" || event.source !== activeFrame().contentWindow) return;
+        render(msg);
+        if (active === "mobile" && msg.height) activeFrame().style.height = msg.height + "px";
+      });
 
-  <!-- 링크 행 -->
-  <template id="linkTemplate">
-    <li class="linkrow">
-      <a class="linkrow__link">
-        <svg class="linkrow__icon" aria-hidden="true"><use /></svg>
-        <span class="linkrow__label"></span>
-        <svg class="linkrow__chevron" aria-hidden="true"><use href="#ico-chevron" /></svg>
-      </a>
-    </li>
-  </template>
+      $("goPrev").addEventListener("click", () => send({ type: "namecard:go", to: "prev" }));
+      $("goNext").addEventListener("click", () => send({ type: "namecard:go", to: "next" }));
 
-  <script src="./js/swiper.js"></script>
-  <script src="./js/avatar.js"></script>
-  <script src="./js/app.js"></script>
+      let saved = "pc";
+      try { saved = localStorage.getItem("namecard-preview-device") === "mobile" ? "mobile" : "pc"; } catch (e) { /* 기본값 사용 */ }
+      if (window.matchMedia("(max-width: 640px)").matches) saved = "mobile";
+      show(saved);
+    })();
+  </script>
 </body>
 </html>

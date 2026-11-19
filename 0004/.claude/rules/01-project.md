@@ -8,7 +8,7 @@
   브라우저가 파일을 그대로 읽어서 동작해야 한다.
 - **프레임워크를 도입하지 않는다.** React, Vue, jQuery 없이 바닐라 JS 로 작성한다.
   예외는 슬라이더 라이브러리 **Swiper 하나뿐**이다 (아래 참고).
-- **외부 리소스는 웹폰트만 허용한다.** 아이콘도 CDN 대신 `index.html` 상단의
+- **외부 리소스는 웹폰트만 허용한다.** 아이콘도 CDN 대신 `card.html` 상단의
   인라인 SVG 스프라이트(`<symbol id="ico-*">`)로 해결한다.
 
 ## 서드파티 — Swiper 8.4.7 (MIT)
@@ -23,7 +23,8 @@
 ## 파일 구조
 
 ```
-index.html        마크업 + SVG 아이콘 스프라이트 + <template> 7종
+index.html       진입점 — card.html 을 PC/모바일 틀 안에 띄우는 미리보기 셸
+card.html        마크업 + SVG 아이콘 스프라이트 + <template> 7종
 css/swiper.css    Swiper 8.4.7 (벤더 파일 — 수정 금지)
 css/style.css     토큰 → 리셋 → 배경 → 페이지 → 갤러리 → 카드 → 블록 → 테마 → 반응형
 js/swiper.js      Swiper 8.4.7 (벤더 파일 — 수정 금지)
@@ -38,7 +39,7 @@ imgs/             인물 사진. 파일명은 카드의 id 와 같게 짓는다
 
 ## 동작 보장 범위
 
-`index.html` 을 **`file://` 로 직접 열어도 동작해야 한다.**
+`card.html` 을 **`file://` 로 직접 열어도 동작해야 한다.**
 `fetch` 가 CORS 로 막히므로 `js/app.js` 의 `FALLBACK` 상수가 그 경우를 담당한다.
 데이터를 바꿀 때는 `data/cards.json` 과 `FALLBACK` 을 **항상 함께** 수정한다.
 
@@ -48,8 +49,8 @@ imgs/             인물 사진. 파일명은 카드의 id 와 같게 짓는다
 ## 확인 방법
 
 ```bash
-python3 -m http.server 8765   # http://localhost:8765/index.html
-open index.html               # file:// 경로도 같은 화면이어야 한다
+python3 -m http.server 8765   # http://localhost:8765/card.html
+open card.html               # file:// 경로도 같은 화면이어야 한다
 ```
 
 ## 전용 에이전트

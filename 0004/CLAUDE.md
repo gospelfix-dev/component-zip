@@ -9,6 +9,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 빌드 도구 없이 동작하는 정적 명함 컴포넌트. HTML5/CSS3/JS(ES6)/JSON 만으로 구성된다.
 테마 하나(`dark` `paper` `light` `blue` `navy`)로 명함 레이아웃 전체가 바뀐다.
 
+**진입점은 `index.html`(PC/모바일 기기 틀 미리보기 셸)이고, 명함 컴포넌트 본체는 `card.html` 이다.**
+`index.html` 은 `card.html?embed=1` 을 iframe 으로 띄워 틀 안에 보여 주며, 폭 ≤640px 에서는 PC 틀 토글을 숨기고 폰 틀만
+(베젤을 얇게 줄여) 보여 준다.
+폰 틀 높이는 카드 높이를 따른다 — `card.html` 이 `namecard:state` 에 `height`(body 높이)를 실어 보내고,
+`index.html` 이 iframe 높이를 거기에 맞춘다. 그래서 스크롤은 바깥 페이지 하나뿐이다.
+
 이 폴더는 `component-zip` 저장소의 독립 컴포넌트 하나다. 형제 폴더(`0001`~`0003`)는
 서로 의존하지 않는다. `Swiper` 는 `0002` 에서 가져온 같은 벤더 파일이다.
 저장소 전체가 GitHub Pages 로 배포된다(`.github/workflows/static.yml`) — 빌드 단계 없음.
@@ -28,10 +34,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # 로컬 서버 — fetch 경로로 렌더된다
-python3 -m http.server 8765     # http://localhost:8765/index.html
+python3 -m http.server 8765     # http://localhost:8765/card.html
 
 # file:// 경로 — FALLBACK 상수로 렌더된다. 반드시 둘 다 확인할 것
-open index.html
+open card.html
 ```
 
 **두 경로가 같은 화면이어야 한다.** 다르면 `data/cards.json` 과 `js/app.js` 의 `FALLBACK` 이
@@ -47,14 +53,14 @@ jq -e '.cards | length' data/cards.json
 # 3. 헤드리스 스크린샷 (시각 검증)
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
   --hide-scrollbars --window-size=1600,1180 --virtual-time-budget=9000 \
-  --screenshot=/tmp/shot.png "http://localhost:8765/index.html"
+  --screenshot=/tmp/shot.png "http://localhost:8765/card.html"
 ```
 
 ### 헤드리스 검증 요령
 
 - **`--window-size` 의 폭이 500px 미만이면 macOS 에서 무시된다.** 캡처만 잘리고 뷰포트는
   500px 로 렌더되어 "레이아웃이 넘친다"는 착시를 준다. 좁은 뷰포트를 보려면
-  임시 `iframe` 래퍼 HTML 을 만들어 그 안에 `index.html` 을 폭 고정으로 띄운다.
+  임시 `iframe` 래퍼 HTML 을 만들어 그 안에 `card.html` 을 폭 고정으로 띄운다.
 - 계산값·Swiper 상태를 확인할 때는 추측하지 말고 프로브 스크립트를 주입해 `--dump-dom` 으로
   읽는다 (`getComputedStyle`, `window.NameCard.swiper`). CSS 특정성 문제는 눈으로 못 잡는다.
 - 임시로 만든 `__*.html` 파일은 작업 후 지운다.
@@ -115,11 +121,11 @@ fetch(cards.json) ─실패→ FALLBACK
    └→ DocumentFragment 로 1회 삽입 → initSwiper()
 ```
 
-마크업은 JS 문자열이 아니라 `index.html` 의 `<template>` 8개에서 온다.
+마크업은 JS 문자열이 아니라 `card.html` 의 `<template>` 8개에서 온다.
 `innerHTML` 은 `Avatar.render()` 가 만든 SVG 문자열에만 쓴다.
 
 **BEM 블록 이름을 바꾸면 세 파일을 동시에 고쳐야 한다** —
-`index.html` 의 `<template>`, `css/style.css`, `js/app.js` 의 `querySelector`.
+`card.html` 의 `<template>`, `css/style.css`, `js/app.js` 의 `querySelector`.
 한 곳만 바꾸면 카드가 조용히 안 그려진다.
 
 ### 연락처 링크

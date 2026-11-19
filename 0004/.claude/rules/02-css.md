@@ -30,7 +30,7 @@ BEM 을 따른다: `블록__요소--수식어`
 .contact         .contact__value      .contact--stack
 ```
 
-블록 이름을 바꿀 때는 `index.html` 의 `<template>`, `js/app.js` 의 `querySelector`,
+블록 이름을 바꿀 때는 `card.html` 의 `<template>`, `js/app.js` 의 `querySelector`,
 `css/style.css` 를 **동시에** 수정한다. 한 곳만 바꾸면 카드가 렌더링되지 않는다.
 
 ## 테마는 토큰 재정의로만 만든다
@@ -51,7 +51,7 @@ CSS 에 카드별 강조색을 하드코딩하지 않는다.
 ## Swiper 스타일 덮어쓰기
 
 `css/swiper.css` 는 **벤더 파일이므로 고치지 않는다.** `css/style.css` 에서 덮어쓴다.
-`index.html` 에서 `swiper.css` → `style.css` 순서로 읽으므로 같은 특정성이면 우리 쪽이 이긴다.
+`card.html` 에서 `swiper.css` → `style.css` 순서로 읽으므로 같은 특정성이면 우리 쪽이 이긴다.
 
 **단, Swiper 는 복합 선택자를 자주 쓴다.** 클래스 하나(0-1-0)로는 못 이기는 경우가 있다.
 
@@ -65,6 +65,10 @@ CSS 에 카드별 강조색을 하드코딩하지 않는다.
 
 카드 폭·높이는 `.swiper-slide` 와 `.namecard` 가 함께 읽으므로 `--card-w` / `--card-h` 를
 **`:root` 에서만** 바꾼다. 미디어쿼리에서도 `.namecard` 가 아니라 `:root` 를 재정의한다.
+
+**`--card-h` 는 `auto` 다.** 카드 높이를 고정하지 않고 `.namecard__scroll` 도 스크롤 컨테이너로
+만들지 않는다 — 카드 안 스크롤과 페이지 스크롤이 겹치면 모바일에서 보기 어렵다.
+스크롤은 페이지 하나로 통일한다. 카드 안에 `overflow-y: auto` 를 다시 넣지 않는다.
 
 ## 값 작성
 
@@ -91,7 +95,7 @@ CSS 에 카드별 강조색을 하드코딩하지 않는다.
 |---|---|---|
 | 기본 | `390px` | 여러 장이 보이고 좌우 슬라이드 |
 | ≤ 900px | `min(390px, 86vw)` | |
-| ≤ 580px | `calc(100vw - 32px)` | 1장씩, 호버 확대 해제 |
+| ≤ 580px | `calc(100vw - 64px)` | 1장씩 + 양옆 카드가 20px 가량 비침(`centeredSlides`), 호버 확대 해제 |
 
 슬라이드 간격은 CSS `gap` 이 아니라 **Swiper 의 `breakpoints.spaceBetween`** 이 정한다
 (`js/app.js` 의 `initSwiper`). 분기점을 바꾸면 양쪽을 함께 맞춘다.

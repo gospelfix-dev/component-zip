@@ -9,7 +9,7 @@ model: sonnet
 
 ## 검토 방법
 
-1. `index.html`, `css/style.css`, `data/cards.json` 을 읽어 현재 구현 상태를 파악합니다.
+1. `card.html`, `css/style.css`, `data/cards.json` 을 읽어 현재 구현 상태를 파악합니다.
 2. 시안 이미지가 주어졌다면 Read 로 **직접 열어 실제 픽셀을 확인합니다. 추측하지 마세요.**
 3. 테마는 5종(`dark` `paper` `light` `blue` `navy`)이고 각각 시안 상의 대응 카드가 있습니다.
    어느 카드를 보는지 먼저 특정한 뒤 대조합니다.

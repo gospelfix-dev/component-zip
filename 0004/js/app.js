@@ -196,7 +196,7 @@
   let swiper = null;
 
   /**
-   * preview.html 임베드 모드(?embed=1) — 머리글·컨트롤은 부모가 틀 밖에 그린다.
+   * index.html 임베드 모드(?embed=1) — 머리글·컨트롤은 부모가 틀 밖에 그린다.
    * 여기서는 상태(섹션 문구·현재 위치)를 부모에게 알리고, 이전/다음/이동 명령만 받는다.
    * file:// 에서는 iframe 끼리 DOM 접근이 막히므로 postMessage 로만 주고받는다.
    */
@@ -211,12 +211,16 @@
       index: swiper.snapIndex,
       count: swiper.snapGrid.length,
       isBeginning: swiper.isBeginning,
-      isEnd: swiper.isEnd
+      isEnd: swiper.isEnd,
+      // scrollHeight 는 뷰포트보다 작아지지 않아 틀이 줄어들지 못한다 — 내용(body) 높이를 잰다
+      height: Math.ceil(document.body.getBoundingClientRect().height)
     }, "*");
   };
 
   if (EMBED) {
     document.documentElement.classList.add("is-embed");
+    // 카드 높이가 바뀌면(슬라이드 전환·글자 줄바꿈) 부모가 틀 높이를 맞출 수 있게 다시 알린다
+    if (global.ResizeObserver) new ResizeObserver(notifyParent).observe(document.body);
     global.addEventListener("message", (event) => {
       const msg = event.data || {};
       if (event.source !== global.parent || !swiper) return;
@@ -534,7 +538,7 @@
 
   /**
    * 좌우 슬라이드. 카드 폭은 CSS 의 --card-w 가 정하므로 slidesPerView 는 "auto".
-   * 카드 안쪽(.namecard__scroll)이 세로로 스크롤되므로 touchAngle 로 가로 제스처만 잡는다.
+   * 페이지가 세로로 스크롤되므로 touchAngle 로 가로 제스처만 잡는다.
    */
   const initSwiper = () => {
     if (swiper) {
@@ -549,13 +553,14 @@
       speed: SWIPER_SPEED,
       grabCursor: true,
       touchAngle: 40,
-      // 모바일은 카드 높이가 내용에 따라 달라진다 — 현재 슬라이드 높이에 맞춘다
-      autoHeight: true,
       breakpoints: {
-        // 모바일은 가운데 정렬 — 양옆 카드가 비쳐 보여 더 있다는 걸 알린다
-        0: { spaceBetween: 12, centeredSlides: true },
-        581: { spaceBetween: 22, centeredSlides: false },
-        901: { spaceBetween: 30, centeredSlides: false }
+        // 모바일은 가운데 정렬 — 양옆 카드가 비쳐 보여 더 있다는 걸 알린다.
+        // 한 장씩 보이므로 카드 높이가 내용에 따라 달라도 현재 슬라이드 높이에 맞춘다
+        0: { spaceBetween: 12, centeredSlides: true, autoHeight: true },
+        // 여러 장이 나란히 보인다 — autoHeight 는 첫 슬라이드 높이만 따르므로 끄고
+        // 래퍼가 가장 큰 카드 높이를 따르게 한다
+        581: { spaceBetween: 22, centeredSlides: false, autoHeight: false },
+        901: { spaceBetween: 30, centeredSlides: false, autoHeight: false }
       },
       navigation: {
         prevEl: "#cardPrev",
@@ -571,9 +576,18 @@
         onlyInViewport: true
       },
       on: {
-        slideChange: notifyParent,
+        slideChange: () => {
+          notifyParent();
+          // autoHeight 가 높이를 바꾸는 건 전환이 끝난 뒤라, 그때 한 번 더 알려 틀 높이를 맞춘다
+          setTimeout(notifyParent, swiper.params.speed + 60);
+        },
+        transitionEnd: notifyParent,
         resize: notifyParent,
-        breakpoint: notifyParent,
+        breakpoint: () => {
+          // autoHeight 를 끄면 Swiper 가 남겨 둔 인라인 높이를 직접 지워야 한다
+          if (swiper && !swiper.params.autoHeight) swiper.wrapperEl.style.height = "";
+          notifyParent();
+        },
         snapGridLengthChange: notifyParent
       },
       a11y: {

@@ -20,7 +20,7 @@
   /* Space & shape */
   --page-max: 1320px;
   --card-w: 390px;
-  --card-h: clamp(600px, 84vh, 860px);
+  --card-h: auto; /* 카드는 내용만큼 늘어난다 — 스크롤은 페이지 하나로 통일 */
   --radius-card: 30px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --shadow-card: 0 26px 60px -28px rgba(20, 30, 60, 0.45), 0 2px 8px -2px rgba(20, 30, 60, 0.12);
@@ -248,14 +248,8 @@ li { list-style: none; }
 .namecard:hover { transform: translateY(-6px); }
 
 .namecard__scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  scrollbar-width: none;
+  flex: none;
 }
-
-.namecard__scroll::-webkit-scrollbar { width: 0; }
 
 .namecard__frame {
   background: var(--card-frame-bg);
@@ -738,7 +732,6 @@ li { list-style: none; }
 @media (max-width: 900px) {
   :root {
     --card-w: min(390px, 86vw);
-    --card-h: clamp(560px, 80vh, 820px);
   }
 }
 
@@ -746,8 +739,6 @@ li { list-style: none; }
   :root {
     /* 양옆 32px 을 비워 이웃 카드가 20px 가량 비쳐 보이게 한다 (spaceBetween 12 기준) */
     --card-w: calc(100vw - 64px);
-    /* 모바일은 카드 높이를 고정하지 않는다 — 스크롤을 페이지 하나로 통일 */
-    --card-h: auto;
     --radius-card: 26px;
   }
 
@@ -761,18 +752,22 @@ li { list-style: none; }
   .gallery__controls { gap: 12px; padding-top: 16px; }
   .gallery__controls--top { gap: 12px; padding-top: 0; padding-bottom: 14px; }
   .namecard:hover { transform: none; }
-
-  /* 카드 내부 스크롤 해제 — 내용만큼 카드가 길어진다 */
-  .namecard__scroll {
-    flex: none;
-    overflow: visible;
-  }
 }
 
-/* 미리보기 임베드(?embed=1) — 머리글·컨트롤은 틀 밖(preview.html)에 있다 */
+/* 미리보기 임베드(?embed=1) — 머리글·컨트롤은 틀 밖(index.html)에 있다 */
 .is-embed .page__head,
 .is-embed .gallery__controls--top { display: none; }
 .is-embed .page { padding-top: 24px; }
+/* 부모가 iframe 높이를 카드 높이에 맞추므로 뷰포트 높이에 기대지 않는다 */
+html.is-embed body { min-height: 0; }
+
+/* 폰 틀 안(≤580px) — 틀이 이미 화면 가장자리이므로 카드를 좌우 여백 없이 꽉 채운다 */
+@media (max-width: 580px) {
+  html.is-embed { --card-w: 100vw; --radius-card: 0px; }
+  .is-embed .page { padding-top: 0; padding-bottom: 0; }
+  .is-embed .gallery { padding-block: 0; } /* 그림자용 6px/8px 여백 — 그림자를 껐으니 필요 없다 */
+  .is-embed .namecard { box-shadow: none; }
+}
 
 /* 틀 안에서는 페이지 스크롤바를 감춘다 (스크롤은 그대로 동작) */
 .is-embed { scrollbar-width: none; }

@@ -63,7 +63,7 @@
 - `photoShape` 는 같은 일러스트를 다르게 크롭한다. 테마와 맞는 값을 쓴다
   (overlay/stacked → `hero`, header → `circle`, banner → `portrait`).
 - `links` `about` `slogan` `meta` 는 선택이다. 없으면 해당 블록이 DOM 에서 제거된다.
-- **`section` 의 키는 `index.html` 의 `data-bind` 속성값과 1:1로 대응한다.**
+- **`section` 의 키는 `card.html` 의 `data-bind` 속성값과 1:1로 대응한다.**
   키를 추가하려면 HTML 에 `data-bind="키이름"` 요소를 함께 추가한다.
 
 ## 동기화 의무

@@ -24,7 +24,7 @@
 
 ## 로드 순서
 
-`index.html` 에서 `js/swiper.js` → `js/avatar.js` → `js/app.js` 순서로 읽는다.
+`card.html` 에서 `js/swiper.js` → `js/avatar.js` → `js/app.js` 순서로 읽는다.
 `app.js` 는 `window.Swiper` 와 `global.Avatar.render` 에 의존하므로
 순서를 바꾸면 슬라이더가 초기화되지 않거나 아바타가 그려지지 않는다.
 
@@ -38,8 +38,12 @@
   이벤트가 중복 바인딩된다.
 - 카드 폭은 CSS 의 `--card-w` 가 정하므로 `slidesPerView` 는 항상 `"auto"` 다.
   JS 에 픽셀 폭을 적지 않는다.
-- **`touchAngle` 을 낮추지 않는다.** 카드 안쪽(`.namecard__scroll`)이 세로로 스크롤되므로,
+- **`touchAngle` 을 낮추지 않는다.** 카드 위에서 시작하는 세로 스와이프는 페이지 스크롤이므로,
   값이 크면 세로 스와이프가 가로 슬라이드로 오인된다.
+- **`autoHeight` 는 `breakpoints` 의 모바일(0~580px)에서만 켠다.** 한 장씩 보일 때만 맞는 옵션이다.
+  `slidesPerView: "auto"` 에서는 활성 슬라이드 한 장의 높이만 따라가서, 여러 장이 나란히 보이는
+  데스크톱에서는 더 큰 카드를 잘라 낸다. 끄면 래퍼가 가장 큰 카드 높이를 따르며, 켜 둔 동안
+  남은 인라인 높이는 `breakpoint` 이벤트에서 직접 지운다.
 - `a11y` 옵션의 문구는 한국어로 유지한다. Swiper 가 슬라이드에 `role="group"` 과
   `aria-label="1 / 6"` 을 자동으로 붙인다.
 - **이전/다음은 반드시 `<button>` 으로 둔다.** Swiper 는 nav 요소가 `BUTTON` 일 때만
@@ -50,7 +54,7 @@
 
 ## 렌더링
 
-- 카드 마크업은 JS 문자열이 아니라 `index.html` 의 `<template>` 을 `cloneNode(true)` 해서 만든다.
+- 카드 마크업은 JS 문자열이 아니라 `card.html` 의 `<template>` 을 `cloneNode(true)` 해서 만든다.
   템플릿은 `tpl("cardTemplate")` 헬퍼로 가져온다.
 - 텍스트는 `textContent` 로 넣는다. **`innerHTML` 은 `Avatar.render()` 가 만든 SVG 문자열에만 쓴다.**
 - DOM 삽입은 `DocumentFragment` 에 모아 **한 번만** 수행한다.
