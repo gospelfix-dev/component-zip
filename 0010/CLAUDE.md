@@ -28,10 +28,7 @@ The user communicates in Korean. UI strings and README.md are written in Korean,
 
 The live page is GitHub Pages: https://gospelfix-dev.github.io/component-zip/0010/. Pages serves `main`, so commit and `git push origin main`; the change appears about a minute later. Confirm with `curl` that the new content is served. If the user still sees the old page, suggest a hard refresh (Cmd+Shift+R). Commit messages are in Korean with a folder prefix, e.g. `feat: 0010 …`, `style: 0010 …`.
 
-`index.html` is also published as a claude.ai artifact at https://claude.ai/artifact/QU74eET2PagUCeT6cP9QSh.
-
-- Republish with the Artifact tool, using the same file path and `files: {"style.css": "style.css", "script.js": "script.js", "carol.mp3": "carol.mp3"}`. These are served next to the page and referenced by relative paths; leaving one out of `files` keeps the previously published copy, so always pass the edited ones.
-- An older artifact at https://claude.ai/artifact/4hc2J1YhovFjBqsd9GewZu came from a `tree3d.html` copy that no longer exists. It is no longer updated.
+Do not publish this page as a claude.ai artifact. The user decided against it, and both earlier artifacts were deleted on 2026-11-19.
 
 Keep the full document skeleton: `<!doctype html>`, `<meta charset>`, `<head>` and `<body>`. Live Server injects its reload script before `</body>`. Without that tag it injects the script inside `</svg>` elements, which corrupts the DOM and stops the page.
 
