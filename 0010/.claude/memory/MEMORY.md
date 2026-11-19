@@ -4,3 +4,4 @@
 - [프로젝트를 작게](feedback_lean-project.md) — 보조 스크립트나 런처는 묻고 추가. 지운 파일은 문서에서도 지움
 - [GitHub Pages 배포](project_github-pages.md) — 이제 component-zip 저장소의 0010, 푸시하면 Pages 반영
 - [시작 화면 결정](feedback_start-gate.md) — 자동 재생 불가 → "눌러서 트리 켜기" 택함, 시작 버튼에 노란 포커스 링 금지
+- [아티팩트 금지](feedback_no-artifact.md) — claude.ai 아티팩트 게시·재게시·DB 제안 안 함, 배포는 GitHub Pages만
