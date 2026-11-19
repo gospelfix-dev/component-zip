@@ -62,7 +62,8 @@ Data flows one way: **world constants → `buildCloud()` → `Renderer.frame()` 
   - Each rests for `REST` seconds, then fades out.
   - `boxPoints()` is shared with the static gifts under the tree.
 - **`draw()`** paints the grid with `fillText`, then does a second pass with `shadowBlur` for cells marked `glow`.
-- **`build(withIntro)`** rebuilds the cloud and Renderer. A resize redraws the finished tree, while the `R` key or the "다시 쌓기" button replays the intro.
+- **`build(withIntro)`** rebuilds the cloud and Renderer. A resize redraws the finished tree, while the `R` key or the "다시 쌓기" button replays the intro. A resize during the intro resumes it from the same elapsed time instead of restarting it.
+  - The bar's live readouts (`#rotation`, `#letters`, `#status`) have fixed `min-width`s in `ch`. Without them, their changing text rewrapped the bar on phones, the canvas height changed every 200 ms, and the intro restarted forever. Keep any new live text in the bar fixed-width too.
 
 ### Music
 
