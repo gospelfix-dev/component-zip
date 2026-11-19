@@ -8,9 +8,10 @@
 
 | 방법 | 음악 자동 재생 |
 |---|---|
-| VS Code Live Server로 `index.html` 열기 (포트 5500) | 화면을 한 번 클릭하면 재생 |
-| 터미널에서 `python3 -m http.server` 후 `http://localhost:8000` | 화면을 한 번 클릭하면 재생 |
-| 아티팩트 링크 https://claude.ai/artifact/QU74eET2PagUCeT6cP9QSh | 브라우저에 따라 바로 재생되거나 첫 클릭 때 재생 |
+| VS Code Live Server로 `index.html` 열기 (포트 5500) | 시작 화면의 "눌러서 트리 켜기"를 누르면 재생 |
+| 터미널에서 `python3 -m http.server` 후 `http://localhost:8000` | 시작 화면의 "눌러서 트리 켜기"를 누르면 재생 |
+| 아티팩트 링크 https://claude.ai/artifact/QU74eET2PagUCeT6cP9QSh | 시작 화면의 "눌러서 트리 켜기"를 누르면 재생 |
+| GitHub Pages https://gospelfix-dev.github.io/component-zip/0010/ | 시작 화면의 "눌러서 트리 켜기"를 누르면 재생 |
 
 - **아티팩트 링크**는 비공개입니다. 다른 사람에게 보여 주려면 페이지의 공유 메뉴에서 먼저 공유해야 합니다.
 - `index.html`을 더블클릭해 `file://`로 열어도 트리는 동작합니다. 다만 음악 파일을 읽지 못하면 내장 오르골 캐롤로 바뀝니다.

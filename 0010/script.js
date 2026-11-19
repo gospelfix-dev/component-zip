@@ -1064,11 +1064,23 @@
   $("fold").addEventListener("click", () => { setMenu(false); setFolded(true, true); });
   pill.addEventListener("click", () => setFolded(false, true));
   setFolded(store.get("tree3d-player-folded") === "1", false);
-  // play as soon as the page opens
-  startMusic();
+
+  // start gate: browsers only allow sound after a tap or key, so that first tap starts the music and the build together
+  const gate = $("gate");
+  let openGate;
+  const gateOpened = new Promise((r) => { openGate = r; });
+  const start = () => {
+    if (gate.hidden) return;
+    gate.hidden = true;
+    startMusic(); // still inside the gesture, so play() is allowed
+    openGate();
+  };
+  gate.addEventListener("click", start);
+  $("start").focus({ focusVisible: false }); // Enter or Space works at once, without a ring flashing for mouse users
 
   window.addEventListener("keydown", (e) => {
     if (e.metaKey || e.ctrlKey) return;
+    if (!gate.hidden) { if (!e.repeat && e.key !== "Tab") { e.preventDefault(); start(); } return; }
     if (e.key === "Escape" && !menu.hidden) { setMenu(false); moreBtn.focus(); return; }
     if (e.key === "m" || e.key === "M") toggleMusic();
     if (e.key === "r" || e.key === "R") replay();
@@ -1078,6 +1090,7 @@
   let resizeTimer = 0, observedOnce = false;
   new ResizeObserver(() => {
     if (!observedOnce) { observedOnce = true; return; }
+    if (!gate.hidden) return; // the first build waits for the gate
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       const building = view && cloud && performance.now() / 1000 - t0 < cloud.introEnd;
@@ -1086,7 +1099,7 @@
   }).observe(canvas);
 
   const fontReady = document.fonts ? document.fonts.load(`16px "IBM Plex Mono"`).catch(() => {}) : Promise.resolve();
-  Promise.race([fontReady, new Promise((r) => setTimeout(r, 1500))]).then(() => {
+  Promise.all([Promise.race([fontReady, new Promise((r) => setTimeout(r, 1500))]), gateOpened]).then(() => {
     build(true);
     requestAnimationFrame(frame);
   });

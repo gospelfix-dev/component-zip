@@ -16,7 +16,7 @@ The user communicates in Korean. UI strings and README.md are written in Korean,
 
 ## Running and checking
 
-- **Run.** Open `index.html` with VS Code Live Server on port 5500, or serve the folder with `python3 -m http.server`. Opening it via `file://` may block `carol.mp3`, so the page falls back to the music box. Browsers block audio until the first click or keypress; the page handles that itself (see Music). A launcher script that opened Chrome with `--autoplay-policy=no-user-gesture-required` existed but the user deleted it, so do not recreate it unless asked.
+- **Run.** Open `index.html` with VS Code Live Server on port 5500, or serve the folder with `python3 -m http.server`. Opening it via `file://` may block `carol.mp3`, so the page falls back to the music box. Browsers block audio until the first click or keypress; the page opens on a start gate for that (see Music). A launcher script that opened Chrome with `--autoplay-policy=no-user-gesture-required` existed but the user deleted it, so do not recreate it unless asked.
 - **Syntax check:**
   ```sh
   node --check script.js
@@ -69,7 +69,8 @@ Data flows one way: **world constants → `buildCloud()` → `Renderer.frame()` 
   - It plays a `SONGS` table of public-domain carols written in note tokens.
   - Each song is scheduled in full up front. That is why `skip()` closes the AudioContext and builds a new one, and why the 250 ms timer is created only once.
   - It takes over when the mp3 errors, or when the user switches source in the ⋯ menu.
-- **Autoplay.** `startMusic()` runs on page load. If `play()` rejects with `NotAllowedError`, `armGesture()` listens in the capture phase for the first `keydown`, `pointerdown`, `pointerup` or `touchend`, and starts playback then. The play button and the `M` key are excluded from this listener; otherwise that one gesture would start the music and then immediately toggle it off.
+- **Start gate.** Browsers block sound until the first tap or key, so the page opens on a full-screen gate (`#gate`, "눌러서 트리 켜기"). Its click, or any key, calls `start()`, which hides the gate and calls `startMusic()` inside that gesture so `play()` is allowed. The first `build(true)` waits for both the font and the gate (`gateOpened`), so the tree starts stacking with the music. The resize observer does nothing while the gate is up.
+- **Autoplay fallback.** If `play()` still rejects with `NotAllowedError`, `armGesture()` listens in the capture phase for the next `keydown`, `pointerdown`, `pointerup` or `touchend`, and starts playback then. The play button and the `M` key are excluded from this listener; otherwise that one gesture would start the music and then immediately toggle it off.
 - **UI sync.** `syncMusic()` and `syncTime()` are the single place that reflects state into the player card. They update classes (`is-playing`, `is-loading`, `is-muted`), aria attributes and the labels. Icon swaps are CSS-only (`.when-on` / `.when-off`).
 - **Persistence.** The like and folded states use `localStorage` through a try/catch `store` wrapper.
 

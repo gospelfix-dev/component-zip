@@ -131,3 +131,23 @@ canvas.dragging { cursor: grabbing; }
   .icon-btn.play svg { width: 34px; height: 34px; }
 }
 .notice { position: absolute; inset: 0; display: grid; place-items: center; font: 13px var(--font-grid); color: var(--dim); text-align: center; padding: 16px; }
+
+/* start gate: one tap starts the build and the music together, which browsers count as permission to play sound */
+.gate { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; padding: 16px; background: var(--night); cursor: pointer; }
+.gate[hidden] { display: none; }
+.gate-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  max-width: 100%; padding: 22px 34px 20px; border-radius: 22px;
+  color: #fff; font-family: var(--font-ui); cursor: pointer;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 14px 34px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.gate-btn:hover { border-color: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
+.gate-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.gate-star { font: 600 34px/1 var(--font-grid); color: var(--gold); text-shadow: 0 0 14px var(--gold); animation: twinkle 1.6s ease-in-out infinite alternate; }
+.gate-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.gate-sub { font-size: 13px; color: var(--glass-dim); }
+@keyframes twinkle { from { opacity: 0.55; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .gate-star { animation: none; } .gate-btn { transition: none; } }
