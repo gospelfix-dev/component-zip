@@ -10,5 +10,6 @@ metadata:
 - 평소 VS Code Live Server(포트 5500)로 `index.html`을 연다. 다른 실행 경로에서만 확인한 수정은 Live Server에서 깨질 수 있다. 2026-11-19에 실제로 이 일이 있었다.
 - 효과가 바로 보이는 것을 중요하게 여긴다. 예: 페이지를 열면 음악이 즉시 재생되는 것.
   - 정정 (2026-11-19): 이 요청 때문에 만든 자동 재생 런처 `play.command`를, 사용자가 무엇인지 들은 뒤 바로 지우게 했다. 즉시 재생보다 프로젝트를 단순하게 유지하는 쪽을 택했고, 첫 클릭에 음악이 나오는 것은 받아들였다. 우회용 스크립트나 별도 브라우저 실행 같은 것은 먼저 묻는다. [[feedback-lean-project]]
+  - 갱신 (2026-11-19): GitHub Pages에 올린 뒤 다시 "접속하자마자 음악"을 요청했고, 그 첫 클릭을 "눌러서 트리 켜기" 시작 화면으로 만드는 안을 택했다. [[feedback-start-gate]]
 
-관련: [[feedback-web-only]], [[feedback-lean-project]], [[feedback-memory-location]]
+관련: [[feedback-start-gate]], [[project-github-pages]], [[feedback-web-only]], [[feedback-lean-project]], [[feedback-memory-location]]
