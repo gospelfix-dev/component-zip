@@ -170,7 +170,7 @@
   z-index: 1;
   display: flex;
   gap: 6px;
-  width: 148px;
+  width: 180px;
   padding: 6px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 6px;
@@ -242,6 +242,7 @@
 
 .sm-tooltip__prices {
   display: flex;
+  white-space: nowrap;
   align-items: baseline;
   gap: 5px;
   margin-top: 2px;
@@ -397,6 +398,7 @@
 
 .sm-featured-card__prices {
   display: flex;
+  white-space: nowrap;
   align-items: baseline;
   gap: 4px;
 }
@@ -408,7 +410,7 @@
 }
 
 .sm-featured-card__sale {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--sm-rose);
 }
@@ -604,6 +606,7 @@
 
 .sm-related-card__prices {
   display: flex;
+  white-space: nowrap;
   align-items: baseline;
   gap: 4px;
 }
@@ -615,7 +618,7 @@
 }
 
 .sm-related-card__sale {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--sm-rose);
 }

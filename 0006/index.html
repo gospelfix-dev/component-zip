@@ -234,13 +234,16 @@
 <section class="sm-video">
   <button class="sm-video__close" type="button" aria-label="닫기">✕</button>
   <video class="sm-video__player" autoplay muted loop playsinline>
-    <source src="https://gospelfix.github.io/profile/video/modelVideo.mp4" type="video/mp4">
+    <source src="https://deartintsanta-cms-api.vercel.app/videos/deartintsanta-cap-styling.mp4" type="video/mp4">
   </video>
 </section>
 
 <script>
 (function ($) {
   let featuredProducts = [];
+
+  // 데모 페이지: 모든 링크 이동 차단 (동적으로 생성되는 카드·툴팁 링크 포함)
+  $(document).on('click', 'a', (e) => e.preventDefault());
 
   // 카페24 절대경로(/SkinImg/imgs/sale/)를 로컬 imgs/ 경로로 변환
   const fixImg = (src) => (src || '').replace('/SkinImg/imgs/sale/', 'imgs/');
