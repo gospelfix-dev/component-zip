@@ -1093,8 +1093,11 @@
     if (!gate.hidden) return; // the first build waits for the gate
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      const building = view && cloud && performance.now() / 1000 - t0 < cloud.introEnd;
+      // mid-build (e.g. a phone's address bar sliding away), resume the intro where it was instead of restarting it
+      const elapsed = performance.now() / 1000 - t0;
+      const building = view && cloud && elapsed < cloud.introEnd;
       build(!view || building);
+      if (building) t0 -= elapsed;
     }, 150);
   }).observe(canvas);
 

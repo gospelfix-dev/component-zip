@@ -40,6 +40,10 @@ canvas.dragging { cursor: grabbing; }
   font-variant-numeric: tabular-nums;
 }
 .bar .file { color: var(--ink); }
+/* live readouts keep a fixed width, so the bar never rewraps and resizes the canvas (which on phones restarted the build) */
+#rotation { min-width: 15ch; }
+#letters { min-width: 14ch; }
+#status { display: inline-block; min-width: 20ch; }
 .bar .spacer { flex: 1; }
 .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--pine); margin-right: 6px; vertical-align: 1px; }
 .dot.building { background: var(--gold); }
