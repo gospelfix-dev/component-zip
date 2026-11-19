@@ -332,6 +332,7 @@ li { list-style: none; }
 .identity__role,
 .identity__company {
   margin: 6px 0 0;
+  word-break: keep-all; /* 한글은 단어 단위로 줄바꿈한다 */
   font-size: 13.5px;
   line-height: 1.45;
   color: var(--identity-soft, var(--card-ink-soft));
@@ -393,19 +394,23 @@ li { list-style: none; }
 .meta {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--meta-line, var(--card-line));
 }
 
+/* 구분선과 텍스트가 붙지 않게 양쪽 셀 모두 안쪽 여백을 둔다 */
+.meta__cell { min-width: 0; padding-right: 16px; }
+
 .meta__cell + .meta__cell {
+  padding-right: 0;
   padding-left: 16px;
   border-left: 1px solid var(--meta-line, var(--card-line));
 }
 
 .meta__label { margin: 0; font-size: 12px; opacity: 0.72; }
-.meta__value { margin: 5px 0 0; font-size: 14.5px; font-weight: 700; }
+.meta__value { margin: 5px 0 0; font-size: 13px; font-weight: 700; word-break: keep-all; overflow-wrap: break-word; }
 
 /* 아이덴티티 배치 — overlay (사진 위 글래스 박스) */
 .identity--overlay {
@@ -436,10 +441,20 @@ li { list-style: none; }
   padding: 20px 20px 18px;
   background: var(--header-bg, #e9eaec);
   align-items: center;
+  /* 로고는 이름 줄 오른쪽에 둔다. 직책·회사명은 그 아래에서 오른쪽 끝까지 쓴다 */
+  grid-template-columns: auto minmax(0, 1fr) auto;
 }
 
+/* 텍스트 래퍼를 풀어 이름·직책·회사명을 그리드 칸에 직접 놓는다 */
+.identity--header .identity__text { display: contents; }
+
+.identity--header .identity__avatar { grid-row: 1 / 4; align-self: center; }
+.identity--header .identity__name { grid-column: 2; grid-row: 1; align-self: center; }
+.identity--header .identity__logo { grid-column: 3; grid-row: 1; align-self: center; }
+.identity--header .identity__role,
+.identity--header .identity__company { grid-column: 2 / -1; }
+
 .identity--header .identity__name { font-size: 21px; }
-.identity--header .identity__text { align-self: center; }
 
 .identity__avatar--circle {
   --photo-pos: 50% 12%; /* 원형은 지름이 작아 얼굴만 담는다 */
@@ -729,15 +744,29 @@ li { list-style: none; }
 
 @media (max-width: 580px) {
   :root {
-    --card-w: calc(100vw - 32px);
-    --card-h: clamp(540px, 78vh, 780px);
+    /* 양옆 32px 을 비워 이웃 카드가 20px 가량 비쳐 보이게 한다 (spaceBetween 12 기준) */
+    --card-w: calc(100vw - 64px);
+    /* 모바일은 카드 높이를 고정하지 않는다 — 스크롤을 페이지 하나로 통일 */
+    --card-h: auto;
     --radius-card: 26px;
   }
 
-  .gallery { padding-inline: 16px; }
+  /* 상단 영역 압축 — 카드가 첫 화면에 더 많이 보이게 */
+  .page { padding-top: 20px; padding-bottom: 20px; }
+  .page__head { margin-bottom: 14px; }
+  .page__eyebrow { margin-bottom: 6px; font-size: 11px; }
+  .page__subtitle { margin-top: 6px; }
+
+  .gallery { padding-inline: 0; }
   .gallery__controls { gap: 12px; padding-top: 16px; }
-  .gallery__controls--top { gap: 12px; padding-top: 0; padding-bottom: 20px; }
+  .gallery__controls--top { gap: 12px; padding-top: 0; padding-bottom: 14px; }
   .namecard:hover { transform: none; }
+
+  /* 카드 내부 스크롤 해제 — 내용만큼 카드가 길어진다 */
+  .namecard__scroll {
+    flex: none;
+    overflow: visible;
+  }
 }
 
 /* ---------- 14. 모션 축소 ---------- */

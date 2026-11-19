@@ -18,7 +18,7 @@
     section: {
       eyebrow: "Digital Name Card",
       title: "모바일 명함",
-      subtitle: "테마 하나로 바뀌는 다섯 가지 온라인 디지털 명함 레이아웃"
+      subtitle: "마음에 드는 명함을 고르면, 내 명함이 바로 완성돼요"
     },
     cards: [
       {
@@ -515,10 +515,13 @@
       speed: SWIPER_SPEED,
       grabCursor: true,
       touchAngle: 40,
+      // 모바일은 카드 높이가 내용에 따라 달라진다 — 현재 슬라이드 높이에 맞춘다
+      autoHeight: true,
       breakpoints: {
-        0: { spaceBetween: 14 },
-        581: { spaceBetween: 22 },
-        901: { spaceBetween: 30 }
+        // 모바일은 가운데 정렬 — 양옆 카드가 비쳐 보여 더 있다는 걸 알린다
+        0: { spaceBetween: 12, centeredSlides: true },
+        581: { spaceBetween: 22, centeredSlides: false },
+        901: { spaceBetween: 30, centeredSlides: false }
       },
       navigation: {
         prevEl: "#cardPrev",
