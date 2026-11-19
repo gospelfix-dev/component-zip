@@ -22,6 +22,7 @@ The user communicates in Korean. UI strings and README.md are written in Korean,
   node --check script.js
   ```
 - **Headless smoke tests.** `script.js` can be `eval`ed in Node with stubbed `document`, `window`, `Audio`, canvas `ctx` and `requestAnimationFrame`. You can then step `performance.now()` and call the queued rAF callbacks to render N frames, or dump the `fillText` calls as a text snapshot. These harnesses are not kept in the repo; recreate them in the scratchpad when needed. Stub elements need `setAttribute`, `getAttribute`, `contains`, `focus`, `style.setProperty` and `classList.toggle`.
+- **Mobile check.** The Node harness has no layout, so it cannot catch phone-only bugs (the endless intro restart was one). For those, launch headless Chrome with `--remote-debugging-port` and drive it over CDP from a Node script (Node 24 has a global `WebSocket`). Use `Emulation.setDeviceMetricsOverride` (e.g. 390×664, dpr 3, `mobile: true`) and `Emulation.setTouchEmulationEnabled`. Tap the gate with `Input.dispatchTouchEvent`, then watch `#status` advance and log canvas resizes with a `ResizeObserver`. Run the script from the scratchpad against `python3 -m http.server` or the live URL. Run one Chrome at a time; back-to-back runs on the same port picked up a dying instance and gave false results.
 - **Determinism.** `?seed=N` fixes the layout (mulberry32 RNG) and `?speed=N` scales the intro.
 
 ## Publishing
